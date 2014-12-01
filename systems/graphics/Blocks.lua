@@ -96,7 +96,7 @@ return {
 		},
 
 		{
-			name = "DrawBlockColor",
+			name = "DrawBlock",
 			priority = 0,
 			requires = {"Position", "Color", "Alpha"},
 			draw = function(entity, world)
@@ -105,15 +105,8 @@ return {
 
 				local x,y, tl = get_draw_info(entity.Position.x, entity.Position.y, world)
 				love.graphics.rectangle("fill", x,y, tl,tl)
-			end
-		},
 
-		{
-			name = "DrawBlockIcon",
-			priority = -1,
-			requires = {"Position", "Color", "Alpha"},
-			draw = function(entity, world)
-				local x,y, tl = get_draw_info(entity.Position.x, entity.Position.y, world)
+				---
 
 				love.graphics.setColor(255, 255, 255, (entity.Alpha or 1) * 255)
 
