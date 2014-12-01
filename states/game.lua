@@ -16,7 +16,7 @@ local LOSE_TRANS_DURATION = 0.5
 
 ---
 
-local world
+local world = World.new()
 
 local last_beat = 0
 local beat_duration
@@ -26,7 +26,6 @@ local leave_func = love.event.quit
 ---
 
 function game:init()
-	world = World.new()
 	world:load_system_dir("systems")
 end
 
@@ -100,34 +99,34 @@ end
 
 ---
 
-local function start_game()
+function world.start_game()
 	world.state = "game"
 
 	world.music:rewind()
 	world.music:play()
 end
 
-local function lose_game()
+function world.lose_game()
 	world.state = "lose"
 
 	beat_duration = beat.absbeat_to_seconds(2, world.bpm)
 end
 
-local function wait_game()
+function world.wait_game()
 	world.state = "wait"
 
 	world.speed = 1
 	world.music:pause()
 end
 
-local function reset_game()
+function world.reset_game()
 	world.state = "reset"
 
 	world.speed = 0
 	world.music:play()
 end
 
-local function leave_game(func)
+function world.leave_game(func)
 	world.state = "leave"
 
 	leave_func = func
@@ -143,7 +142,7 @@ function game:update(dt)
 		if world.grid_alpha >= 1 then
 			world.grid_alpha = 1
 
-			start_game()
+			world.start_game()
 		end
 		---
 	elseif world.state == "game" then
@@ -168,7 +167,7 @@ function game:update(dt)
 			world.music:setPitch(world.speed)
 			world:update(dt)
 		else
-			wait_game()
+			world.wait_game()
 		end
 
 		---
@@ -188,7 +187,7 @@ function game:update(dt)
 
 			world.music:setPitch(1)
 
-			start_game()
+			world.start_game()
 		end
 		---
 	elseif world.state == "leave" then
@@ -220,12 +219,12 @@ end
 
 function game:keypressed(key)
 	if key == " " and world.state == "wait" then
-		reset_game()
+		world.reset_game()
 	elseif key == "escape" then
 		if world.state == "game" then
-			lose_game()
+			world.lose_game()
 		elseif world.state == "wait" then
-			leave_game(love.event.quit)
+			world.leave_game(love.event.quit)
 		end
 	end
 end
