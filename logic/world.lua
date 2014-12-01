@@ -98,13 +98,8 @@ end
 ---
 
 function world:update(dt)
-	self.speed = clamp(0, self.speed, 7)
-	local adjdt = dt * self.speed
-
-	if adjdt > 0 then
-		self.timer:update(adjdt)
-		self:run_systems("update", adjdt)
-	end
+	self.timer:update(dt)
+	self:run_systems("update", dt)
 end
 
 function world:draw(funcs)
@@ -129,9 +124,7 @@ local function new()
 	local w = {
 		ces = ces.new(),
 		signal = signal.new(),
-		timer = timer.new(),
-
-		speed = 1
+		timer = timer.new()
 	}
 
 	w.entities = w.ces.entities

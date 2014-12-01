@@ -119,14 +119,12 @@ end
 function world.wait_game()
 	world.state = "wait"
 
-	world.speed = 1
 	world.music:pause()
 end
 
 function world.reset_game()
 	world.state = "reset"
 
-	world.speed = 0
 	world.music:play()
 end
 
@@ -166,10 +164,10 @@ function game:update(dt)
 		---
 	elseif world.state == "lose" then
 		---
-		world.speed = world.speed - (1/beat_duration)*dt
+		local new_pitch = world.music:getPitch() - (1/beat_duration)*dt
 
-		if world.speed > 0 then
-			world.music:setPitch(world.speed)
+		if new_pitch > 0 then
+			world.music:setPitch(new_pitch)
 			world:update(dt)
 		else
 			world.wait_game()
@@ -182,14 +180,12 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		world.speed = world.speed + (1/beat_duration)*dt
+		local new_pitch = world.music:getPitch() + (1/beat_duration)*dt
 
-		if world.speed < 1 then
-			world.music:setPitch(world.speed)
+		if new_pitch < 1 then
+			world.music:setPitch(new_pitch)
 			world:update(dt)
 		else
-			world.speed = 1
-
 			world.music:setPitch(1)
 
 			world.start_game()
