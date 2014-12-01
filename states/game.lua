@@ -204,24 +204,11 @@ function game:enter(previous, arg)
 
 	---
 
+	world.npairs = arg.npairs or 1
+
+	---
+
 	control_functions = generate_control_functions(world, BLOCK_CONTROLS)
-
-	world.score = {
-		[1] = 0,
-		[2] = 0,
-		[3] = 0
-	}
-
-	world:reset_player_blocks()
-
-	for id = 1, 3 do
-		world:set_pair_active(id, false)
-	end
-
-	for id = 1, arg.npairs or 1 do
-		world:set_pair_active(id, true)
-		world:place_goal(id)
-	end
 
 	---
 
@@ -278,18 +265,37 @@ end
 function world:to_game()
 	self.state = "game"
 
+	---
+
+	world.score = {
+		[1] = 0,
+		[2] = 0,
+		[3] = 0
+	}
+
+	self.beat_timers = {}
+
+	---
+
 	for entity in pairs(self.entities) do
 		entity.Blink = nil
 		entity.InverseBlink = nil
 	end
 
+	world:reset_player_blocks()
+
+	---
+
 	for id = 1, 3 do
+		world:set_pair_active(id, false)
+	end
+
+	for id = 1, world.npairs do
+		world:set_pair_active(id, true)
 		world:place_goal(id)
 	end
 
-	self.beat_timers = {}
-
-	self:reset_player_blocks()
+	---
 
 	self.music:setPitch(1)
 	self.music:rewind()
