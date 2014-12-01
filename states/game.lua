@@ -11,7 +11,7 @@ local World = require("logic.world")
 local GRID_BACKGROUND_ALPHA = 128
 local GRID_LINES_ALPHA = 255
 
-local TRANSITION_DURATION = 1
+local TRANSITION_DURATION = 0.5
 local LOSE_TRANS_DURATION = 0.5
 
 ---
@@ -21,7 +21,7 @@ local world
 local last_beat = 0
 local beat_duration
 
-local leave_func
+local leave_func = love.event.quit
 
 ---
 
@@ -127,10 +127,10 @@ local function reset_game()
 	world.music:play()
 end
 
-local function leave_game(next_state)
+local function leave_game(func)
 	world.state = "leave"
 
-	leave_state = next_state
+	leave_func = func
 end
 
 ---
@@ -155,6 +155,8 @@ function game:update(dt)
 
 			world:emit_event("Beat", math.floor(current_beat))
 		end
+
+		world.current_beat = current_beat
 
 		world:update(dt)
 		---
@@ -191,7 +193,8 @@ function game:update(dt)
 		---
 	elseif world.state == "leave" then
 		---
-		world.grid_alpha = world.grid_alpha - (1/world.transition_duration) * dt
+		world.grid_alpha = world.grid_alpha - (1/TRANSITION_DURATION) * dt
+		world:update(dt)
 
 		if world.grid_alpha <= 0 then
 			world.grid_alpha = 0
