@@ -41,7 +41,7 @@ return {
 	systems = {
 		{
 			name = "UpdateBlockAlpha",
-			requires = {"Alpha"},
+			requires = {"Alpha", "Active"},
 			update = function(entity, world, dt)
 				if world.state == "enter" then
 
@@ -98,7 +98,7 @@ return {
 		{
 			name = "DrawBlock",
 			priority = 0,
-			requires = {"Position", "Color", "Alpha"},
+			requires = {"Position", "Color", "Alpha", "Active"},
 			draw = function(entity, world)
 				local color = entity.Color
 				love.graphics.setColor(color[1], color[2], color[3], (entity.Alpha or 1) * 255)
