@@ -8,6 +8,20 @@ local floor = math.floor
 
 ---
 
+local img_arrow = love.graphics.newImage("graphics/arrow.png")
+
+local ROTATION_MAPPING = {
+	up = 0,
+	right = math.pi/2,
+	down = math.pi,
+	left = 3*math.pi/2
+}
+
+local DYNAMIC_FADE_TIME = 0.2
+local GOAL_FADE_TIME = 0.5
+
+---
+
 local function get_draw_info(grid_x, grid_y, world)
 	local tile_l = world.tile_l
 	local tile_pad = world.tile_pad
@@ -23,21 +37,35 @@ local function get_draw_info(grid_x, grid_y, world)
 		tile_l
 end
 
----
+local function draw_block(entity, world)
+	local color = entity.Color
+	love.graphics.setColor(color[1], color[2], color[3], (entity.Alpha or 1) * 255)
 
-local img_arrow = love.graphics.newImage("graphics/arrow.png")
+	local x,y, tl = get_draw_info(entity.Position.x, entity.Position.y, world)
+	love.graphics.rectangle("fill", x,y, tl,tl)
 
-local ROTATION_MAPPING = {
-	up = 0,
-	right = math.pi/2,
-	down = math.pi,
-	left = 3*math.pi/2
-}
+	---
 
-local DYNAMIC_FADE_TIME = 0.2
-local GOAL_FADE_TIME = 0.5
+	love.graphics.setColor(255, 255, 255, (entity.Alpha or 1) * 255)
 
----
+	if entity.Direction then
+		love.graphics.draw(
+			img_arrow,
+			x+tl/2, y+tl/2,
+			ROTATION_MAPPING[entity.Direction],
+			1, 1,
+			tl/2, tl/2
+		)
+	elseif not entity.Goal then
+		love.graphics.circle(
+			"fill",
+			x+tl/2, y+tl/2,
+			tl * (5/16)
+		)
+	end
+end
+
+---d
 
 local blink_dir = 1
 local blink_var = 0
@@ -49,6 +77,7 @@ return {
 		{
 			name = "UpdateBlockAlpha",
 			requires = {"Color", "Active"},
+			priority = 0,
 			update = function(entity, world, dt)
 				if not entity.Alpha then
 					entity.Alpha = 0
@@ -121,36 +150,30 @@ return {
 		},
 
 		{
-			name = "DrawBlock",
-			priority = 0,
-			requires = {"Position", "Color", "Alpha", "Active"},
+			name = "DrawPlayerBlock",
+			priority = -3,
+			requires = {"Position", "Color", "Alpha", "Player", "Active"},
 			draw = function(entity, world)
-				local color = entity.Color
-				love.graphics.setColor(color[1], color[2], color[3], (entity.Alpha or 1) * 255)
-
-				local x,y, tl = get_draw_info(entity.Position.x, entity.Position.y, world)
-				love.graphics.rectangle("fill", x,y, tl,tl)
-
-				---
-
-				love.graphics.setColor(255, 255, 255, (entity.Alpha or 1) * 255)
-
-				if entity.Direction then
-					love.graphics.draw(
-						img_arrow,
-						x+tl/2, y+tl/2,
-						ROTATION_MAPPING[entity.Direction],
-						1, 1,
-						tl/2, tl/2
-					)
-				elseif not entity.Goal then
-					love.graphics.circle(
-						"fill",
-						x+tl/2, y+tl/2,
-						tl * (5/16)
-					)
-				end
+				draw_block(entity, world)
 			end
-		}
+		},
+
+		{
+			name = "DrawObstacleBlock",
+			priority = -2,
+			requires = {"Position", "Color", "Alpha", "Obstacle", "Active"},
+			draw = function(entity, world)
+				draw_block(entity, world)
+			end
+		},
+
+		{
+			name = "DrawGoalBlock",
+			priority = -1,
+			requires = {"Position", "Color", "Alpha", "Goal", "Active"},
+			draw = function(entity, world)
+				draw_block(entity, world)
+			end
+		},
 	}
 }
