@@ -17,21 +17,21 @@ world.__index = world
 ---
 
 function world:register_event(event, func)
-	self.signal:register(event, func)
+	self.signal.register(event, func)
 end
 
 function world:emit_event(event, ...)
-	self.signal:emit(event, self, ...)
+	self.signal.emit(event, self, ...)
 end
 
 ---
 
 function world:add_timer(delay, func)
-	return self.timer:add(delay, func)
+	return self.timer.add(delay, func)
 end
 
 function world:add_periodic_timer(delay, func)
-	return self.timer:addPeriodic(delay, func)
+	return self.timer.addPeriodic(delay, func)
 end
 
 ---
