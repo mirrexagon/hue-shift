@@ -65,10 +65,18 @@ function Registry:get_entities_with(components)
 	local result = {}
 	for entity in pairs(self.entities) do
 		local add = true
-		for _, component in ipairs(components) do
-			if not entity[component] then
-				add = false
+		for k, v in ipairs(components) do
+			---
+			if type(k) == "number" then
+				if not entity[v] then
+					add = false
+				end
+			else
+				if not entity[k] or entity[k] ~= v then
+					add = false
+				end
 			end
+			---
 		end
 		if add then result[entity] = entity end
 	end
