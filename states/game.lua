@@ -291,6 +291,7 @@ function world:to_game()
 
 	self:reset_player_blocks()
 
+	self.music:setPitch(1)
 	self.music:rewind()
 	self.music:play()
 end
@@ -376,8 +377,6 @@ function game:update(dt)
 			world.music:setPitch(new_pitch)
 			world:update(dt)
 		else
-			world.music:setPitch(1)
-
 			world:to_game()
 		end
 		---
