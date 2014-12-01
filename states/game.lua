@@ -77,6 +77,14 @@ function game:init()
 
 	---
 
+	world:spawn_entity{
+		Obstacle = true,
+
+		Position = {x = 0, y = 0},
+		Color = {100, 100, 100},
+		Active = true
+	}
+
 	-- Spawn player and goal blocks.
 	world.player_blocks = {}
 	world.player_blocks[1] = world:spawn_entity{
@@ -287,7 +295,7 @@ end
 function world.reset_game()
 	world.state = "reset"
 
-	for _, entity in ipairs(world.entities) do
+	for entity in pairs(world.entities) do
 		entity.Blink = nil
 		entity.InverseBlink = nil
 	end
