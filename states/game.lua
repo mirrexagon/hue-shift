@@ -175,16 +175,16 @@ end
 
 ---
 
-function game:enter(previous, music, bpm, grid_w, grid_h, npairs)
-	assert(music and bpm, "game: music path and/or BPM not supplied!")
+function game:enter(previous, arg)
+	assert(arg.music and arg.bpm, "game: music path and/or BPM not supplied!")
 
 	---
 
-	world.grid_w = grid_w or 8
-	world.grid_h = grid_h or 8
+	world.grid_w = arg.grid_w or 8
+	world.grid_h = arg.grid_h or 8
 
-	world.tile_l = 32
-	world.tile_pad = 2
+	world.tile_l = arg.tile_l or 32
+	world.tile_pad = arg.tile_pad or 2
 
 	---
 
@@ -192,11 +192,11 @@ function game:enter(previous, music, bpm, grid_w, grid_h, npairs)
 
 	---
 
-	music = love.audio.newSource(music)
+	music = love.audio.newSource(arg.music)
 	music:setLooping(true)
-
 	world.music = music
-	world.bpm = bpm
+
+	world.bpm = arg.bpm
 
 	---
 
@@ -212,7 +212,11 @@ function game:enter(previous, music, bpm, grid_w, grid_h, npairs)
 	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
 	world.player_blocks[3].Position = {x = world.grid_w - 1, y = world.grid_h - 1}
 
-	for id = 1, npairs or 1 do
+	for id = 1, 3 do
+		world.set_pair_active(id, false)
+	end
+
+	for id = 1, arg.npairs or 1 do
 		world.set_pair_active(id, true)
 		world.place_goal(id)
 	end
