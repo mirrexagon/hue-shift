@@ -66,7 +66,7 @@ return {
 
 				---
 
-				for entity in pairs(world:get_entities_with{"Position", "Direction", "Active"}) do
+				for _, entity in ipairs(world:get_entities_with{"Position", "Direction", "Active"}) do
 					------
 					local dir = DIRECTION_MAPPING[entity.Direction]
 
