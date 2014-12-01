@@ -78,7 +78,7 @@ function Registry:get_entities_with(components)
 			end
 			---
 		end
-		if add then result[entity] = entity end
+		if add then result[#result + 1] = entity end
 	end
 	return result
 end
