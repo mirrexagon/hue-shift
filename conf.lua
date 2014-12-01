@@ -4,7 +4,7 @@ function love.conf(t)
 	t.console = false
 
 	t.window.title = "Hue Shift"
-	t.window.icon = nil
+	t.window.icon = "graphics/icon.png"
 	t.window.width = 600
 	t.window.height = 600
 	t.window.borderless = false
