@@ -22,7 +22,6 @@ local world = World.new()
 world.TRANSITION_DURATION = 0.5
 
 local last_beat = 0
-local beat_duration
 
 local leave_func = love.event.quit
 
@@ -30,6 +29,25 @@ local leave_func = love.event.quit
 
 function game:init()
 	world:load_system_dir("systems")
+
+	---
+
+	world.beat_events = {}
+
+	function world.register_beat_event(delay, func)
+		table.insert(self.beat_events, {delay = delay, func = func})
+	end
+
+	world:register_event("Beat", function(world)
+		for i, event in ipairs(self.beat_events) do
+			event.delay = event.delay - 1
+
+			if event.delay == 0 then
+				event.func(event.func)
+				self.beat_events[i] = nil
+			end
+		end
+	end)
 end
 
 ---
@@ -112,7 +130,7 @@ end
 function world.lose_game()
 	world.state = "lose"
 
-	beat_duration = beat.absbeat_to_seconds(2, world.bpm)
+	world.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
 end
 
 function world.wait_game()
@@ -124,6 +142,7 @@ end
 function world.reset_game()
 	world.state = "reset"
 
+	world.beat_events = {}
 	world.music:play()
 end
 
@@ -163,7 +182,7 @@ function game:update(dt)
 		---
 	elseif world.state == "lose" then
 		---
-		local new_pitch = world.music:getPitch() - (1/beat_duration)*dt
+		local new_pitch = world.music:getPitch() - (1/world.beat_duration)*dt
 
 		if new_pitch > 0 then
 			world.music:setPitch(new_pitch)
@@ -179,7 +198,7 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		local new_pitch = world.music:getPitch() + (1/beat_duration)*dt
+		local new_pitch = world.music:getPitch() + (1/world.beat_duration)*dt
 
 		if new_pitch < 1 then
 			world.music:setPitch(new_pitch)
