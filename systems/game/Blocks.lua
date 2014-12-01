@@ -100,10 +100,29 @@ return {
 			end
 		},
 
-		{
+		{ -- Goal or death.
 			event = "BlockCollision",
 			func = function(world, ent1, ent2, x, y)
-				util.printf("Collision at %d,%d", x, y)
+				if ent1.Player or ent2.Player then
+					local player, other
+					if ent1.Player then
+						player = ent1
+						other = ent2
+					else
+						player = ent2
+						other = ent1
+					end
+
+					---
+
+					if other.Goal then
+						if player.Player == other.Goal then
+							-- Score!
+						end
+					elseif other.Obstacle then
+						-- Death.
+					end
+				end
 			end
 		}
 	}
