@@ -126,7 +126,7 @@ return {
 							end)
 						end
 					elseif other.Obstacle then
-						world:lose_game()
+						world:to_lose()
 
 						player.Blink = true
 						other.InverseBlink = true

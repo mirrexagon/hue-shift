@@ -275,7 +275,7 @@ end
 
 ---
 
-function world:start_game()
+function world:to_game()
 	self.state = "game"
 
 	for entity in pairs(self.entities) do
@@ -295,7 +295,7 @@ function world:start_game()
 	self.music:play()
 end
 
-function world:lose_game()
+function world:to_lose()
 	self.state = "lose"
 
 	self.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
@@ -303,13 +303,13 @@ function world:lose_game()
 	-- TODO: Record score here
 end
 
-function world:wait_game()
+function world:to_wait()
 	self.state = "wait"
 
 	self.music:pause()
 end
 
-function world:reset_game()
+function world:to_reset()
 	self.state = "reset"
 
 	self.music:play()
@@ -334,7 +334,7 @@ function game:update(dt)
 		if world.grid_alpha >= 1 then
 			world.grid_alpha = 1
 
-			world:start_game()
+			world:to_game()
 		end
 		---
 	elseif world.state == "game" then
@@ -360,7 +360,7 @@ function game:update(dt)
 			world.music:setPitch(new_pitch)
 			world:update(dt)
 		else
-			world:wait_game()
+			world:to_wait()
 		end
 
 		---
@@ -378,7 +378,7 @@ function game:update(dt)
 		else
 			world.music:setPitch(1)
 
-			world:start_game()
+			world:to_game()
 		end
 		---
 	elseif world.state == "leave" then
@@ -410,10 +410,10 @@ end
 
 function game:keypressed(key)
 	if key == " " and world.state == "wait" then
-		world:reset_game()
+		world:to_reset()
 	elseif key == "escape" then
 		if world.state == "game" then
-			world:lose_game()
+			world:to_lose()
 		elseif world.state == "wait" then
 			world:leave_game(love.event.quit)
 		end
