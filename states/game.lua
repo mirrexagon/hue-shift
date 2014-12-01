@@ -431,7 +431,7 @@ function game:keypressed(key)
 			world:leave_game(love.event.quit)
 		end
 
-	elseif control_functions[key] then
+	elseif world.state == "game" and control_functions[key] then
 		control_functions[key]()
 	end
 end
