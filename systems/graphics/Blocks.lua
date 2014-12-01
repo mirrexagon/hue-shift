@@ -104,14 +104,17 @@ return {
 
 				elseif world.state == "reset" then
 
-					entity.Alpha = entity.Alpha - (1/world.TRANSITION_DURATION) * dt
+					entity.Alpha = entity.Alpha - (1/world.beat_duration) * dt
 					if entity.Alpha < 0 then
 						entity.Alpha = 0
 					end
 
 				elseif world.state == "leave" then
 
-					entity.Alpha = world.grid_alpha
+					entity.Alpha = entity.Alpha - (1/world.TRANSITION_DURATION) * dt
+					if entity.Alpha < 0 then
+						entity.Alpha = 0
+					end
 
 				end
 			end
