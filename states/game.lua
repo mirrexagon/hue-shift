@@ -282,6 +282,19 @@ end
 function world:start_game()
 	self.state = "game"
 
+	for entity in pairs(self.entities) do
+		entity.Blink = nil
+		entity.InverseBlink = nil
+	end
+
+	for id = 1, 3 do
+		world:place_goal(id)
+	end
+
+	self.beat_timers = {}
+
+	self:reset_player_blocks()
+
 	self.music:rewind()
 	self.music:play()
 end
@@ -303,12 +316,6 @@ end
 function world:reset_game()
 	self.state = "reset"
 
-	for entity in pairs(self.entities) do
-		entity.Blink = nil
-		entity.InverseBlink = nil
-	end
-
-	self.beat_timers = {}
 	self.music:play()
 end
 
