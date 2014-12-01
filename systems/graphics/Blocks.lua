@@ -1,3 +1,11 @@
+local beat = require("lib.self.beat")
+
+---
+
+local floor = math.floor
+
+---
+
 local function get_draw_info(grid_x, grid_y, world)
 	local tile_l = world.tile_l
 	local tile_pad = world.tile_pad
@@ -19,19 +27,74 @@ local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
 local rotation_mapping = {
 	up = 0,
-	right = math.pi/2,
+	right = 3*math.pi/2,
 	down = math.pi,
-	right = 3*math.pi/2
+	right = math.pi/2
 }
+
+local DYNAMIC_FADE_TIME = 0.2
+local GOAL_FADE_TIME = 0.5
 
 ---
 
 return {
 	systems = {
 		{
+			name = "UpdateBlockAlpha",
+			requires = {"Alpha"},
+			update = function(entity, world, dt)
+				if world.state == "game" then
+
+					local current_beat = world.current_beat
+					local beat_fraction = current_beat - math.floor(current_beat)
+
+					local fade_time
+					if entity.Direction then
+						fade_time = DYNAMIC_FADE_TIME
+					elseif entity.Goal then
+						fade_time = GOAL_FADE_TIME
+					else
+						---
+						if entity.Alpha < 1 then
+							entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+						end
+						return
+						---
+					end
+
+					---
+
+					if (beat_fraction < fade_time) or (beat_fraction > (1 - fade_time)) then
+						entity.Alpha = (beat_fraction < fade_time
+							and beat_fraction or 1 - beat_fraction) / fade_time
+					else
+						entity.Alpha = 1
+					end
+
+				elseif world.state == "lose" or world.state == "wait" then
+
+					if entity.Alpha < 1 then
+						entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+					else
+						entity.Alpha = 1
+					end
+
+				elseif world.state == "reset" then
+
+					entity.Alpha = 1 - world.speed
+
+				elseif world.state == "leave" then
+
+					entity.Alpha = world.grid_alpha
+
+				end
+			end
+		},
+
+		{
 			name = "DrawBlockColor",
 			priority = 0,
-			requires = {"Position", "Color"},
+			requires = {"Position", "Color", "Alpha"},
 			draw = function(entity, world)
 				local color = entity.Color
 				love.graphics.setColor(color[1], color[2], color[3], (entity.Alpha or 1) * 255)
@@ -44,11 +107,11 @@ return {
 		{
 			name = "DrawBlockIcon",
 			priority = -1,
-			requires = {"Position", "Color"},
+			requires = {"Position", "Color", "Alpha"},
 			draw = function(entity, world)
 				local x,y, tl = get_draw_info(entity.Position.x, entity.Position.y, world)
 
-				love.graphics.setColor(255, 255, 255, 255)
+				love.graphics.setColor(255, 255, 255, (entity.Alpha or 1) * 255)
 
 				if entity.Direction then
 					love.graphics.draw(
@@ -58,7 +121,7 @@ return {
 						1, 1,
 						tl/2, tl/2
 					)
-				else
+				elseif not entity.Goal then
 					love.graphics.circle(
 						"fill",
 						x+tl/2, y+tl/2,
