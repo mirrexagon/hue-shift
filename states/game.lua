@@ -184,8 +184,8 @@ function game:enter(previous, arg)
 
 	---
 
-	world.grid_w = arg.grid_w or 8
-	world.grid_h = arg.grid_h or 8
+	world.grid_w = arg.grid_w or 7
+	world.grid_h = arg.grid_h or 7
 
 	world.tile_l = arg.tile_l or 32
 	world.tile_pad = arg.tile_pad or 2
