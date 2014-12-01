@@ -119,7 +119,9 @@ return {
 
 					if other.Goal then
 						if player.Player == other.Goal then
-							-- Score!
+							world.score[player.Player] = world.score[player.Player] + 1
+
+							world.place_goal(player.Player)
 						end
 					elseif other.Obstacle then
 						-- Death.
