@@ -36,7 +36,6 @@ return {
 		{
 			event = "Beat",
 			func = function(world, beat)
-				print(beat)
 				if beat < 2 then return end
 
 				---
