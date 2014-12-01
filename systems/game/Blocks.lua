@@ -36,6 +36,7 @@ return {
 		{
 			event = "Beat",
 			func = function(world, beat)
+				print(beat)
 				if beat < 2 then return end
 
 				---
@@ -122,11 +123,11 @@ return {
 							world.score[player.Player] = world.score[player.Player] + 1
 
 							world:add_beat_timer(1, function()
-								world.place_goal(player.Player)
+								world:place_goal(player.Player)
 							end)
 						end
 					elseif other.Obstacle then
-						world.lose_game()
+						world:lose_game()
 
 						player.Blink = true
 						other.InverseBlink = true

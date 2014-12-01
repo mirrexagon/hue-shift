@@ -216,15 +216,15 @@ function game:enter(previous, arg)
 		[3] = 0
 	}
 
-	world.reset_player_block_positions()
+	world:reset_player_block_positions()
 
 	for id = 1, 3 do
-		world.set_pair_active(id, false)
+		world:set_pair_active(id, false)
 	end
 
 	for id = 1, arg.npairs or 1 do
-		world.set_pair_active(id, true)
-		world.place_goal(id)
+		world:set_pair_active(id, true)
+		world:place_goal(id)
 	end
 
 	---
@@ -235,22 +235,22 @@ end
 
 ---
 
-function world.set_pair_active(id, active)
-	local player = world.player_blocks[id]
-	local goal = world.goal_blocks[id]
+function world:set_pair_active(id, active)
+	local player = self.player_blocks[id]
+	local goal = self.goal_blocks[id]
 
 	player.Active = active
 	goal.Active = active
 end
 
-function world.reset_player_block_positions()
-	world.player_blocks[1].Position = {x = 0, y = world.grid_h - 1}
-	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
-	world.player_blocks[3].Position = {x = world.grid_w - 1, y = world.grid_h - 1}
+function world:reset_player_block_positions()
+	self.player_blocks[1].Position = {x = 0, y = self.grid_h - 1}
+	self.player_blocks[2].Position = {x = floor(self.grid_w/2), y = self.grid_h - 1}
+	self.player_blocks[3].Position = {x = self.grid_w - 1, y = self.grid_h - 1}
 end
 
-function world.place_goal(id)
-	local goal = world.goal_blocks[id]
+function world:place_goal(id)
+	local goal = self.goal_blocks[id]
 	local success = false
 
 	for try = 1, 10 do
@@ -258,7 +258,7 @@ function world.place_goal(id)
 		local y = love.math.random(0, world.grid_h - 1)
 
 		local ok = true
-		for i, entity in ipairs(world:get_entities_with{"Position"}) do
+		for i, entity in ipairs(self:get_entities_with{"Position"}) do
 			if entity.Position.x == x and entity.Position.y == y then
 				ok = false
 				break
@@ -275,41 +275,41 @@ end
 
 ---
 
-function world.start_game()
-	world.state = "game"
+function world:start_game()
+	self.state = "game"
 
-	world.music:rewind()
-	world.music:play()
+	self.music:rewind()
+	self.music:play()
 end
 
-function world.lose_game()
-	world.state = "lose"
+function world:lose_game()
+	self.state = "lose"
 
-	world.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
+	self.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
 
 	-- TODO: record best score, total of all player blocks
 end
 
-function world.wait_game()
-	world.state = "wait"
+function world:wait_game()
+	self.state = "wait"
 
-	world.music:pause()
+	self.music:pause()
 end
 
-function world.reset_game()
-	world.state = "reset"
+function world:reset_game()
+	self.state = "reset"
 
-	for entity in pairs(world.entities) do
+	for entity in pairs(self.entities) do
 		entity.Blink = nil
 		entity.InverseBlink = nil
 	end
 
-	world.beat_timers = {}
-	world.music:play()
+	self.beat_timers = {}
+	self.music:play()
 end
 
-function world.leave_game(func)
-	world.state = "leave"
+function world:leave_game(func)
+	self.state = "leave"
 
 	leave_func = func
 end
@@ -325,7 +325,7 @@ function game:update(dt)
 		if world.grid_alpha >= 1 then
 			world.grid_alpha = 1
 
-			world.start_game()
+			world:start_game()
 		end
 		---
 	elseif world.state == "game" then
@@ -351,7 +351,7 @@ function game:update(dt)
 			world.music:setPitch(new_pitch)
 			world:update(dt)
 		else
-			world.wait_game()
+			world:wait_game()
 		end
 
 		---
@@ -369,7 +369,7 @@ function game:update(dt)
 		else
 			world.music:setPitch(1)
 
-			world.start_game()
+			world:start_game()
 		end
 		---
 	elseif world.state == "leave" then
@@ -401,12 +401,12 @@ end
 
 function game:keypressed(key)
 	if key == " " and world.state == "wait" then
-		world.reset_game()
+		world:reset_game()
 	elseif key == "escape" then
 		if world.state == "game" then
-			world.lose_game()
+			world:lose_game()
 		elseif world.state == "wait" then
-			world.leave_game(love.event.quit)
+			world:leave_game(love.event.quit)
 		end
 
 	elseif control_functions[key] then
@@ -418,7 +418,7 @@ end
 
 function game:leave()
 	for id = 1, 3 do
-		world.set_pair_active(id, false)
+		world:set_pair_active(id, false)
 	end
 end
 
