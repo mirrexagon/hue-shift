@@ -8,6 +8,10 @@ local World = require("logic.world")
 
 ---
 
+local floor = math.floor
+
+---
+
 local GRID_BACKGROUND_ALPHA = 128
 local GRID_LINES_ALPHA = 255
 
@@ -150,10 +154,10 @@ function game:update(dt)
 		---
 		local current_beat = beat.seconds_to_absbeat(world.music:tell(), world.bpm)
 
-		if current_beat ~= last_beat then
-			last_beat = current_beat
+		if floor(current_beat) ~= last_beat then
+			last_beat = floor(current_beat)
 
-			world:emit_event("Beat", math.floor(current_beat))
+			world:emit_event("Beat", floor(current_beat))
 		end
 
 		world.current_beat = current_beat
