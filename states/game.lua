@@ -2,6 +2,8 @@ local game = {}
 
 ---
 
+local beat = require("lib.self.beat")
+
 local World = require("logic.world")
 
 ---
@@ -9,14 +11,17 @@ local World = require("logic.world")
 local GRID_BACKGROUND_ALPHA = 128
 local GRID_LINES_ALPHA = 255
 
+local TRANSITION_DURATION = 1
+local LOSE_TRANS_DURATION = 0.5
+
 ---
 
--- Can be: enter, game, lose, reset, leave
-local state = "enter"
-
-local leave_state
-
 local world
+
+local last_beat = 0
+local beat_duration
+
+local leave_func
 
 ---
 
@@ -64,7 +69,11 @@ end
 
 ---
 
-function game:enter(previous, grid_w, grid_h)
+function game:enter(previous, music, bpm, grid_w, grid_h)
+	assert(music and bpm, "game: music path and/or BPM not supplied!")
+
+	---
+
 	world.grid_w = grid_w or 8
 	world.grid_h = grid_h or 8
 
@@ -74,38 +83,62 @@ function game:enter(previous, grid_w, grid_h)
 	---
 
 	world.grid_alpha = 0
-	world.transition_duration = 1
 
 	---
 
-	state = "enter"
+	music = love.audio.newSource(music)
+	music:setLooping(true)
+
+	world.music = music
+	world.bpm = bpm
+
+	---
+
+	-- Can be: enter, game, lose, wait, reset, leave
+	world.state = "enter"
 end
 
 ---
 
 local function start_game()
-	state = "game"
+	world.state = "game"
+
+	world.music:rewind()
+	world.music:play()
 end
 
 local function lose_game()
-	state = "lose"
+	world.state = "lose"
+
+	beat_duration = beat.absbeat_to_seconds(2, world.bpm)
+end
+
+local function wait_game()
+	world.state = "wait"
+
+	world.speed = 1
+	world.music:pause()
 end
 
 local function reset_game()
-	state = "reset"
+	world.state = "reset"
+
+	world.speed = 0
+	world.music:play()
 end
 
 local function leave_game(next_state)
-	state = "leave"
+	world.state = "leave"
+
 	leave_state = next_state
 end
 
 ---
 
 function game:update(dt)
-	if state == "enter" then
+	if world.state == "enter" then
 		---
-		world.grid_alpha = world.grid_alpha + (1/world.transition_duration) * dt
+		world.grid_alpha = world.grid_alpha + (1/TRANSITION_DURATION) * dt
 
 		if world.grid_alpha >= 1 then
 			world.grid_alpha = 1
@@ -113,24 +146,57 @@ function game:update(dt)
 			start_game()
 		end
 		---
-	elseif state == "game" then
+	elseif world.state == "game" then
+		---
+		local current_beat = beat.seconds_to_absbeat(world.music:tell(), world.bpm)
+
+		if current_beat ~= last_beat then
+			last_beat = current_beat
+
+			world:emit_event("Beat", math.floor(current_beat))
+		end
+
+		world:update(dt)
+		---
+	elseif world.state == "lose" then
+		---
+		world.speed = world.speed - (1/beat_duration)*dt
+
+		if world.speed > 0 then
+			world.music:setPitch(world.speed)
+			world:update(dt)
+		else
+			wait_game()
+		end
+
+		---
+	elseif world.state == "wait" then
 		---
 		world:update(dt)
 		---
-	elseif state == "lose" then
+	elseif world.state == "reset" then
 		---
+		world.speed = world.speed + (1/beat_duration)*dt
+
+		if world.speed < 1 then
+			world.music:setPitch(world.speed)
+			world:update(dt)
+		else
+			world.speed = 1
+
+			world.music:setPitch(1)
+
+			start_game()
+		end
 		---
-	elseif state == "reset" then
-		---
-		---
-	elseif state == "leave" then
+	elseif world.state == "leave" then
 		---
 		world.grid_alpha = world.grid_alpha - (1/world.transition_duration) * dt
 
 		if world.grid_alpha <= 0 then
 			world.grid_alpha = 0
 
-			gs.switch(leave_state)
+			leave_func()
 		end
 		---
 	end
@@ -146,6 +212,22 @@ function game:draw()
 		end
 	}
 end
+
+---
+
+function game:keypressed(key)
+	if key == " " and world.state == "wait" then
+		reset_game()
+	elseif key == "escape" then
+		if world.state == "game" then
+			lose_game()
+		elseif world.state == "wait" then
+			leave_game(love.event.quit)
+		end
+	end
+end
+
+---
 
 function game:leave()
 
