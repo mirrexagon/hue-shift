@@ -216,7 +216,7 @@ function game:enter(previous, arg)
 		[3] = 0
 	}
 
-	world:reset_player_block_positions()
+	world:reset_player_blocks()
 
 	for id = 1, 3 do
 		world:set_pair_active(id, false)
@@ -243,10 +243,14 @@ function world:set_pair_active(id, active)
 	goal.Active = active
 end
 
-function world:reset_player_block_positions()
+function world:reset_player_blocks()
 	self.player_blocks[1].Position = {x = 0, y = self.grid_h - 1}
 	self.player_blocks[2].Position = {x = floor(self.grid_w/2), y = self.grid_h - 1}
 	self.player_blocks[3].Position = {x = self.grid_w - 1, y = self.grid_h - 1}
+
+	self.player_blocks[1].Direction = "up"
+	self.player_blocks[2].Direction = "up"
+	self.player_blocks[3].Direction = "up"
 end
 
 function world:place_goal(id)
