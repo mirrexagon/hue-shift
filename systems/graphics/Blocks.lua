@@ -70,7 +70,7 @@ return {
 						fade_time = GOAL_FADE_TIME
 					else
 						entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
-						if entity.Alpha < 1 then
+						if entity.Alpha > 1 then
 							entity.Alpha = 1
 						end
 						return
@@ -105,7 +105,7 @@ return {
 				elseif world.state == "reset" then
 
 					entity.Alpha = entity.Alpha - (1/world.TRANSITION_DURATION) * dt
-					if entity.Alpha > 0 then
+					if entity.Alpha < 0 then
 						entity.Alpha = 0
 					end
 
