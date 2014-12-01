@@ -66,12 +66,14 @@ return {
 
 				---
 
-				for _, entity in ipairs(world:get_entities_with{"Position", "Direction", "Active"}) do
+				for _, entity in ipairs(world:get_entities_with{"Position", "Active"}) do
 					------
-					local dir = DIRECTION_MAPPING[entity.Direction]
+					if entity.Direction then
+						local dir = DIRECTION_MAPPING[entity.Direction]
 
-					entity.Position.x = (entity.Position.x + dir.x) % world.grid_w
-					entity.Position.y = (entity.Position.y + dir.y) % world.grid_h
+						entity.Position.x = (entity.Position.x + dir.x) % world.grid_w
+						entity.Position.y = (entity.Position.y + dir.y) % world.grid_h
+					end
 
 					---
 
