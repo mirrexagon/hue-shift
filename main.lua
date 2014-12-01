@@ -2,6 +2,13 @@
 	Hue Shift, a game by LegoSpacy
 ]]
 
+--[[
+	TODO:
+		Record scores
+		Proper quantified levels
+		Challenges - time limit, limited number of moves?
+]]
+
 gs = require("lib.hump.gamestate")
 
 ---

@@ -304,7 +304,7 @@ function world:lose_game()
 
 	self.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
 
-	-- TODO: record best score, total of all player blocks
+	-- TODO: Record score here
 end
 
 function world:wait_game()
