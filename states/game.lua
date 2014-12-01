@@ -18,6 +18,31 @@ local GRID_LINES_ALPHA = 255
 
 ---
 
+local BLOCK_CONTROLS = {
+	[1] = {
+		up = "w",
+		right = "d",
+		down = "s",
+		left = "a"
+	},
+	[2] = {
+		up = "t",
+		right = "h",
+		down = "g",
+		left = "f"
+	},
+	[3] = {
+		up = "i",
+		right = "l",
+		down = "k",
+		left = "j"
+	}
+}
+
+local control_functions
+
+---
+
 local world = World.new()
 
 world.TRANSITION_DURATION = 0.5
@@ -99,6 +124,20 @@ end
 
 ---
 
+local function generate_control_functions(world, keyt)
+	local funcs = {}
+
+	for id, controls in ipairs(keyt) do
+		for dir, key in pairs(controls) do
+			funcs[key] = function()
+				world.player_blocks[id].Direction = dir
+			end
+		end
+	end
+
+	return funcs
+end
+
 local function draw_grid(grid_w, grid_h, tile_w, tile_h, tile_pad)
 	local grid_pixel_w = (grid_w * tile_w) + ((grid_w + 1) * tile_pad)
 	local grid_pixel_h = (grid_h * tile_h) + ((grid_h + 1) * tile_pad)
@@ -160,6 +199,14 @@ function game:enter(previous, music, bpm, grid_w, grid_h, npairs)
 	world.bpm = bpm
 
 	---
+
+	control_functions = generate_control_functions(world, BLOCK_CONTROLS)
+
+	world.score = {
+		[1] = 0,
+		[2] = 0,
+		[3] = 0
+	}
 
 	world.player_blocks[1].Position = {x = 0, y = world.grid_h - 1}
 	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
@@ -337,6 +384,9 @@ function game:keypressed(key)
 		elseif world.state == "wait" then
 			world.leave_game(love.event.quit)
 		end
+
+	elseif control_functions[key] then
+		control_functions[key]()
 	end
 end
 
