@@ -41,8 +41,12 @@ return {
 	systems = {
 		{
 			name = "UpdateBlockAlpha",
-			requires = {"Alpha", "Active"},
+			requires = {"Color", "Active"},
 			update = function(entity, world, dt)
+				if not entity.Alpha then
+					entity.Alpha = 0
+				end
+
 				if world.state == "enter" then
 
 					entity.Alpha = 0
