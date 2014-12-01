@@ -138,6 +138,7 @@ function game:update(dt)
 	if world.state == "enter" then
 		---
 		world.grid_alpha = world.grid_alpha + (1/TRANSITION_DURATION) * dt
+		world:update(dt)
 
 		if world.grid_alpha >= 1 then
 			world.grid_alpha = 1

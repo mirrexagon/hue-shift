@@ -43,7 +43,11 @@ return {
 			name = "UpdateBlockAlpha",
 			requires = {"Alpha"},
 			update = function(entity, world, dt)
-				if world.state == "game" then
+				if world.state == "enter" then
+
+					entity.Alpha = 0
+
+				elseif world.state == "game" then
 
 					local current_beat = world.current_beat
 					local beat_fraction = current_beat - math.floor(current_beat)
