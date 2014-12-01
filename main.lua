@@ -6,6 +6,7 @@
 	TODO:
 		Record scores
 		Proper quantified levels
+		Obstacle AI
 		Challenges - time limit, limited number of moves?
 ]]
 
