@@ -1,5 +1,7 @@
 local beat = require("lib.self.beat")
 
+local util = require("lib.self.util")
+
 ---
 
 local floor = math.floor
@@ -34,6 +36,11 @@ local ROTATION_MAPPING = {
 
 local DYNAMIC_FADE_TIME = 0.2
 local GOAL_FADE_TIME = 0.5
+
+---
+
+local blink_dir = 1
+local blink_var = 0
 
 ---
 
@@ -81,10 +88,21 @@ return {
 
 				elseif world.state == "lose" or world.state == "wait" then
 
-					if entity.Alpha < 1 then
-						entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+					if entity.Blink or entity.InverseBlink then
+						blink_var = blink_var + blink_dir * dt
+
+						if blink_var > 1 or blink_var < 0 then
+							blink_var = util.math.clamp(0, blink_var, 1)
+							blink_dir = blink_dir * -1
+						end
+
+						entity.Alpha = entity.InverseBlink and 1 - blink_var or blink_var
 					else
-						entity.Alpha = 1
+						if entity.Alpha < 1 then
+							entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+						else
+							entity.Alpha = 1
+						end
 					end
 
 				elseif world.state == "reset" then
