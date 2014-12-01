@@ -204,6 +204,10 @@ function game:enter(previous, arg)
 
 	---
 
+	world.game_speed = arg.game_speed or 1
+
+	---
+
 	world.npairs = arg.npairs or 1
 
 	---
@@ -262,6 +266,8 @@ end
 
 ---
 
+local norm_pitch = 1
+
 function world:to_game()
 	self.state = "game"
 
@@ -297,15 +303,13 @@ function world:to_game()
 
 	---
 
-	self.music:setPitch(1)
+	norm_pitch = 1
 	self.music:rewind()
 	self.music:play()
 end
 
 function world:to_lose()
 	self.state = "lose"
-
-	self.beat_duration = beat.absbeat_to_seconds(2, world.bpm)
 
 	-- TODO: Record score here
 end
@@ -333,6 +337,8 @@ end
 
 local last_beat = 0
 function game:update(dt)
+	world.beat_duration = beat.absbeat_to_seconds(2, world.bpm * world.game_speed)
+
 	if world.state == "enter" then
 		---
 		world.grid_alpha = world.grid_alpha + (1/world.TRANSITION_DURATION) * dt
@@ -361,10 +367,10 @@ function game:update(dt)
 		---
 	elseif world.state == "lose" then
 		---
-		local new_pitch = world.music:getPitch() - (1/world.beat_duration)*dt
+		local new_pitch = norm_pitch - (1/world.beat_duration)*dt
 
 		if new_pitch > 0 then
-			world.music:setPitch(new_pitch)
+			norm_pitch = new_pitch
 			world:update(dt)
 		else
 			world:to_wait()
@@ -377,10 +383,10 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		local new_pitch = world.music:getPitch() + (1/world.beat_duration)*dt
+		local new_pitch = norm_pitch + (1/world.beat_duration)*dt
 
 		if new_pitch < 1 then
-			world.music:setPitch(new_pitch)
+			norm_pitch = new_pitch
 			world:update(dt)
 		else
 			world:to_game()
@@ -398,6 +404,8 @@ function game:update(dt)
 		end
 		---
 	end
+
+	world.music:setPitch(norm_pitch * world.game_speed)
 end
 
 function game:draw()
@@ -425,6 +433,14 @@ function game:keypressed(key)
 
 	elseif control_functions[key] then
 		control_functions[key]()
+	end
+end
+
+function game:mousepressed(x, y, b)
+	if b == "wu" then
+		world.game_speed = world.game_speed + 0.1
+	elseif b == "wd" then
+		world.game_speed = world.game_speed - 0.1
 	end
 end
 
