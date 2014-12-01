@@ -3,6 +3,7 @@ local game = {}
 ---
 
 local beat = require("lib.self.beat")
+local util = require("lib.self.util")
 
 local World = require("logic.world")
 
@@ -39,15 +40,61 @@ function game:init()
 	end
 
 	world:register_event("Beat", function(world)
-		for i, event in ipairs(self.beat_events) do
+		for i, event in ipairs(world.beat_events) do
 			event.delay = event.delay - 1
 
 			if event.delay == 0 then
 				event.func(event.func)
-				self.beat_events[i] = nil
+				world.beat_events[i] = nil
 			end
 		end
 	end)
+
+	---
+
+	-- Spawn player and goal blocks.
+	world.player_blocks = {}
+	world.player_blocks[1] = world:spawn_entity{
+		Player = 1,
+
+		Color = {255, 0, 0},
+		Direction = "up",
+		Active = false
+	}
+	world.player_blocks[2] = world:spawn_entity{
+		Player = 2,
+
+		Color = {0, 255, 0},
+		Direction = "up",
+		Active = false
+	}
+	world.player_blocks[3] = world:spawn_entity{
+		Player = 3,
+
+		Color = {0, 0, 255},
+		Direction = "up",
+		Active = false
+	}
+
+	world.goal_blocks = {}
+	world.goal_blocks[1] = world:spawn_entity{
+		Goal = 1,
+
+		Color = {255, 0, 0},
+		Active = false
+	}
+	world.goal_blocks[2] = world:spawn_entity{
+		Goal = 2,
+
+		Color = {0, 255, 0},
+		Active = false
+	}
+	world.goal_blocks[3] = world:spawn_entity{
+		Goal = 3,
+
+		Color = {0, 0, 255},
+		Active = false
+	}
 end
 
 ---
@@ -89,7 +136,7 @@ end
 
 ---
 
-function game:enter(previous, music, bpm, grid_w, grid_h)
+function game:enter(previous, music, bpm, grid_w, grid_h, npairs)
 	assert(music and bpm, "game: music path and/or BPM not supplied!")
 
 	---
@@ -114,8 +161,53 @@ function game:enter(previous, music, bpm, grid_w, grid_h)
 
 	---
 
+	world.player_blocks[1].Position = {x = 0, y = world.grid_h - 1}
+	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
+	world.player_blocks[3].Position = {x = world.grid_w - 1, y = world.grid_h - 1}
+
+	for id = 1, npairs or 1 do
+		world.set_pair_active(id, true)
+		world.place_goal(id)
+	end
+
+	---
+
 	-- Can be: enter, game, lose, wait, reset, leave
 	world.state = "enter"
+end
+
+---
+
+function world.set_pair_active(id, active)
+	local player = world.player_blocks[id]
+	local goal = world.goal_blocks[id]
+
+	player.Active = active
+	goal.Active = active
+end
+
+function world.place_goal(id)
+	local goal = world.goal_blocks[id]
+	local success = false
+
+	for try = 1, 10 do
+		local x = love.math.random(0, world.grid_w - 1)
+		local y = love.math.random(0, world.grid_h - 1)
+
+		local ok = true
+		for i, entity in ipairs(world:get_entities_with{"Position"}) do
+			if entity.Position.x == x and entity.Position.y == y then
+				ok = false
+				break
+			end
+		end
+		if ok then
+			goal.Position = {x = x, y = y}
+			return
+		end
+	end
+
+	if not success then util.printf("Could not place goal block %d", id) end
 end
 
 ---
@@ -251,7 +343,9 @@ end
 ---
 
 function game:leave()
-
+	for id = 1, 3 do
+		world.set_pair_active(id, false)
+	end
 end
 
 ---
