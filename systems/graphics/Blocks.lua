@@ -25,11 +25,11 @@ end
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
-local rotation_mapping = {
+local ROTATION_MAPPING = {
 	up = 0,
-	left = 3*math.pi/2,
+	right = math.pi/2,
 	down = math.pi,
-	right = math.pi/2
+	left = 3*math.pi/2
 }
 
 local DYNAMIC_FADE_TIME = 0.2
@@ -121,7 +121,7 @@ return {
 					love.graphics.draw(
 						img_arrow,
 						x+tl/2, y+tl/2,
-						rotation_mapping[entity.Direction],
+						ROTATION_MAPPING[entity.Direction],
 						1, 1,
 						tl/2, tl/2
 					)
