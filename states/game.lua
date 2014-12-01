@@ -58,22 +58,22 @@ function game:init()
 
 	---
 
-	world.beat_events = {}
+	world.beat_timers = {}
 
-	function world.register_beat_event(delay, func)
-		table.insert(self.beat_events, {delay = delay, func = func})
+	function world:add_beat_timer(delay, func)
+		table.insert(self.beat_timers, {delay = delay, func = func})
 	end
 
-	world:register_event("Beat", function(world)
-		for i, event in ipairs(world.beat_events) do
+	function world:step_beat_timers()
+		for i, event in ipairs(world.beat_timers) do
 			event.delay = event.delay - 1
 
 			if event.delay == 0 then
 				event.func(event.func)
-				world.beat_events[i] = nil
+				world.beat_timers[i] = nil
 			end
 		end
-	end)
+	end
 
 	---
 
@@ -281,7 +281,7 @@ end
 function world.reset_game()
 	world.state = "reset"
 
-	world.beat_events = {}
+	world.beat_timers = {}
 	world.music:play()
 end
 
@@ -312,6 +312,7 @@ function game:update(dt)
 		if floor(current_beat) ~= last_beat then
 			last_beat = floor(current_beat)
 
+			world:step_beat_timers()
 			world:emit_event("Beat", floor(current_beat))
 		end
 
