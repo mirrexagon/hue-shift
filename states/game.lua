@@ -68,8 +68,7 @@ function game:enter(previous, grid_w, grid_h)
 	world.grid_w = grid_w or 8
 	world.grid_h = grid_h or 8
 
-	world.tile_w = 32
-	world.tile_h = 32
+	world.tile_l = 32
 	world.tile_pad = 2
 
 	---
@@ -143,7 +142,7 @@ function game:draw()
 			-- TODO: background
 
 			draw_grid(world.grid_w, world.grid_h,
-				world.tile_w, world.tile_h, world.tile_pad)
+				world.tile_l, world.tile_l, world.tile_pad)
 		end
 	}
 end
