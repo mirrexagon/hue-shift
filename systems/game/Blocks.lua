@@ -121,7 +121,9 @@ return {
 						if player.Player == other.Goal then
 							world.score[player.Player] = world.score[player.Player] + 1
 
-							world.place_goal(player.Player)
+							world:add_beat_timer(1, function()
+								world.place_goal(player.Player)
+							end)
 						end
 					elseif other.Obstacle then
 						-- Death.
