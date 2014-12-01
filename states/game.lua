@@ -216,9 +216,7 @@ function game:enter(previous, arg)
 		[3] = 0
 	}
 
-	world.player_blocks[1].Position = {x = 0, y = world.grid_h - 1}
-	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
-	world.player_blocks[3].Position = {x = world.grid_w - 1, y = world.grid_h - 1}
+	world.reset_player_block_positions()
 
 	for id = 1, 3 do
 		world.set_pair_active(id, false)
@@ -243,6 +241,12 @@ function world.set_pair_active(id, active)
 
 	player.Active = active
 	goal.Active = active
+end
+
+function world.reset_player_block_positions()
+	world.player_blocks[1].Position = {x = 0, y = world.grid_h - 1}
+	world.player_blocks[2].Position = {x = floor(world.grid_w/2), y = world.grid_h - 1}
+	world.player_blocks[3].Position = {x = world.grid_w - 1, y = world.grid_h - 1}
 end
 
 function world.place_goal(id)
