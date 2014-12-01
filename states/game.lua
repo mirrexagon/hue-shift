@@ -15,12 +15,11 @@ local floor = math.floor
 local GRID_BACKGROUND_ALPHA = 128
 local GRID_LINES_ALPHA = 255
 
-local TRANSITION_DURATION = 0.5
-local LOSE_TRANS_DURATION = 0.5
-
 ---
 
 local world = World.new()
+
+world.TRANSITION_DURATION = 0.5
 
 local last_beat = 0
 local beat_duration
@@ -139,7 +138,7 @@ end
 function game:update(dt)
 	if world.state == "enter" then
 		---
-		world.grid_alpha = world.grid_alpha + (1/TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha + (1/world.TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha >= 1 then
@@ -193,7 +192,7 @@ function game:update(dt)
 		---
 	elseif world.state == "leave" then
 		---
-		world.grid_alpha = world.grid_alpha - (1/TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha - (1/world.TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha <= 0 then
