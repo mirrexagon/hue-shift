@@ -28,30 +28,38 @@ end
 ---
 
 local function draw_grid(grid_w, grid_h, tile_w, tile_h, tile_pad)
-	local gridpixw = (grid_w * tile_w) + ((grid_w + 1) * tile_pad)
-	local gridpixh = (grid_h * tile_h) + ((grid_h + 1) * tile_pad)
+	local grid_pixel_w = (grid_w * tile_w) + ((grid_w + 1) * tile_pad)
+	local grid_pixel_h = (grid_h * tile_h) + ((grid_h + 1) * tile_pad)
 
-	local screenpadw = (love.graphics.getWidth() - gridpixw) / 2
-	local screenpadh = (love.graphics.getHeight() - gridpixh) / 2
+	local grid_pad_w = (love.graphics.getWidth() - grid_pixel_w) / 2
+	local grid_pad_h = (love.graphics.getHeight() - grid_pixel_h) / 2
 
 	---
 
 	-- Grid background.
 	love.graphics.setColor(255, 255, 255, world.grid_alpha * GRID_BACKGROUND_ALPHA)
-	love.graphics.rectangle("fill", screenpadw, screenpadh, gridpixw, gridpixh)
+	love.graphics.rectangle("fill", grid_pad_w, grid_pad_h, grid_pixel_w, grid_pixel_h)
 
 	-- Grid lines.
 	love.graphics.setColor(255, 255, 255, world.grid_alpha * GRID_LINES_ALPHA)
 
 	for v = 0, grid_w do
 		love.graphics.rectangle("fill",
-			screenpadw + v*tile_w + v*tile_pad, screenpadh, tile_pad, gridpixh)
+			grid_pad_w + v*tile_w + v*tile_pad, grid_pad_h, tile_pad, grid_pixel_h)
 	end
 
 	for h = 0, grid_h do
 		love.graphics.rectangle("fill",
-			screenpadw, screenpadh + h*tile_h + h*tile_pad, gridpixw, tile_pad)
+			grid_pad_w, grid_pad_h + h*tile_h + h*tile_pad, grid_pixel_w, tile_pad)
 	end
+
+	---
+
+	--world.grid_pixel_w = grid_pixel_w
+	--world.grid_pixel_h = grid_pixel_h
+
+	world.grid_pad_w = grid_pad_w
+	world.grid_pad_h = grid_pad_h
 end
 
 ---
