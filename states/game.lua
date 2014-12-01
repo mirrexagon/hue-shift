@@ -285,6 +285,11 @@ end
 function world.reset_game()
 	world.state = "reset"
 
+	for _, entity in ipairs(world.entities) do
+		entity.Blink = nil
+		entity.InverseBlink = nil
+	end
+
 	world.beat_timers = {}
 	world.music:play()
 end

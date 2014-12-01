@@ -126,7 +126,10 @@ return {
 							end)
 						end
 					elseif other.Obstacle then
-						-- Death.
+						world.lose_game()
+
+						player.Blink = true
+						other.InverseBlink = true
 					end
 				end
 			end
