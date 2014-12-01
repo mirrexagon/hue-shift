@@ -27,7 +27,7 @@ local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
 local rotation_mapping = {
 	up = 0,
-	right = 3*math.pi/2,
+	left = 3*math.pi/2,
 	down = math.pi,
 	right = math.pi/2
 }
