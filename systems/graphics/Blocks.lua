@@ -85,7 +85,7 @@ return {
 
 				elseif world.state == "reset" then
 
-					entity.Alpha = 1 - world.speed
+					entity.Alpha = entity.Alpha - (1/world.TRANSITION_DURATION) * dt
 
 				elseif world.state == "leave" then
 
