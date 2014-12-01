@@ -65,7 +65,7 @@ local function draw_block(entity, world)
 	end
 end
 
----d
+---
 
 local blink_dir = 1
 local blink_var = 0

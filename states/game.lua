@@ -47,10 +47,6 @@ local world = World.new()
 
 world.TRANSITION_DURATION = 0.5
 
-local last_beat = 0
-
-local leave_func = love.event.quit
-
 ---
 
 function game:init()
@@ -319,6 +315,7 @@ function world:reset_game()
 	self.music:play()
 end
 
+local leave_func = love.event.quit
 function world:leave_game(func)
 	self.state = "leave"
 
@@ -327,6 +324,7 @@ end
 
 ---
 
+local last_beat = 0
 function game:update(dt)
 	if world.state == "enter" then
 		---
