@@ -98,7 +98,7 @@ return {
 					elseif entity.Goal then
 						fade_time = GOAL_FADE_TIME
 					else
-						entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+						entity.Alpha = entity.Alpha + (2/world.beat_duration) * dt
 						if entity.Alpha > 1 then
 							entity.Alpha = 1
 						end
@@ -125,7 +125,7 @@ return {
 
 						entity.Alpha = entity.InverseBlink and 1 - blink_var or blink_var
 					else
-						entity.Alpha = entity.Alpha + (2/beat.absbeat_to_seconds(2, world.bpm)) * dt
+						entity.Alpha = entity.Alpha + (1/world.beat_duration) * dt
 						if entity.Alpha > 1 then
 							entity.Alpha = 1
 						end
@@ -133,7 +133,7 @@ return {
 
 				elseif world.state == "reset" then
 
-					entity.Alpha = entity.Alpha - (1/world.beat_duration) * dt
+					entity.Alpha = entity.Alpha - (2/world.beat_duration) * dt
 					if entity.Alpha < 0 then
 						entity.Alpha = 0
 					end

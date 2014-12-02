@@ -45,7 +45,7 @@ local control_functions
 
 local world = World.new()
 
-world.TRANSITION_DURATION = 0.5
+world.TRANSITION_DURATION = 0.3
 
 ---
 
@@ -273,6 +273,10 @@ function world:to_game()
 
 	---
 
+	world.grid_alpha = 1
+
+	---
+
 	world.score = {
 		[1] = 0,
 		[2] = 0,
@@ -325,14 +329,24 @@ end
 function world:to_reset()
 	self.state = "reset"
 
+	norm_pitch = 0.001
 	self.music:play()
 end
 
-local leave_func = love.event.quit
-function world:leave_game(func)
+function world:to_leave()
 	self.state = "leave"
 
-	leave_func = func
+	self.music:stop()
+end
+
+local function leave(func)
+	world.grid_alpha = 0
+
+	if func then
+		func()
+	else
+		love.event.quit()
+	end
 end
 
 ---
@@ -357,8 +371,6 @@ function game:update(dt)
 		world:update(dt)
 
 		if world.grid_alpha >= 1 then
-			world.grid_alpha = 1
-
 			world:to_game()
 		end
 		---
@@ -402,7 +414,7 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		local new_pitch = norm_pitch + (1/world.beat_duration)*dt
+		local new_pitch = norm_pitch + (2/world.beat_duration)*dt
 
 		if new_pitch < 1 then
 			norm_pitch = new_pitch
@@ -417,9 +429,7 @@ function game:update(dt)
 		world:update(dt)
 
 		if world.grid_alpha <= 0 then
-			world.grid_alpha = 0
-
-			leave_func()
+			leave()
 		end
 		---
 	end
@@ -442,15 +452,28 @@ end
 ---
 
 function game:keypressed(key)
-	if key == " " and world.state == "wait" then
-		world:to_reset()
+	if key == " " then
+		---
+		if world.state == "lose" then
+			world:to_reset()
+		elseif world.state == "wait" then
+			world:to_reset()
+		elseif world.state == "reset"then
+			world:to_game()
+		end
+		---
 	elseif key == "escape" then
+		---
 		if world.state == "game" then
 			world:to_lose()
+		elseif world.state == "lose" then
+			world:to_leave()
 		elseif world.state == "wait" then
-			world:leave_game(love.event.quit)
+			world:to_leave(love.event.quit)
+		elseif world.state == "leave" then
+			leave()
 		end
-
+		---
 	elseif world.state == "game" and control_functions[key] then
 		control_functions[key]()
 	end
