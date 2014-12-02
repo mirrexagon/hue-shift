@@ -414,7 +414,7 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		local new_pitch = norm_pitch + (2/world.beat_duration)*dt
+		local new_pitch = norm_pitch + (1.5/world.beat_duration)*dt
 
 		if new_pitch < 1 then
 			norm_pitch = new_pitch

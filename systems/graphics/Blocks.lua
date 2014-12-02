@@ -133,7 +133,7 @@ return {
 
 				elseif world.state == "reset" then
 
-					entity.Alpha = entity.Alpha - (2/world.beat_duration) * dt
+					entity.Alpha = entity.Alpha - (1.5/world.beat_duration) * dt
 					if entity.Alpha < 0 then
 						entity.Alpha = 0
 					end
