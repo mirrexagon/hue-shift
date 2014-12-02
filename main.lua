@@ -12,6 +12,8 @@
 
 gs = require("lib.hump.gamestate")
 
+bg = require("logic.background")
+
 ---
 
 local state_game = require("states.game")

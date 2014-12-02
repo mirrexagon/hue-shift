@@ -337,6 +337,12 @@ end
 
 local last_beat = 0
 function game:update(dt)
+	if world.state ~= "wait" then
+		bg.update(dt * world.game_speed * norm_pitch)
+	end
+
+	---
+
 	world.beat_duration = beat.absbeat_to_seconds(2, world.bpm * world.game_speed)
 
 	if world.state == "enter" then
@@ -411,7 +417,8 @@ end
 function game:draw()
 	world:draw{
 		background = function()
-			-- TODO: background
+			love.graphics.setColor(255, 255, 255, 200)
+			bg.draw()
 
 			draw_grid(world.grid_w, world.grid_h,
 				world.tile_l, world.tile_l, world.tile_pad)
