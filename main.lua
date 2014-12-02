@@ -8,6 +8,10 @@
 		Proper quantified levels
 		Obstacle AI
 		Challenges - time limit, limited number of moves?
+
+	FIX:
+		Sound sources that are slightly too long cause an extra fast beat.
+			- Get length of source, use to calculate number of full beats?
 ]]
 
 gs = require("lib.hump.gamestate")
