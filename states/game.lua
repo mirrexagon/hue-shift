@@ -339,6 +339,10 @@ end
 
 local last_beat = 0
 function game:update(dt)
+	if world.game_speed <= 0 then
+		world.game_speed = 0.1
+	end
+
 	if world.state ~= "wait" then
 		bg.update(dt * world.game_speed * norm_pitch)
 	end
