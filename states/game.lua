@@ -281,6 +281,8 @@ function world:to_game()
 
 	self.beat_timers = {}
 
+	world.done_first_beat = false
+
 	---
 
 	for entity in pairs(self.entities) do
@@ -359,12 +361,19 @@ function game:update(dt)
 	elseif world.state == "game" then
 		---
 		local current_beat = beat.seconds_to_absbeat(world.music:tell(), world.bpm)
+		local int_current_beat = floor(current_beat)
 
-		if floor(current_beat) ~= last_beat then
-			last_beat = floor(current_beat)
+		if int_current_beat ~= last_beat then
+			last_beat = int_current_beat
+
+			-- This makes sure blocks don't move on the first beat
+			-- of the first loop of the music.
+			if int_current_beat == 2 then
+				world.done_first_beat = true
+			end
 
 			world:step_beat_timers()
-			world:emit_event("Beat", floor(current_beat))
+			world:emit_event("Beat", int_current_beat)
 		end
 
 		world.current_beat = current_beat

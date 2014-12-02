@@ -36,7 +36,9 @@ return {
 		{
 			event = "Beat",
 			func = function(world, beat)
-				if beat < 2 then return end
+				if not world.done_first_beat then
+					return
+				end
 
 				---
 
