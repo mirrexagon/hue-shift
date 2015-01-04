@@ -43,7 +43,7 @@ end
 function util.table.join(...)
 	local result = {}
 	for _, tab in ipairs({...}) do
-
+		---
 		-- Deal with number keys first so we can get them in order.
 		for i, v in ipairs(tab) do
 			table.insert(result, v)
@@ -54,7 +54,7 @@ function util.table.join(...)
 				result[k] = v
 			end
 		end
-
+		---
 	end
 	return result
 end
@@ -62,11 +62,11 @@ end
 -- If t doesn't have a key that kv does, the key
 -- and its value from kv will be added to t.
 function util.table.fill(t, kv)
-  for k, v in pairs(kv) do
-    if not t[k] then
-      t[k] = v
-    end
-  end
+	for k, v in pairs(kv) do
+		if not t[k] then
+			t[k] = v
+		end
+	end
 end
 
 -- Flips keys and values of table t.
@@ -110,10 +110,10 @@ util.io = {}
 -- Given a file handle, this function returns the size
 -- of the file pointed to by that handle.
 function util.io.filesize(file)
-  local current = file:seek()
-  local size = file:seek('end')
-  file:seek('set', current)
-  return size
+	local current = file:seek()
+	local size = file:seek("end")
+	file:seek("set", current)
+	return size
 end
 
 
@@ -123,8 +123,8 @@ util.math = {}
 -- Rounds num to idp decimal places.
 -- http://lua-users.org/wiki/SimpleRound
 function util.math.round(num, idp)
-  local mult = 10^(idp or 0)
-  return math.floor(num * mult + 0.5) / mult
+	local mult = 10^(idp or 0)
+	return math.floor(num * mult + 0.5) / mult
 end
 
 -- Returns the integer part of n.
@@ -134,7 +134,7 @@ end
 
 -- Checks whether n is within min and max.
 function util.math.range(min, n, max)
-  return (n >= min) and (n < max)
+	return (n >= min) and (n < max)
 end
 
 function util.math.clamp(min, n, max)
