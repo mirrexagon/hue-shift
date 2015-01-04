@@ -11,6 +11,8 @@ local World = require("logic.world")
 
 local floor = math.floor
 
+local range = util.math.range
+
 ---
 
 local GRID_BACKGROUND_ALPHA = 128
@@ -51,6 +53,34 @@ world.TRANSITION_DURATION = 0.3
 
 function game:init()
 	world:load_system_dir("systems")
+
+	---
+
+	function world:get_entities_at(x, y)
+		local ret = {}
+
+		for _, entity in ipairs(self:get_entities_with{"Position"}) do
+			if entity.Position.x == x and entity.Position.y == y then
+				ret[#ret + 1] = entity
+			end
+		end
+
+		return ret
+	end
+
+	function world:get_entities_around(x, y, r)
+		local ret = {}
+
+		for _, entity in ipairs(self:get_entities_with{"Position"}) do
+			if range(x - r, entity.Position.x, x + r)
+				and range(y - r, entity.Position.y, y + r)
+			then
+				ret[#ret + 1] = entity
+			end
+		end
+
+		return ret
+	end
 
 	---
 
