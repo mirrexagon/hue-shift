@@ -93,10 +93,10 @@ return {
 					local beat_fraction = current_beat - math.floor(current_beat)
 
 					local fade_time
-					if entity.Direction then
-						fade_time = DYNAMIC_FADE_TIME
-					elseif entity.Goal then
+					if entity.Goal then
 						fade_time = GOAL_FADE_TIME
+					elseif entity.Direction then
+						fade_time = DYNAMIC_FADE_TIME
 					else
 						entity.Alpha = entity.Alpha + (2/world.beat_duration) * dt
 						if entity.Alpha > 1 then
