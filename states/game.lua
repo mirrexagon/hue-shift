@@ -15,11 +15,6 @@ local range = util.math.range
 
 ---
 
-local GRID_BACKGROUND_ALPHA = 128
-local GRID_LINES_ALPHA = 255
-
----
-
 local BLOCK_CONTROLS = {
 	[1] = {
 		up = "w",
@@ -113,47 +108,25 @@ function game:init()
 
 	-- Spawn player and goal blocks.
 	world.player_blocks = {}
-	world.player_blocks[1] = world:spawn_entity{
-		Player = 1,
+	for i = 1, 3 do
+		world.player_blocks[i] = world:spawn_entity{
+		Player = i,
 
-		Color = {255, 0, 0},
+		Color = BLOCK_COLORS[i],
 		Direction = "up",
 		Active = false
 	}
-	world.player_blocks[2] = world:spawn_entity{
-		Player = 2,
-
-		Color = {0, 255, 0},
-		Direction = "up",
-		Active = false
-	}
-	world.player_blocks[3] = world:spawn_entity{
-		Player = 3,
-
-		Color = {0, 0, 255},
-		Direction = "up",
-		Active = false
-	}
+	end
 
 	world.goal_blocks = {}
-	world.goal_blocks[1] = world:spawn_entity{
-		Goal = 1,
+	for i = 1, 3 do
+		world.goal_blocks[i] = world:spawn_entity{
+		Goal = i,
 
-		Color = {255, 0, 0},
+		Color = BLOCK_COLORS[i],
 		Active = false
 	}
-	world.goal_blocks[2] = world:spawn_entity{
-		Goal = 2,
-
-		Color = {0, 255, 0},
-		Active = false
-	}
-	world.goal_blocks[3] = world:spawn_entity{
-		Goal = 3,
-
-		Color = {0, 0, 255},
-		Active = false
-	}
+	end
 end
 
 ---
@@ -470,7 +443,7 @@ end
 function game:draw()
 	world:draw{
 		background = function()
-			love.graphics.setColor(255, 255, 255, 200)
+			love.graphics.setColor(255, 255, 255, BG_ALPHA)
 			bg.draw()
 
 			draw_grid(world.grid_w, world.grid_h,

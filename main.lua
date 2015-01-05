@@ -20,11 +20,46 @@ local state_game = require("states.game")
 
 ---
 
+GRID_BACKGROUND_ALPHA = 128
+GRID_LINES_ALPHA = 255
+BG_ALPHA = 200
+
+BLOCK_CONTROLS = {
+	[1] = {
+		up = "w",
+		right = "d",
+		down = "s",
+		left = "a"
+	},
+	[2] = {
+		up = "t",
+		right = "h",
+		down = "g",
+		left = "f"
+	},
+	[3] = {
+		up = "i",
+		right = "l",
+		down = "k",
+		left = "j"
+	}
+}
+
+BLOCK_COLORS = {
+	[1] = {255, 0, 0},
+	[2] = {0, 255, 0},
+	[3] = {0, 0, 255}
+}
+
+---
+
 function love.load()
 	gs.registerEvents()
 
+	---[[
 	gs.switch(state_game, {
 		music = "music/laserwash.ogg",
 		bpm = 90
 	})
+	--]]
 end
