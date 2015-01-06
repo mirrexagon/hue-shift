@@ -140,7 +140,7 @@ return {
 
 				elseif world.state == "leave" then
 
-					entity.Alpha = entity.Alpha - (1/world.TRANSITION_DURATION) * dt
+					entity.Alpha = entity.Alpha - (1/TRANSITION_DURATION) * dt
 					if entity.Alpha < 0 then
 						entity.Alpha = 0
 					end

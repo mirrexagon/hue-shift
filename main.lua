@@ -16,13 +16,18 @@ bg = require("logic.background")
 
 ---
 
-local state_game = require("states.game")
+state_menu = require("states.menu")
+state_game = require("states.game")
 
 ---
 
 GRID_BACKGROUND_ALPHA = 128
 GRID_LINES_ALPHA = 255
 BG_ALPHA = 200
+
+TRANSITION_DURATION = 0.3
+
+DEFAULT_TILE_LENGTH = 32
 
 BLOCK_CONTROLS = {
 	[1] = {
@@ -51,15 +56,24 @@ BLOCK_COLORS = {
 	[3] = {0, 0, 255}
 }
 
+MUSIC = {
+	laserwash = {
+		path = "music/laserwash.ogg",
+		bpm = 90
+	}
+}
+
 ---
 
 function love.load()
 	gs.registerEvents()
 
-	---[[
+	--[[
 	gs.switch(state_game, {
 		music = "music/laserwash.ogg",
 		bpm = 90
 	})
 	--]]
+
+	gs.switch(state_menu)
 end

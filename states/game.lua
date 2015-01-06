@@ -42,8 +42,6 @@ local control_functions
 
 local world = World.new()
 
-world.TRANSITION_DURATION = 0.3
-
 ---
 
 function game:init()
@@ -190,7 +188,7 @@ function game:enter(previous, arg)
 	world.grid_w = arg.grid_w or 7
 	world.grid_h = arg.grid_h or 7
 
-	world.tile_l = arg.tile_l or 32
+	world.tile_l = arg.tile_l or DEFAULT_TILE_LENGTH
 	world.tile_pad = arg.tile_pad or 2
 
 	---
@@ -342,14 +340,10 @@ function world:to_leave()
 	self.music:stop()
 end
 
-local function leave(func)
+local function leave()
 	world.grid_alpha = 0
 
-	if func then
-		func()
-	else
-		love.event.quit()
-	end
+	gs.switch(state_menu)
 end
 
 ---
@@ -370,7 +364,7 @@ function game:update(dt)
 
 	if world.state == "enter" then
 		---
-		world.grid_alpha = world.grid_alpha + (1/world.TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha + (1/TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha >= 1 then
@@ -428,7 +422,7 @@ function game:update(dt)
 		---
 	elseif world.state == "leave" then
 		---
-		world.grid_alpha = world.grid_alpha - (1/world.TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha - (1/TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha <= 0 then
