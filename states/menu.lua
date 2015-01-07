@@ -197,6 +197,18 @@ end
 function menu:update(dt)
 	bg.update(dt)
 
+	---
+
+	local row_name = row_order[selected_row]
+	local row = rows[row_name]
+	if row and row.update then
+		row:update(dt)
+	end
+
+	scroll_offset = scroll_offset + (target_scroll_offset - scroll_offset)*SCROLL_SPEED*dt
+
+	---
+
 	if fade_state == "in" then
 		---
 		global_alpha = global_alpha + (1/TRANSITION_DURATION) * dt
@@ -207,13 +219,7 @@ function menu:update(dt)
 		---
 	elseif fade_state == "full" then
 		---
-		local row_name = row_order[selected_row]
-		local row = rows[row_name]
-		if row and row.update then
-			row:update(dt)
-		end
 
-		scroll_offset = scroll_offset + (target_scroll_offset - scroll_offset)*SCROLL_SPEED*dt
 		---
 	elseif fade_state == "out" then
 		---
