@@ -20,7 +20,8 @@ local global_alpha = 0
 ---
 
 local N_ROWS_ONSCREEN = 5
-local ROW_PIX_PAD = 30
+local ROW_PIX_PAD = floor(30 * (math.min(
+	love.graphics.getWidth(), love.graphics.getHeight()) / 600))
 
 local ROW_PIX_W = love.graphics.getWidth() - (ROW_PIX_PAD*2)
 local ROW_PIX_H = (love.graphics.getHeight() - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
@@ -35,7 +36,8 @@ local SCROLL_SPEED = 5
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
-local font_row_label = love.graphics.newFont(48)
+local font_row_label = love.graphics.newFont(floor(
+	48 * (math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)))
 
 ---
 
