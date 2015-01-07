@@ -159,7 +159,7 @@ local rows = {
 			local half_tl = (DEFAULT_TILE_LENGTH/2)
 
 			local block_xdiff = floor(row_pix_w/4)
-			local block_y = floor(get_row_pix_y(2))
+			local block_y = floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
 			for i = 1, 3 do
 				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
