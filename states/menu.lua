@@ -7,6 +7,7 @@ local util = require("lib.self.util")
 ---
 
 local floor = math.floor
+local min = math.min
 local clamp = util.math.clamp
 
 local pi = math.pi
@@ -20,7 +21,8 @@ local global_alpha = 0
 ---
 
 local N_ROWS_ONSCREEN = 5
-local ROW_PIX_PAD = floor(30 * (math.min(
+
+local ROW_PIX_PAD = floor(30 * (min(
 	love.graphics.getWidth(), love.graphics.getHeight()) / 600))
 
 local ROW_PIX_W = love.graphics.getWidth() - (ROW_PIX_PAD*2)
@@ -35,9 +37,10 @@ local SCROLL_SPEED = 5
 ---
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
+img_arrow:setFilter("nearest", "nearest")
 
 local font_row_label = love.graphics.newFont(floor(
-	48 * (math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)))
+	48 * (min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)))
 
 ---
 
@@ -98,43 +101,50 @@ local rows = {
 	["GRID"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local num_y = 1.5*ROW_PIX_H + ROW_PIX_PAD
-			local num_xsep = 60
+			local num_y = floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+			local num_xsep_frac = 0.1
 
 			local arrow_y = floor(row_pix_h/2)
+
+			local scale = min(love.graphics.getWidth(), love.graphics.getHeight()) / 600
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(font_row_label)
 			local font_h = font_row_label:getHeight()
 
 			---
+			---
 
-			local w = tostring(grid_w)
-			local wx = floor(row_pix_w/2 - num_xsep)
-			love.graphics.print(w, wx - floor(font_row_label:getWidth(w)/2), num_y - font_h/2)
+			local num_xsep = num_xsep_frac * row_pix_w
+
+			local w_text = tostring(grid_w)
+			local w_text_x = floor(row_pix_w/2 - num_xsep)
+			love.graphics.print(w_text, w_text_x - floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
 
 			love.graphics.draw(
 				img_arrows,
-				wx, arrow_y,
+				w_text_x, arrow_y,
 				0,
-				1, 1,
-				img_arrows:getWidth()/2, 0
+				scale, scale,
+				img_arrows:getWidth()/2, img_arrows:getHeight()/2
 			)
 
+			---
 
 			local mid = "x"
 			love.graphics.print(mid, floor(row_pix_w/2 - font_row_label:getWidth(mid)/2), num_y - font_h/2 - 5)
 
+			---
 
-			local h = tostring(grid_h)
-			local hx = floor(row_pix_w/2 + num_xsep)
-			love.graphics.print(h, hx - floor(font_row_label:getWidth(h)/2), num_y - font_h/2)
+			local h_text = tostring(grid_h)
+			local h_text_x = floor(row_pix_w/2 + num_xsep)
+			love.graphics.print(h_text, h_text_x - floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
 
 			love.graphics.draw(
 				img_arrows,
-				hx, arrow_y,
+				h_text_x, arrow_y,
 				pi/2,
-				1, 1,
+				scale, scale,
 				img_arrows:getWidth()/2, img_arrows:getHeight()/2
 			)
 		end,
