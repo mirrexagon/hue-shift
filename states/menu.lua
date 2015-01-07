@@ -82,7 +82,7 @@ end
 
 local rows = {
 	["BLOCKS"] = {
-		draw = function(row_pix_y, row_pix_h, alpha)
+		draw = function(self, row_pix_y, row_pix_h, alpha)
 			local block_xdiff = ROW_PIX_W/4
 			local block_y = row_pix_y + ((row_pix_h)/2 - DEFAULT_TILE_LENGTH/2)
 
@@ -103,7 +103,7 @@ local rows = {
 			end
 		end,
 
-		keypressed = function(k)
+		keypressed = function(self, k)
 			if k == "right" then
 				n_player_blocks = n_player_blocks + 1
 			elseif k == "left" then
@@ -115,8 +115,7 @@ local rows = {
 	},
 
 	["START"] = {
-		height = 1,
-		keypressed = function(k)
+		keypressed = function(self, k)
 			if k == "return" then
 				fade_state = "out"
 				fade_out_to_game = true
@@ -177,7 +176,7 @@ local function draw_row(row_name, row_slot, row, alpha)
 	draw_row_name(row_name, row_slot, row_h, alpha)
 
 	if row and row.draw then
-		row.draw(get_row_pix_y(row_slot), get_row_pix_h(row_h), alpha)
+		row:draw(get_row_pix_y(row_slot), get_row_pix_h(row_h), alpha)
 	end
 end
 
@@ -199,7 +198,7 @@ function menu:update(dt)
 		local row_name = row_order[selected_row]
 		local row = rows[row_name]
 		if row and row.update then
-			row.update(dt)
+			row:update(dt)
 		end
 
 		scroll_offset = scroll_offset + (target_scroll_offset - scroll_offset)*SCROLL_SPEED*dt
@@ -266,6 +265,16 @@ local function prev_row()
 end
 
 local function next_row()
+	local old_row = get_row()
+	if old_row then
+		old_row.selected = false
+		if old_row.deselected then
+			old_row:deselected()
+		end
+	end
+
+	---
+
 	selected_row = selected_row + 1
 
 	if selected_row > #row_order then
@@ -276,6 +285,16 @@ local function next_row()
 		local t_row_h = get_total_row_height(selected_row)
 		if t_row_h - N_ROWS_ONSCREEN > target_scroll_offset then
 			target_scroll_offset = t_row_h - N_ROWS_ONSCREEN
+		end
+	end
+
+	---
+
+	local new_row = get_row()
+	if new_row then
+		new_row.selected = false
+		if new_row.deselected then
+			new_row:deselected()
 		end
 	end
 end
@@ -292,7 +311,7 @@ function menu:keypressed(k)
 	else
 		local row = get_row()
 		if row and row.keypressed then
-			row.keypressed(k)
+			row:keypressed(k)
 		end
 	end
 end
@@ -306,7 +325,7 @@ function menu:mousepressed(x, y, b)
 	else
 		local row = get_row()
 		if row and row.mousepressed then
-			row.mousepressed(x, y, b)
+			row:mousepressed(x, y, b)
 		end
 	end
 end
