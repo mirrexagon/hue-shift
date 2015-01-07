@@ -180,19 +180,31 @@ local rows = {
 
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
-			local triangle_x_pad = 50
-			local triangle_h = 50
+			local pad_pix_w = block_xdiff - half_tl
+
+			local TRIANGLE_W_FRAC = 0.3
+			local TRIANGLE_H_FRAC = 0.3
+
+			local triangle_w = TRIANGLE_W_FRAC * pad_pix_w
+			local triangle_h = TRIANGLE_H_FRAC * row_pix_h
+
+			local triangle_w_left_x = (pad_pix_w - triangle_w)/2
+			local triangle_w_right_x = triangle_w_left_x + triangle_w
+
+			local triangle_h_left_x = row_pix_w - triangle_w_left_x
+			local triangle_h_right_x = triangle_h_left_x - triangle_w
+
 			love.graphics.polygon(
 				"fill",
-				triangle_x_pad, floor(row_pix_h/2),
-				block_xdiff - triangle_x_pad, block_y + half_tl - triangle_h/2,
-				block_xdiff - triangle_x_pad, block_y + half_tl + triangle_h/2
+				triangle_w_left_x, floor(row_pix_h/2),
+				triangle_w_right_x, block_y + half_tl - triangle_h/2,
+				triangle_w_right_x, block_y + half_tl + triangle_h/2
 			)
 			love.graphics.polygon(
 				"fill",
-				row_pix_w - triangle_x_pad, floor(row_pix_h/2),
-				3*block_xdiff + triangle_x_pad, block_y + half_tl - triangle_h/2,
-				3*block_xdiff + triangle_x_pad, block_y + half_tl + triangle_h/2
+				triangle_h_left_x, floor(row_pix_h/2),
+				triangle_h_right_x, block_y + half_tl - triangle_h/2,
+				triangle_h_right_x, block_y + half_tl + triangle_h/2
 			)
 		end,
 
