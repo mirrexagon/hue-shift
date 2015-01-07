@@ -156,10 +156,10 @@ local rows = {
 	["BLOCKS"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local block_xdiff = floor(row_pix_w/4)
-			local block_y = floor((row_pix_h/2) - (DEFAULT_TILE_LENGTH/2))
-
 			local half_tl = (DEFAULT_TILE_LENGTH/2)
+
+			local block_xdiff = floor(row_pix_w/4)
+			local block_y = floor(get_row_pix_y(2))
 
 			for i = 1, 3 do
 				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
@@ -173,11 +173,11 @@ local rows = {
 
 				local x = (block_xdiff * i) - half_tl
 
-				love.graphics.rectangle("fill", x, block_y,
+				love.graphics.rectangle("fill", x, block_y - half_tl,
 					DEFAULT_TILE_LENGTH, DEFAULT_TILE_LENGTH)
 
 				love.graphics.setColor(255, 255, 255, lalpha)
-				love.graphics.draw(img_arrow, x, block_y)
+				love.graphics.draw(img_arrow, x, block_y - half_tl)
 			end
 
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
@@ -198,15 +198,15 @@ local rows = {
 
 			love.graphics.polygon(
 				"fill",
-				triangle_w_left_x, floor(row_pix_h/2),
-				triangle_w_right_x, block_y + half_tl - triangle_h/2,
-				triangle_w_right_x, block_y + half_tl + triangle_h/2
+				triangle_w_left_x, block_y,
+				triangle_w_right_x, block_y - triangle_h/2,
+				triangle_w_right_x, block_y + triangle_h/2
 			)
 			love.graphics.polygon(
 				"fill",
-				triangle_h_left_x, floor(row_pix_h/2),
-				triangle_h_right_x, block_y + half_tl - triangle_h/2,
-				triangle_h_right_x, block_y + half_tl + triangle_h/2
+				triangle_h_left_x, block_y,
+				triangle_h_right_x, block_y - triangle_h/2,
+				triangle_h_right_x, block_y + triangle_h/2
 			)
 		end,
 
