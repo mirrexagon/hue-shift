@@ -22,30 +22,27 @@ local global_alpha = 0
 
 local N_ROWS_ONSCREEN = 5
 
-local ROW_PIX_PAD = floor(30 * (min(
-	love.graphics.getWidth(), love.graphics.getHeight()) / 600))
+local ROW_PIX_PAD
+local ROW_PIX_W
+local ROW_PIX_H
 
-local ROW_PIX_W = love.graphics.getWidth() - (ROW_PIX_PAD*2)
-local ROW_PIX_H = (love.graphics.getHeight() - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+local ROW_ALPHA = math.floor(0.7 * 255)
 
-local ROW_ALPHA = floor(0.7 * 255)
-
+local SCROLL_SPEED = 5
 local scroll_offset = 0
 local target_scroll_offset = 0
-local SCROLL_SPEED = 5
 
 ---
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 img_arrow:setFilter("nearest", "nearest")
 
-local font_row_label = love.graphics.newFont(floor(
-	48 * (min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)))
+local font_row_label
 
 ---
 
 local GRID_DIM_MIN = 3
-local GRID_DIM_MAX = 10
+local GRID_DIM_MAX = 10 -- TODO: use screen res to calculate
 
 local grid_w, grid_h = 7, 7
 local n_player_blocks = 1
@@ -67,11 +64,27 @@ end
 
 ---
 
+local function calculate_dimensions(screenw, screenh)
+	font_row_label = love.graphics.newFont(math.floor(48 * (math.min(screenw, screenh) / 600)))
+
+	ROW_PIX_PAD = math.floor(30 * (math.min(screenw, screenh) / 600))
+	ROW_PIX_W = screenw - (ROW_PIX_PAD*2)
+	ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+end
+
+function menu:resize(screenw, screenh)
+	calculate_dimensions(screenw, screenh)
+end
+
+---
+
 function menu:init()
 
 end
 
 function menu:enter(previous, arg)
+	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
+
 	fade_state = "in"
 	global_alpha = 0
 end
