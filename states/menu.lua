@@ -183,7 +183,7 @@ local function draw_row(row_n, row_slot, alpha)
 	love.graphics.translate(ROW_PIX_PAD, get_row_pix_y(row_slot))
 
 	draw_row_rect(row_h, alpha)
-	draw_row_name(row_order[row_n], ROW_PIX_W, get_row_pix_h(row_h), alpha)
+	draw_row_name(row_order[row_n], ROW_PIX_W, ROW_PIX_H, alpha)
 
 	if row and row.draw then
 		row:draw(ROW_PIX_W, get_row_pix_h(row_h), alpha)
