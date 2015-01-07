@@ -6,6 +6,7 @@ local util = require("lib.self.util")
 
 ---
 
+local floor = math.floor
 local clamp = util.math.clamp
 
 ---
@@ -22,7 +23,7 @@ local ROW_PIX_PAD = 30
 local ROW_PIX_W = love.graphics.getWidth() - (ROW_PIX_PAD*2)
 local ROW_PIX_H = (love.graphics.getHeight() - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
 
-local ROW_ALPHA = math.floor(0.75 * 255)
+local ROW_ALPHA = floor(0.75 * 255)
 
 local scroll_offset = 0
 local target_scroll_offset = 0
@@ -41,6 +42,18 @@ local n_player_blocks = 1
 local music = "laserwash"
 
 local selected_row = 1
+
+---
+
+local function print_centered(text, x, y)
+	local font = love.graphics.getFont()
+
+	love.graphics.print(
+		text,
+		x - (font:getWidth(text)/2),
+		y - (font:getHeight()/2)
+	)
+end
 
 ---
 
@@ -63,11 +76,14 @@ local function get_row_pix_y(row_slot)
 	return (row_slot - 1) * ROW_PIX_H + (row_slot) * ROW_PIX_PAD
 end
 
+---
+
 local rows = {
 	["BLOCKS"] = {
+		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local block_xdiff = row_pix_w/4
-			local block_y = (row_pix_h/2) - (DEFAULT_TILE_LENGTH/2)
+			local block_xdiff = floor(row_pix_w/4)
+			local block_y = floor((row_pix_h/2) - (DEFAULT_TILE_LENGTH/2))
 
 			for i = 1, 3 do
 				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
@@ -150,11 +166,7 @@ local function draw_row_name(row_name, row_pix_w, row_pix_h, alpha)
 	love.graphics.setColor(255, 255, 255, ROW_ALPHA * (alpha or 1))
 	love.graphics.setFont(font_row_title)
 
-	love.graphics.print(
-		row_name,
-		(row_pix_w/2) - (font_row_title:getWidth(row_name)/2),
-		(row_pix_h/2) - (font_row_title:getHeight()/2)
-	)
+	print_centered(row_name, row_pix_w/2, row_pix_h/2)
 end
 
 local function draw_row(row_n, row_slot, alpha)
