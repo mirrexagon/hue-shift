@@ -189,7 +189,7 @@ function game:enter(previous, arg)
 	world.grid_h = arg.grid_h or 7
 
 	world.tile_l = arg.tile_l or DEFAULT_TILE_LENGTH
-	world.tile_pad = arg.tile_pad or 2
+	world.tile_pad = arg.tile_pad or DEFAULT_TILE_PAD
 
 	---
 
