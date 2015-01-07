@@ -23,7 +23,7 @@ local ROW_PIX_PAD = 30
 local ROW_PIX_W = love.graphics.getWidth() - (ROW_PIX_PAD*2)
 local ROW_PIX_H = (love.graphics.getHeight() - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
 
-local ROW_ALPHA = floor(0.75 * 255)
+local ROW_ALPHA = floor(0.7 * 255)
 
 local scroll_offset = 0
 local target_scroll_offset = 0
@@ -79,11 +79,18 @@ end
 ---
 
 local rows = {
+	["HUE SHIFT"] = {
+		hide_label = false,
+		label = "FANCY LOGO HERE"
+	},
+
 	["BLOCKS"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local block_xdiff = floor(row_pix_w/4)
 			local block_y = floor((row_pix_h/2) - (DEFAULT_TILE_LENGTH/2))
+
+			local half_tl = (DEFAULT_TILE_LENGTH/2)
 
 			for i = 1, 3 do
 				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
@@ -95,7 +102,7 @@ local rows = {
 					lalpha
 				)
 
-				local x = (block_xdiff * i) - (DEFAULT_TILE_LENGTH/2)
+				local x = (block_xdiff * i) - half_tl
 
 				love.graphics.rectangle("fill", x, block_y,
 					DEFAULT_TILE_LENGTH, DEFAULT_TILE_LENGTH)
@@ -103,6 +110,23 @@ local rows = {
 				love.graphics.setColor(255, 255, 255, lalpha)
 				love.graphics.draw(img_arrow, x, block_y)
 			end
+
+			love.graphics.setColor(255, 255, 255, 128 * alpha)
+
+			local triangle_x_pad = 50
+			local triangle_h = 50
+			love.graphics.polygon(
+				"fill",
+				triangle_x_pad, floor(row_pix_h/2),
+				block_xdiff - triangle_x_pad, block_y + half_tl - triangle_h/2,
+				block_xdiff - triangle_x_pad, block_y + half_tl + triangle_h/2
+			)
+			love.graphics.polygon(
+				"fill",
+				row_pix_w - triangle_x_pad, floor(row_pix_h/2),
+				3*block_xdiff + triangle_x_pad, block_y + half_tl - triangle_h/2,
+				3*block_xdiff + triangle_x_pad, block_y + half_tl + triangle_h/2
+			)
 		end,
 
 		keypressed = function(self, k)
@@ -127,7 +151,7 @@ local rows = {
 }
 
 local row_order = {
-	"GRID", "MUSIC", "BLOCKS", "OBSTACLES", "START"
+	"HUE SHIFT", "GRID", "MUSIC", "BLOCKS", "OBSTACLES", "START"
 }
 
 local function get_row(row_n)
@@ -162,8 +186,8 @@ local function draw_row_rect(row_h, alpha)
 	love.graphics.rectangle("fill", 0, 0, ROW_PIX_W, get_row_pix_h(row_h))
 end
 
-local function draw_row_name(row_name, row_pix_w, row_pix_h, alpha)
-	love.graphics.setColor(255, 255, 255, ROW_ALPHA * (alpha or 1))
+local function draw_row_label(row_name, row_pix_w, row_pix_h, alpha)
+	love.graphics.setColor(255, 255, 255, 255 * (alpha or 1))
 	love.graphics.setFont(font_row_title)
 
 	print_centered(row_name, row_pix_w/2, row_pix_h/2)
@@ -176,16 +200,19 @@ local function draw_row(row_n, row_slot, alpha)
 
 	---
 
-	local row = get_row(row_n)
+	local row = get_row(row_n) or {}
 
 
 	love.graphics.push()
 	love.graphics.translate(ROW_PIX_PAD, get_row_pix_y(row_slot))
 
 	draw_row_rect(row_h, alpha)
-	draw_row_name(row_order[row_n], ROW_PIX_W, ROW_PIX_H, alpha)
 
-	if row and row.draw then
+	if not row.hide_label then
+		draw_row_label(row.label or row_order[row_n], ROW_PIX_W, ROW_PIX_H, alpha)
+	end
+
+	if row.draw then
 		row:draw(ROW_PIX_W, get_row_pix_h(row_h), alpha)
 	end
 
