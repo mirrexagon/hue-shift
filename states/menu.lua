@@ -9,6 +9,8 @@ local util = require("lib.self.util")
 local floor = math.floor
 local clamp = util.math.clamp
 
+local pi = math.pi
+
 ---
 
 local fade_state = "in" -- in, full, out
@@ -33,9 +35,12 @@ local SCROLL_SPEED = 5
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
-local font_row_title = love.graphics.newFont(48)
+local font_row_label = love.graphics.newFont(48)
 
 ---
+
+local GRID_DIM_MIN = 3
+local GRID_DIM_MAX = 10
 
 local grid_w, grid_h = 7, 7
 local n_player_blocks = 1
@@ -78,10 +83,72 @@ end
 
 ---
 
+local img_arrows = love.graphics.newImage("graphics/arrows.png")
+
+---
+
 local rows = {
 	["HUE SHIFT"] = {
 		hide_label = false,
 		label = "FANCY LOGO HERE"
+	},
+
+	["GRID"] = {
+		height = 2,
+		draw = function(self, row_pix_w, row_pix_h, alpha)
+			local num_y = 1.5*ROW_PIX_H + ROW_PIX_PAD
+			local num_xsep = 60
+
+			local arrow_y = floor(row_pix_h/2)
+
+			love.graphics.setColor(255, 255, 255, 255 * alpha)
+			love.graphics.setFont(font_row_label)
+			local font_h = font_row_label:getHeight()
+
+			---
+
+			local w = tostring(grid_w)
+			local wx = floor(row_pix_w/2 - num_xsep)
+			love.graphics.print(w, wx - floor(font_row_label:getWidth(w)/2), num_y - font_h/2)
+
+			love.graphics.draw(
+				img_arrows,
+				wx, arrow_y,
+				0,
+				1, 1,
+				img_arrows:getWidth()/2, 0
+			)
+
+
+			local mid = "x"
+			love.graphics.print(mid, floor(row_pix_w/2 - font_row_label:getWidth(mid)/2), num_y - font_h/2 - 5)
+
+
+			local h = tostring(grid_h)
+			local hx = floor(row_pix_w/2 + num_xsep)
+			love.graphics.print(h, hx - floor(font_row_label:getWidth(h)/2), num_y - font_h/2)
+
+			love.graphics.draw(
+				img_arrows,
+				hx, arrow_y,
+				pi/2,
+				1, 1,
+				img_arrows:getWidth()/2, img_arrows:getHeight()/2
+			)
+		end,
+
+
+		keypressed = function(self, k)
+			if k == "w" then
+				grid_w = clamp(GRID_DIM_MIN, grid_w + 1, GRID_DIM_MAX)
+			elseif k == "s" then
+				grid_w = clamp(GRID_DIM_MIN, grid_w - 1, GRID_DIM_MAX)
+			elseif k == "i" then
+				grid_h = clamp(GRID_DIM_MIN, grid_h + 1, GRID_DIM_MAX)
+			elseif k == "k" then
+				grid_h = clamp(GRID_DIM_MIN, grid_h - 1, GRID_DIM_MAX)
+			end
+		end
 	},
 
 	["BLOCKS"] = {
@@ -188,7 +255,7 @@ end
 
 local function draw_row_label(row_name, row_pix_w, row_pix_h, alpha)
 	love.graphics.setColor(255, 255, 255, 255 * (alpha or 1))
-	love.graphics.setFont(font_row_title)
+	love.graphics.setFont(font_row_label)
 
 	print_centered(row_name, row_pix_w/2, row_pix_h/2)
 end
