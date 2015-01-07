@@ -6,7 +6,10 @@ local sin = math.sin
 
 ---
 
-local SCALE_FACTOR = 100
+local IMG_W = 6
+local IMG_H = 6
+local OPT_SCREEN_W = 600
+local OPT_SCREEN_H = 600
 
 local timer = 0
 
@@ -27,9 +30,7 @@ local function get_pixel_color(x,y, time)
 end
 
 local function make_image(time)
-	local imagedata = love.image.newImageData(
-		love.graphics.getWidth() / SCALE_FACTOR,
-		love.graphics.getHeight() / SCALE_FACTOR)
+	local imagedata = love.image.newImageData(IMG_W, IMG_H)
 
 	for x = 0, imagedata:getWidth() - 1 do
 		for y = 0, imagedata:getHeight() - 1 do
@@ -41,7 +42,9 @@ local function make_image(time)
 end
 
 function bg.draw()
-	love.graphics.draw(make_image(timer), 0,0, 0, SCALE_FACTOR,SCALE_FACTOR)
+	local screenw, screenh = love.graphics.getDimensions()
+	love.graphics.draw(make_image(timer), 0,0, 0,
+		screenw / IMG_W,screenh / IMG_H)
 end
 
 ---
