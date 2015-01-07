@@ -6,14 +6,6 @@ local util = require("lib.self.util")
 
 ---
 
-local floor = math.floor
-local min = math.min
-local clamp = util.math.clamp
-
-local pi = math.pi
-
----
-
 local fade_state = "in" -- in, full, out
 local fade_out_to_game = false
 local global_alpha = 0
@@ -114,12 +106,12 @@ local rows = {
 	["GRID"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local num_y = floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+			local num_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 			local num_xsep_frac = 0.1
 
-			local arrow_y = floor(row_pix_h/2)
+			local arrow_y = math.floor(row_pix_h/2)
 
-			local scale = min(love.graphics.getWidth(), love.graphics.getHeight()) / 600
+			local scale = math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(font_row_label)
@@ -131,8 +123,8 @@ local rows = {
 			local num_xsep = num_xsep_frac * row_pix_w
 
 			local w_text = tostring(grid_w)
-			local w_text_x = floor(row_pix_w/2 - num_xsep)
-			love.graphics.print(w_text, w_text_x - floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
+			local w_text_x = math.floor(row_pix_w/2 - num_xsep)
+			love.graphics.print(w_text, w_text_x - math.floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
 
 			love.graphics.draw(
 				img_arrows,
@@ -145,18 +137,18 @@ local rows = {
 			---
 
 			local mid = "x"
-			love.graphics.print(mid, floor(row_pix_w/2 - font_row_label:getWidth(mid)/2), num_y - font_h/2 - 5)
+			love.graphics.print(mid, math.floor(row_pix_w/2 - font_row_label:getWidth(mid)/2), num_y - font_h/2 - 5)
 
 			---
 
 			local h_text = tostring(grid_h)
-			local h_text_x = floor(row_pix_w/2 + num_xsep)
-			love.graphics.print(h_text, h_text_x - floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
+			local h_text_x = math.floor(row_pix_w/2 + num_xsep)
+			love.graphics.print(h_text, h_text_x - math.floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
 
 			love.graphics.draw(
 				img_arrows,
 				h_text_x, arrow_y,
-				pi/2,
+				math.pi/2,
 				scale, scale,
 				img_arrows:getWidth()/2, img_arrows:getHeight()/2
 			)
@@ -165,13 +157,13 @@ local rows = {
 
 		keypressed = function(self, k)
 			if k == "w" then
-				grid_w = clamp(GRID_DIM_MIN, grid_w + 1, GRID_DIM_MAX)
+				grid_w = util.math.clamp(GRID_DIM_MIN, grid_w + 1, GRID_DIM_MAX)
 			elseif k == "s" then
-				grid_w = clamp(GRID_DIM_MIN, grid_w - 1, GRID_DIM_MAX)
+				grid_w = util.math.clamp(GRID_DIM_MIN, grid_w - 1, GRID_DIM_MAX)
 			elseif k == "i" then
-				grid_h = clamp(GRID_DIM_MIN, grid_h + 1, GRID_DIM_MAX)
+				grid_h = util.math.clamp(GRID_DIM_MIN, grid_h + 1, GRID_DIM_MAX)
 			elseif k == "k" then
-				grid_h = clamp(GRID_DIM_MIN, grid_h - 1, GRID_DIM_MAX)
+				grid_h = util.math.clamp(GRID_DIM_MIN, grid_h - 1, GRID_DIM_MAX)
 			end
 		end
 	},
@@ -181,8 +173,8 @@ local rows = {
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local half_tl = (DEFAULT_TILE_LENGTH/2)
 
-			local block_xdiff = floor(row_pix_w/4)
-			local block_y = floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+			local block_xdiff = math.floor(row_pix_w/4)
+			local block_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
 			for i = 1, 3 do
 				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
@@ -240,7 +232,7 @@ local rows = {
 				n_player_blocks = n_player_blocks - 1
 			end
 
-			n_player_blocks = clamp(1, n_player_blocks, 3)
+			n_player_blocks = util.math.clamp(1, n_player_blocks, 3)
 		end
 	},
 

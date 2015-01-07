@@ -9,12 +9,6 @@ local World = require("logic.world")
 
 ---
 
-local floor = math.floor
-
-local range = util.math.range
-
----
-
 local BLOCK_CONTROLS = {
 	[1] = {
 		up = "w",
@@ -65,8 +59,8 @@ function game:init()
 		local ret = {}
 
 		for _, entity in ipairs(self:get_entities_with{"Position"}) do
-			if range(x - r, entity.Position.x, x + r)
-				and range(y - r, entity.Position.y, y + r)
+			if util.math.range(x - r, entity.Position.x, x + r)
+				and util.math.range(y - r, entity.Position.y, y + r)
 			then
 				ret[#ret + 1] = entity
 			end
@@ -233,7 +227,7 @@ end
 
 function world:reset_player_blocks()
 	self.player_blocks[1].Position = {x = 0, y = self.grid_h - 1}
-	self.player_blocks[2].Position = {x = floor(self.grid_w/2), y = self.grid_h - 1}
+	self.player_blocks[2].Position = {x = math.floor(self.grid_w/2), y = self.grid_h - 1}
 	self.player_blocks[3].Position = {x = self.grid_w - 1, y = self.grid_h - 1}
 
 	self.player_blocks[1].Direction = "up"
@@ -374,7 +368,7 @@ function game:update(dt)
 	elseif world.state == "game" then
 		---
 		local current_beat = beat.seconds_to_absbeat(world.music:tell(), world.bpm)
-		local int_current_beat = floor(current_beat)
+		local int_current_beat = math.floor(current_beat)
 
 		if int_current_beat ~= last_beat then
 			last_beat = int_current_beat
