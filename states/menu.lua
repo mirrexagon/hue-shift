@@ -74,8 +74,58 @@ function menu:init()
 
 end
 
+---
+
+local TRIANGLE_W_FRAC = 0.3
+local TRIANGLE_H_FRAC = 0.6
+local TRIANGLE_X_SPACE
+
+local function draw_lr_arrows(y, color_l, color_r, w_frac, h_frac, x_space, row_pix_w, row_pix_h)
+	w_frac = w_frac or TRIANGLE_W_FRAC
+	h_frac = h_frac or TRIANGLE_H_FRAC
+	x_space = x_space or TRIANGLE_X_SPACE
+
+	row_pix_w = row_pix_w or ROW_PIX_W
+	row_pix_h = row_pix_h or ROW_PIX_H
+
+	---
+
+	local triangle_w = w_frac * x_space
+	local triangle_h = h_frac * row_pix_h
+
+	local triangle_l_left_x = (x_space - triangle_w)/2
+	local triangle_l_right_x = triangle_l_left_x + triangle_w
+
+	local triangle_r_left_x = row_pix_w - triangle_l_left_x
+	local triangle_r_right_x = triangle_r_left_x - triangle_w
+
+	if color_l then
+		love.graphics.setColor(color_l)
+	end
+	love.graphics.polygon(
+		"fill",
+		triangle_l_left_x, y,
+		triangle_l_right_x, y - triangle_h/2,
+		triangle_l_right_x, y + triangle_h/2
+	)
+
+	if color_r then
+		love.graphics.setColor(color_r)
+	end
+	love.graphics.polygon(
+		"fill",
+		triangle_r_left_x, y,
+		triangle_r_right_x, y - triangle_h/2,
+		triangle_r_right_x, y + triangle_h/2
+	)
+end
+
 function menu:enter(previous, arg)
 	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
+
+	TRIANGLE_X_SPACE = math.floor(ROW_PIX_W/4) - (DEFAULT_TILE_LENGTH/2)
+
+	---
 
 	fade_state = "in"
 	global_alpha = 0
@@ -168,6 +218,15 @@ local rows = {
 		end
 	},
 
+	["MUSIC"] = {
+		height = 2,
+		draw = function(self, row_pix_w, row_pix_h, alpha)
+			local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+
+			draw_lr_arrows(y)
+		end
+	},
+
 	["BLOCKS"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
@@ -197,32 +256,7 @@ local rows = {
 
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
-			local pad_pix_w = block_xdiff - half_tl
-
-			local TRIANGLE_W_FRAC = 0.3
-			local TRIANGLE_H_FRAC = 0.3
-
-			local triangle_w = TRIANGLE_W_FRAC * pad_pix_w
-			local triangle_h = TRIANGLE_H_FRAC * row_pix_h
-
-			local triangle_w_left_x = (pad_pix_w - triangle_w)/2
-			local triangle_w_right_x = triangle_w_left_x + triangle_w
-
-			local triangle_h_left_x = row_pix_w - triangle_w_left_x
-			local triangle_h_right_x = triangle_h_left_x - triangle_w
-
-			love.graphics.polygon(
-				"fill",
-				triangle_w_left_x, block_y,
-				triangle_w_right_x, block_y - triangle_h/2,
-				triangle_w_right_x, block_y + triangle_h/2
-			)
-			love.graphics.polygon(
-				"fill",
-				triangle_h_left_x, block_y,
-				triangle_h_right_x, block_y - triangle_h/2,
-				triangle_h_right_x, block_y + triangle_h/2
-			)
+			draw_lr_arrows(block_y)
 		end,
 
 		keypressed = function(self, k)
