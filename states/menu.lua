@@ -1,5 +1,6 @@
 local menu = {}
 
+
 ---
 
 local util = require("lib.self.util")
@@ -33,8 +34,13 @@ local font_row_label
 
 ---
 
-local GRID_DIM_MIN = 3
-local GRID_DIM_MAX = 10 -- TODO: use screen res to calculate
+local GRID_W_MIN = 3
+local GRID_W_MAX = 10
+
+local GRID_H_MIN = 3
+local GRID_H_MAX = 10
+
+---
 
 local grid_w, grid_h = 7, 7
 local n_player_blocks = 1
@@ -58,6 +64,9 @@ end
 
 local function calculate_dimensions(screenw, screenh)
 	font_row_label = love.graphics.newFont(math.floor(48 * (math.min(screenw, screenh) / 600)))
+
+	GRID_W_MAX = math.floor(screenw / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
+	GRID_H_MAX = math.floor(screenh / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 
 	ROW_PIX_PAD = math.floor(30 * (math.min(screenw, screenh) / 600))
 	ROW_PIX_W = screenw - (ROW_PIX_PAD*2)
@@ -202,14 +211,17 @@ local rows = {
 
 		keypressed = function(self, k)
 			if k == "w" then
-				grid_w = util.math.clamp(GRID_DIM_MIN, grid_w + 1, GRID_DIM_MAX)
+				grid_w = grid_w + 1
 			elseif k == "s" then
-				grid_w = util.math.clamp(GRID_DIM_MIN, grid_w - 1, GRID_DIM_MAX)
+				grid_w = grid_w - 1
 			elseif k == "i" then
-				grid_h = util.math.clamp(GRID_DIM_MIN, grid_h + 1, GRID_DIM_MAX)
+				grid_h = grid_h + 1
 			elseif k == "k" then
-				grid_h = util.math.clamp(GRID_DIM_MIN, grid_h - 1, GRID_DIM_MAX)
+				grid_h = grid_h - 1
 			end
+
+			grid_w = util.math.clamp(GRID_W_MIN, grid_w, GRID_W_MAX)
+			grid_h = util.math.clamp(GRID_H_MIN, grid_h, GRID_H_MAX)
 		end
 	},
 
