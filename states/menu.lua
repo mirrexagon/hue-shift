@@ -21,7 +21,7 @@ local ROW_PIX_H
 
 local ROW_ALPHA = math.floor(0.7 * 255)
 
-local SCROLL_SPEED = 5
+local INTERPOLATE_SPEED = 5
 local scroll_offset = 0
 local target_scroll_offset = 0
 
@@ -80,7 +80,7 @@ end
 ---
 
 local function interpolate(value, target, dt, speed)
-	return value + (target - value) * (speed or 1) * dt
+	return value + (target - value) * (speed or INTERPOLATE_SPEED) * dt
 end
 
 ---
@@ -159,6 +159,9 @@ local rows = {
 
 	["GRID"] = {
 		height = 2,
+
+		w_red = 0,
+		h_red = 0,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local num_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 			local num_xsep_frac = 0.1
@@ -178,15 +181,9 @@ local rows = {
 
 			local w_text = tostring(grid_w)
 			local w_text_x = math.floor(row_pix_w/2 - num_xsep)
-			love.graphics.print(w_text, w_text_x - math.floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
 
-			love.graphics.draw(
-				img_arrows,
-				w_text_x, arrow_y,
-				0,
-				scale, scale,
-				img_arrows:getWidth()/2, img_arrows:getHeight()/2
-			)
+			local h_text = tostring(grid_h)
+			local h_text_x = math.floor(row_pix_w/2 + num_xsep)
 
 			---
 
@@ -195,10 +192,20 @@ local rows = {
 
 			---
 
-			local h_text = tostring(grid_h)
-			local h_text_x = math.floor(row_pix_w/2 + num_xsep)
-			love.graphics.print(h_text, h_text_x - math.floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
+			local w_gb = (1 - self.w_red) * 255
+			love.graphics.setColor(255, w_gb, w_gb, 255 * alpha)
+			love.graphics.print(w_text, w_text_x - math.floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
+			love.graphics.draw(
+				img_arrows,
+				w_text_x, arrow_y,
+				0,
+				scale, scale,
+				img_arrows:getWidth()/2, img_arrows:getHeight()/2
+			)
 
+			local h_gb = (1 - self.h_red) * 255
+			love.graphics.setColor(255, h_gb, h_gb, 255 * alpha)
+			love.graphics.print(h_text, h_text_x - math.floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
 			love.graphics.draw(
 				img_arrows,
 				h_text_x, arrow_y,
@@ -206,6 +213,11 @@ local rows = {
 				scale, scale,
 				img_arrows:getWidth()/2, img_arrows:getHeight()/2
 			)
+		end,
+
+		update = function(self, dt)
+			self.w_red = interpolate(self.w_red, 0, dt)
+			self.h_red = interpolate(self.h_red, 0, dt)
 		end,
 
 		keypressed = function(self, k)
@@ -217,6 +229,13 @@ local rows = {
 				grid_h = grid_h + 1
 			elseif k == "k" then
 				grid_h = grid_h - 1
+			end
+
+			if not util.math.range(GRID_W_MIN, grid_w, GRID_W_MAX + 1) then
+				self.w_red = 1
+			end
+			if not util.math.range(GRID_H_MIN, grid_h, GRID_H_MAX + 1) then
+				self.h_red = 1
 			end
 
 			grid_w = util.math.clamp(GRID_W_MIN, grid_w, GRID_W_MAX)
@@ -426,11 +445,11 @@ function menu:update(dt)
 				row:update(dt)
 			end
 
-			row._actual_height = interpolate(row._actual_height or row.height or 1, row.height or 1, dt, SCROLL_SPEED)
+			row._actual_height = interpolate(row._actual_height or row.height or 1, row.height or 1, dt)
 		end
 	end
 
-	scroll_offset = interpolate(scroll_offset, target_scroll_offset, dt, SCROLL_SPEED)
+	scroll_offset = interpolate(scroll_offset, target_scroll_offset, dt)
 
 	---
 
