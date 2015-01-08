@@ -70,6 +70,12 @@ end
 
 ---
 
+local function interpolate(value, target, dt, speed)
+	return value + (target - value) * (speed or 1) * dt
+end
+
+---
+
 function menu:init()
 
 end
@@ -226,8 +232,8 @@ local rows = {
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
-			--local y = math.floor(row_pix_h/2)
+			--local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+			local y = math.floor(2*row_pix_h/3)
 
 			self.x_space = draw_lr_arrows(y, alpha, true, true)
 
@@ -238,6 +244,14 @@ local rows = {
 			local text_w = self.font:getWidth(MUSIC[selected_music].name)
 			local text_h = self.font:getHeight()
 			local text_wraps = math.floor(text_w / self.x_space)
+
+			if text_wraps >= 2 then
+				self.height = 2.5
+			else
+				self.height = 2
+			end
+
+			self.height = 2 + text_wraps/4
 
 			love.graphics.printf(
 				text,
@@ -335,8 +349,8 @@ local function get_row_height(row_n)
 	local row = get_row(row_n)
 
 	if row then
-		if row.height then
-			return row.height
+		if row._actual_height then
+			return row._actual_height
 		else
 			return 1
 		end
@@ -413,13 +427,18 @@ function menu:update(dt)
 
 	---
 
-	local row_name = row_order[selected_row]
-	local row = rows[row_name]
-	if row and row.update then
-		row:update(dt)
+	for row_n, row_name in ipairs(row_order) do
+		local row = rows[row_name]
+		if row then
+			if row.update then
+				row:update(dt)
+			end
+
+			row._actual_height = interpolate(row._actual_height or row.height or 1, row.height or 1, dt, SCROLL_SPEED)
+		end
 	end
 
-	scroll_offset = scroll_offset + (target_scroll_offset - scroll_offset)*SCROLL_SPEED*dt
+	scroll_offset = interpolate(scroll_offset, target_scroll_offset, dt, SCROLL_SPEED)
 
 	---
 
