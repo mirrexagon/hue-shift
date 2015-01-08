@@ -227,12 +227,24 @@ local rows = {
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
+			--local y = math.floor(row_pix_h/2)
 
 			self.x_space = draw_lr_arrows(y, alpha, true, true)
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(self.font)
-			print_centered(MUSIC[selected_music].name, row_pix_w/2, y)
+
+			local text = MUSIC[selected_music].name
+			local text_w = self.font:getWidth(MUSIC[selected_music].name)
+			local text_h = self.font:getHeight()
+			local text_wraps = math.floor(text_w / self.x_space)
+
+			love.graphics.printf(
+				text,
+				(row_pix_w/2) - (self.x_space/2), y - (text_h/2) - text_wraps*(text_h/2),
+				self.x_space,
+				"center"
+			)
 		end,
 
 		keypressed = function(self, k)
@@ -249,7 +261,7 @@ local rows = {
 			end
 
 			if k == "left" or k == "right" then
-				self:recalc_font()
+				--self:recalc_font()
 			end
 		end
 	},
