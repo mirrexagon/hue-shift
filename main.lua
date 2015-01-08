@@ -11,6 +11,7 @@
 ]]
 
 gs = require("lib.hump.gamestate")
+local util = require("lib.self.util")
 
 bg = require("logic.background")
 
@@ -58,7 +59,8 @@ BLOCK_COLORS = {
 }
 
 MUSIC = {
-	laserwash = {
+	{
+		name = "laserwash",
 		path = "music/laserwash.ogg",
 		bpm = 90
 	}

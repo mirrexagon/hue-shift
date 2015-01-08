@@ -38,7 +38,7 @@ local GRID_DIM_MAX = 10 -- TODO: use screen res to calculate
 
 local grid_w, grid_h = 7, 7
 local n_player_blocks = 1
-local music = "laserwash"
+local selected_music = 1
 
 local selected_row = 1
 
@@ -80,7 +80,7 @@ local TRIANGLE_W_FRAC = 0.3
 local TRIANGLE_H_FRAC = 0.6
 local TRIANGLE_X_SPACE
 
-local function draw_lr_arrows(y, color_l, color_r, w_frac, h_frac, x_space, row_pix_w, row_pix_h)
+local function draw_lr_arrows(y, alpha, active_l, active_r, w_frac, h_frac, x_space, row_pix_w, row_pix_h)
 	w_frac = w_frac or TRIANGLE_W_FRAC
 	h_frac = h_frac or TRIANGLE_H_FRAC
 	x_space = x_space or TRIANGLE_X_SPACE
@@ -99,9 +99,7 @@ local function draw_lr_arrows(y, color_l, color_r, w_frac, h_frac, x_space, row_
 	local triangle_r_left_x = row_pix_w - triangle_l_left_x
 	local triangle_r_right_x = triangle_r_left_x - triangle_w
 
-	if color_l then
-		love.graphics.setColor(color_l)
-	end
+	love.graphics.setColor(255, 255, 255, (active_l and 64 or 255) * alpha)
 	love.graphics.polygon(
 		"fill",
 		triangle_l_left_x, y,
@@ -109,9 +107,7 @@ local function draw_lr_arrows(y, color_l, color_r, w_frac, h_frac, x_space, row_
 		triangle_l_right_x, y + triangle_h/2
 	)
 
-	if color_r then
-		love.graphics.setColor(color_r)
-	end
+	love.graphics.setColor(255, 255, 255, (active_r and 64 or 255) * alpha)
 	love.graphics.polygon(
 		"fill",
 		triangle_r_left_x, y,
@@ -223,7 +219,10 @@ local rows = {
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
-			draw_lr_arrows(y)
+			draw_lr_arrows(y, alpha,
+				selected_music == 1,
+				selected_music == #MUSIC
+			)
 		end
 	},
 
@@ -256,7 +255,10 @@ local rows = {
 
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
-			draw_lr_arrows(block_y)
+			draw_lr_arrows(block_y, alpha,
+				(n_player_blocks == 1) ,
+				(n_player_blocks == 3)
+			)
 		end,
 
 		keypressed = function(self, k)
@@ -390,8 +392,8 @@ function menu:update(dt)
 					grid_w = grid_w,
 					grid_h = grid_h,
 
-					music = MUSIC[music].path,
-					bpm = MUSIC[music].bpm
+					music = MUSIC[selected_music].path,
+					bpm = MUSIC[selected_music].bpm
 				})
 			else
 				love.event.quit()
