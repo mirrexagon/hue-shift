@@ -208,7 +208,6 @@ local rows = {
 			)
 		end,
 
-
 		keypressed = function(self, k)
 			if k == "w" then
 				grid_w = grid_w + 1
@@ -510,8 +509,8 @@ local function next_row()
 	local old_row = get_row()
 	if old_row then
 		old_row.selected = false
-		if old_row.deselected then
-			old_row:deselected()
+		if old_row.on_deselect then
+			old_row:on_deselect()
 		end
 	end
 
@@ -534,27 +533,28 @@ local function next_row()
 
 	local new_row = get_row()
 	if new_row then
-		new_row.selected = false
-		if new_row.deselected then
-			new_row:deselected()
+		new_row.selected = true
+		if new_row.on_select then
+			new_row:on_select()
 		end
 	end
 end
 
-function menu:keypressed(k)
-	if k == "up" then
-		prev_row()
-	elseif k == "down" then
-		next_row()
-	elseif k == "escape" then
-		fade_state = "out"
-		fade_out_to_game = false
-
-	else
-		local row = get_row()
-		if row and row.keypressed then
-			row:keypressed(k)
+function menu:keypressed(k, isrep)
+	if not isrep then
+		if k == "up" then
+			prev_row()
+		elseif k == "down" then
+			next_row()
+		elseif k == "escape" then
+			fade_state = "out"
+			fade_out_to_game = false
 		end
+	end
+
+	local row = get_row()
+	if row and row.keypressed then
+		row:keypressed(k, isrep)
 	end
 end
 
