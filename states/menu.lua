@@ -42,9 +42,14 @@ local GRID_H_MAX = 10
 
 ---
 
-local grid_w, grid_h = 7, 7
-local n_player_blocks = 1
-local selected_music = 1
+local game_params = {
+	grid_w = 7,
+	grid_h = 7,
+
+	music = 1,
+
+	npairs = 1
+}
 
 local selected_row = 1
 
@@ -179,10 +184,10 @@ local rows = {
 
 			local num_xsep = num_xsep_frac * row_pix_w
 
-			local w_text = tostring(grid_w)
+			local w_text = tostring(game_params.grid_w)
 			local w_text_x = math.floor(row_pix_w/2 - num_xsep)
 
-			local h_text = tostring(grid_h)
+			local h_text = tostring(game_params.grid_h)
 			local h_text_x = math.floor(row_pix_w/2 + num_xsep)
 
 			---
@@ -222,24 +227,24 @@ local rows = {
 
 		keypressed = function(self, k)
 			if k == "w" then
-				grid_w = grid_w + 1
+				game_params.grid_w = game_params.grid_w + 1
 			elseif k == "s" then
-				grid_w = grid_w - 1
+				game_params.grid_w = game_params.grid_w - 1
 			elseif k == "i" then
-				grid_h = grid_h + 1
+				game_params.grid_h = game_params.grid_h + 1
 			elseif k == "k" then
-				grid_h = grid_h - 1
+				game_params.grid_h = game_params.grid_h - 1
 			end
 
-			if not util.math.range(GRID_W_MIN, grid_w, GRID_W_MAX + 1) then
+			if not util.math.range(GRID_W_MIN, game_params.grid_w, GRID_W_MAX + 1) then
 				self.w_red = 1
 			end
-			if not util.math.range(GRID_H_MIN, grid_h, GRID_H_MAX + 1) then
+			if not util.math.range(GRID_H_MIN, game_params.grid_h, GRID_H_MAX + 1) then
 				self.h_red = 1
 			end
 
-			grid_w = util.math.clamp(GRID_W_MIN, grid_w, GRID_W_MAX)
-			grid_h = util.math.clamp(GRID_H_MIN, grid_h, GRID_H_MAX)
+			game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
+			game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
 		end
 	},
 
@@ -261,8 +266,8 @@ local rows = {
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(self.font)
 
-			local text = MUSIC[selected_music].name
-			local text_w = self.font:getWidth(MUSIC[selected_music].name)
+			local text = MUSIC[game_params.music].name
+			local text_w = self.font:getWidth(text)
 			local text_h = self.font:getHeight()
 			local text_wraps = math.floor(text_w / self.x_space)
 
@@ -278,14 +283,14 @@ local rows = {
 
 		keypressed = function(self, k)
 			if k == "right" then
-				selected_music = selected_music + 1
-				if selected_music > #MUSIC then
-					selected_music = 1
+				game_params.music = game_params.music + 1
+				if game_params.music > #MUSIC then
+					game_params.music = 1
 				end
 			elseif k == "left" then
-				selected_music = selected_music - 1
-				if selected_music < 1 then
-					selected_music = #MUSIC
+				game_params.music = game_params.music - 1
+				if game_params.music < 1 then
+					game_params.music = #MUSIC
 				end
 			end
 		end
@@ -300,7 +305,7 @@ local rows = {
 			local block_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
 			for i = 1, 3 do
-				local lalpha = (i <= n_player_blocks and 255 or 64) * alpha
+				local lalpha = (i <= game_params.npairs and 255 or 64) * alpha
 
 				love.graphics.setColor(
 					BLOCK_COLORS[i][1],
@@ -321,19 +326,19 @@ local rows = {
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
 			draw_lr_arrows(block_y, alpha,
-				(n_player_blocks ~= 1) ,
-				(n_player_blocks ~= 3)
+				(game_params.npairs ~= 1) ,
+				(game_params.npairs ~= 3)
 			)
 		end,
 
 		keypressed = function(self, k)
 			if k == "right" then
-				n_player_blocks = n_player_blocks + 1
+				game_params.npairs = game_params.npairs + 1
 			elseif k == "left" then
-				n_player_blocks = n_player_blocks - 1
+				game_params.npairs = game_params.npairs - 1
 			end
 
-			n_player_blocks = util.math.clamp(1, n_player_blocks, 3)
+			n_player_blocks = util.math.clamp(1, game_params.npairs, 3)
 		end
 	},
 
@@ -472,13 +477,13 @@ function menu:update(dt)
 			global_alpha = 0
 			if fade_out_to_game then
 				gs.switch(state_game, {
-					npairs = n_player_blocks,
+					npairs = game_params.npairs,
 
-					grid_w = grid_w,
-					grid_h = grid_h,
+					grid_w = game_params.grid_w,
+					grid_h = game_params.grid_h,
 
-					music = MUSIC[selected_music].path,
-					bpm = MUSIC[selected_music].bpm
+					music = MUSIC[game_params.music].path,
+					bpm = MUSIC[game_params.music].bpm
 				})
 			else
 				love.event.quit()
