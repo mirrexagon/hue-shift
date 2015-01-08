@@ -258,8 +258,13 @@ local rows = {
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			--local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
-			local y = math.floor(2*row_pix_h/3)
+			local y_space = row_pix_h - ROW_PIX_H
+			local y = ROW_PIX_H + math.floor(y_space/2)
+
+			--[[
+			love.graphics.line(0,ROW_PIX_H, row_pix_w,ROW_PIX_H)
+			love.graphics.line(0,y, row_pix_w,y)
+			--]]
 
 			self.x_space = draw_lr_arrows(y, alpha, true, true)
 
@@ -269,9 +274,11 @@ local rows = {
 			local text = MUSIC[game_params.music].name
 			local text_w = self.font:getWidth(text)
 			local text_h = self.font:getHeight()
-			local text_wraps = math.floor(text_w / self.x_space)
 
-			self.height = 2 + text_wraps/4
+			local wraps_full = text_w / self.x_space
+			local text_wraps = (wraps_full < 1) and 0 or util.math.round(text_w / self.x_space)
+
+			self.height = 2 + 0.75 * text_wraps * (text_h / ROW_PIX_H)
 
 			love.graphics.printf(
 				text,
