@@ -60,7 +60,7 @@ BLOCK_COLORS = {
 
 MUSIC = {
 	{
-		name = "laserwash",
+		name = "coda - laserwash",
 		path = "music/laserwash.ogg",
 		bpm = 90
 	}

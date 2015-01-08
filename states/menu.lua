@@ -96,10 +96,10 @@ local function draw_lr_arrows(y, alpha, active_l, active_r, w_frac, h_frac, x_sp
 	local triangle_l_left_x = (x_space - triangle_w)/2
 	local triangle_l_right_x = triangle_l_left_x + triangle_w
 
-	local triangle_r_left_x = row_pix_w - triangle_l_left_x
-	local triangle_r_right_x = triangle_r_left_x - triangle_w
+	local triangle_r_right_x = row_pix_w - triangle_l_left_x
+	local triangle_r_left_x = triangle_r_right_x - triangle_w
 
-	love.graphics.setColor(255, 255, 255, (active_l and 64 or 255) * alpha)
+	love.graphics.setColor(255, 255, 255, (active_l and 255 or 64) * alpha)
 	love.graphics.polygon(
 		"fill",
 		triangle_l_left_x, y,
@@ -107,24 +107,17 @@ local function draw_lr_arrows(y, alpha, active_l, active_r, w_frac, h_frac, x_sp
 		triangle_l_right_x, y + triangle_h/2
 	)
 
-	love.graphics.setColor(255, 255, 255, (active_r and 64 or 255) * alpha)
+	love.graphics.setColor(255, 255, 255, (active_r and 255 or 64) * alpha)
 	love.graphics.polygon(
 		"fill",
-		triangle_r_left_x, y,
-		triangle_r_right_x, y - triangle_h/2,
-		triangle_r_right_x, y + triangle_h/2
+		triangle_r_right_x, y,
+		triangle_r_left_x, y - triangle_h/2,
+		triangle_r_left_x, y + triangle_h/2
 	)
-end
-
-function menu:enter(previous, arg)
-	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
-
-	TRIANGLE_X_SPACE = math.floor(ROW_PIX_W/4) - (DEFAULT_TILE_LENGTH/2)
 
 	---
 
-	fade_state = "in"
-	global_alpha = 0
+	return triangle_r_left_x - triangle_l_right_x
 end
 
 ---
@@ -216,13 +209,48 @@ local rows = {
 
 	["MUSIC"] = {
 		height = 2,
+		font = love.graphics.newFont(48),
+		x_space = 0,
+
+		init = function(self)
+			self.x_space = draw_lr_arrows(1, 1)
+			self:recalc_font()
+		end,
+
+		recalc_font = function(self)
+			local text = MUSIC[selected_music].name
+
+			self.font = love.graphics.newFont(
+				util.math.clamp(1, math.floor(1.5 * self.x_space / #text), 48)
+			)
+		end,
+
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
-			draw_lr_arrows(y, alpha,
-				selected_music == 1,
-				selected_music == #MUSIC
-			)
+			self.x_space = draw_lr_arrows(y, alpha, true, true)
+
+			love.graphics.setColor(255, 255, 255, 255 * alpha)
+			love.graphics.setFont(self.font)
+			print_centered(MUSIC[selected_music].name, row_pix_w/2, y)
+		end,
+
+		keypressed = function(self, k)
+			if k == "right" then
+				selected_music = selected_music + 1
+				if selected_music > #MUSIC then
+					selected_music = 1
+				end
+			elseif k == "left" then
+				selected_music = selected_music - 1
+				if selected_music < 1 then
+					selected_music = #MUSIC
+				end
+			end
+
+			if k == "left" or k == "right" then
+				self:recalc_font()
+			end
 		end
 	},
 
@@ -352,6 +380,21 @@ local function draw_row(row_n, row_slot, alpha)
 end
 
 ---
+
+function menu:enter(previous, arg)
+	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
+
+	TRIANGLE_X_SPACE = math.floor(ROW_PIX_W/4) - (DEFAULT_TILE_LENGTH/2)
+
+	for row_name, row in pairs(rows) do
+		if row.init then row:init() end
+	end
+
+	---
+
+	fade_state = "in"
+	global_alpha = 0
+end
 
 function menu:update(dt)
 	bg.update(dt)
