@@ -5,9 +5,15 @@
 --[[
 	TODO:
 		Record scores
-		Proper quantified levels
 		Obstacle AI
-		Challenges - time limit, limited number of moves?
+
+		Add modifiers/challenges row, has things like:
+			+ Wrong goal block is obstacle
+			+ Time limit, step limit, etc
+			+ Game speed
+
+		Achievements?
+		More backgrounds?
 ]]
 
 gs = require("lib.hump.gamestate")
