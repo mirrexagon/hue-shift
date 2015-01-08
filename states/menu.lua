@@ -284,8 +284,8 @@ local rows = {
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
 			draw_lr_arrows(block_y, alpha,
-				(n_player_blocks == 1) ,
-				(n_player_blocks == 3)
+				(n_player_blocks ~= 1) ,
+				(n_player_blocks ~= 3)
 			)
 		end,
 
