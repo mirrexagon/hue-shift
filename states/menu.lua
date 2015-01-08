@@ -227,20 +227,11 @@ local rows = {
 
 	["MUSIC"] = {
 		height = 2,
-		font = love.graphics.newFont(48),
+		font = love.graphics.newFont(36),
 		x_space = 0,
 
 		init = function(self)
 			self.x_space = draw_lr_arrows(1, 1)
-			self:recalc_font()
-		end,
-
-		recalc_font = function(self)
-			local text = MUSIC[selected_music].name
-
-			self.font = love.graphics.newFont(
-				util.math.clamp(1, math.floor(1.5 * self.x_space / #text), 48)
-			)
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
@@ -256,12 +247,6 @@ local rows = {
 			local text_w = self.font:getWidth(MUSIC[selected_music].name)
 			local text_h = self.font:getHeight()
 			local text_wraps = math.floor(text_w / self.x_space)
-
-			if text_wraps >= 2 then
-				self.height = 2.5
-			else
-				self.height = 2
-			end
 
 			self.height = 2 + text_wraps/4
 
@@ -284,10 +269,6 @@ local rows = {
 				if selected_music < 1 then
 					selected_music = #MUSIC
 				end
-			end
-
-			if k == "left" or k == "right" then
-				--self:recalc_font()
 			end
 		end
 	},
