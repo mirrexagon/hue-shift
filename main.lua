@@ -12,6 +12,9 @@
 			+ Time limit, step limit, etc
 			+ Game speed
 
+		Screen shake - a shake happens every beat,
+			specify intensity level per song?
+
 		Achievements?
 		More backgrounds?
 ]]
