@@ -1,8 +1,7 @@
--- Miscellaneous utility functions.
 local util = {}
 
+---
 
--- General --
 -- Prints a formatted string.
 function util.printf(s, ...)
 	return print(string.format(s, ...))
@@ -14,19 +13,19 @@ function util.errorf(s, ...)
 	return error(string.format(s, ...))
 end
 
+---
 
--- String --
 util.string = {}
 
 function util.string.split(str, delim)
-
+	-- TODO: Write this.
 end
 
+---
 
--- Table --
 util.table = {}
 
--- Returns an copy of a table.
+-- Returns a deep copy of a table.
 function util.table.clone(t)
 	local c = setmetatable({}, getmetatable(t))
 	for k, v in pairs(t) do
@@ -69,22 +68,24 @@ function util.table.fill(t, kv)
 	end
 end
 
--- Flips keys and values of table t.
+-- Returns a new table with the values of t as keys and vice versa.
 function util.table.invert(t)
 	local result = {}
-	for k,v in pairs(t) do
+	for k, v in pairs(t) do
 		result[v] = k
 	end
 	return result
 end
 
+-- Checks whether t has all the keys listed in keys.
 function util.table.has(t, keys)
-	for _,c in ipairs(keys) do
+	for _, c in ipairs(keys) do
 		if not t[c] then return false end
 	end
 	return true
 end
 
+-- Returns the highest numerical key of t.
 function util.table.maxn(t)
 	local max = -math.huge
 	for k, v in pairs(t) do
@@ -95,6 +96,7 @@ function util.table.maxn(t)
 	return (max ~= -math.huge) and max or nil
 end
 
+-- Returns the number of elements in t.
 function util.table.nelem(t)
 	local count = 0
 	for k,v in pairs(t) do
@@ -103,8 +105,8 @@ function util.table.nelem(t)
 	return count
 end
 
+---
 
--- File/IO --
 util.io = {}
 
 -- Given a file handle, this function returns the size
@@ -116,8 +118,8 @@ function util.io.filesize(file)
 	return size
 end
 
+---
 
--- Math --
 util.math = {}
 
 -- Rounds num to idp decimal places.
@@ -132,21 +134,23 @@ function util.math.truncate(n)
 	return math.floor(n + 0.5)
 end
 
--- Checks whether n is within min and max.
+-- Checks whether n is within min and max, inclusive.
 function util.math.range(min, n, max)
-	return (n >= min) and (n < max)
+	return (n >= min) and (n <= max)
 end
 
+-- Returns n if it is within min and max, or else
+-- returns min or max if n is too high or low respectively.
 function util.math.clamp(min, n, max)
 	return math.max(math.min(n, max), min)
 end
 
 -- Returns 1 if n is positive, -1 if n is negative or 0 if n is 0.
 function util.math.sign(n)
-	return n>0 and 1 or n<0 and -1 or 0
+	return (n > 0) and 1 or (n < 0) and -1 or 0
 end
 
--- Maps one value from one range to another range.
+-- Maps n from one range to another range.
 function util.math.map(n, in_min, in_max, out_min, out_max)
 	return (n - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 end
