@@ -47,6 +47,10 @@ function bg.draw()
 		screenw / IMG_W,screenh / IMG_H)
 end
 
+function bg.set_timer(t)
+	timer = t
+end
+
 ---
 
 return bg

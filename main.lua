@@ -77,12 +77,7 @@ MUSIC = {
 function love.load()
 	gs.registerEvents()
 
-	--[[
-	gs.switch(state_game, {
-		music = "music/laserwash.ogg",
-		bpm = 90
-	})
-	--]]
+	bg.set_timer(love.math.random(0, 300))
 
 	gs.switch(state_menu)
 end
