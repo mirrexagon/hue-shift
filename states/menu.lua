@@ -1,6 +1,5 @@
 local menu = {}
 
-
 ---
 
 local util = require("lib.self.util")
@@ -248,7 +247,7 @@ local rows = {
 		end
 	},
 
-	["MUSIC"] = {
+	["MUSIC"] = { -- TODO: Play selected music quietly while MUSIC is selected? Pulse something to its beat? (Will have to modularise beat logic from game.lua) Have dedicated menu music that plays otherwise? Pulse something to its beat too?
 		height = 2,
 		font = love.graphics.newFont(36),
 		x_space = 0,
