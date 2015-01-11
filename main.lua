@@ -1,5 +1,10 @@
 --[[
 	Hue Shift, a game by LegoSpacy
+
+	---
+
+	Music:
+		laserwash by coda (http://coda.s3m.us)
 ]]
 
 --[[
