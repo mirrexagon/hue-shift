@@ -10,8 +10,8 @@ After cloning, run "git submodule init" and "git submodule update" to get the re
 
 Screenshots
 ===========
-![Menu top](https://legospacy.github.io/hue-shift/menu_top.png)
-![Menu bottom](https://legospacy.github.io/hue-shift/menu_bottom.png)
-![One block](https://legospacy.github.io/hue-shift/one_block.png)
-![Two blocks](https://legospacy.github.io/hue-shift/two_blocks.png)
-![Three blocks](https://legospacy.github.io/hue-shift/three_blocks.png)
+![Menu top](http://legospacy.github.io/hue-shift/img/menu_top.png)
+![Menu bottom](http://legospacy.github.io/hue-shift/img/menu_bottom.png)
+![One block](https://legospacy.github.io/hue-shift/img/one_block.png)
+![Two blocks](https://legospacy.github.io/hue-shift/img/two_blocks.png)
+![Three blocks](https://legospacy.github.io/hue-shift/img/three_blocks.png)
