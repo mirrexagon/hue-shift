@@ -17,8 +17,10 @@
 			+ Time limit, step limit, etc
 			+ Game speed
 
-		Screen shake - a shake happens every beat,
-			specify intensity level per song?
+		Effects:
+			Screen shake - a shake happens every beat, specify intensity level per song?
+			Background flashing - also every beat?
+			Grid scaling - as above
 
 		Achievements?
 		More backgrounds?
