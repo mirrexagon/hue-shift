@@ -102,20 +102,8 @@ function world:update(dt)
 	self:run_systems("update", dt)
 end
 
-function world:draw(funcs)
-	if funcs.background then
-		funcs.background(self)
-	end
-
-	---
-
+function world:draw()
 	self:run_systems("draw")
-
-	---
-
-	if funcs.ui then
-		funcs.ui(self)
-	end
 end
 
 ---

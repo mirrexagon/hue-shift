@@ -438,15 +438,13 @@ function game:update(dt)
 end
 
 function game:draw()
-	world:draw{
-		background = function()
-			love.graphics.setColor(255, 255, 255, BG_ALPHA)
-			bg.draw()
+	love.graphics.setColor(255, 255, 255, BG_ALPHA)
+	bg.draw()
 
-			draw_grid(world.grid_w, world.grid_h,
-				world.tile_l, world.tile_l, world.tile_pad)
-		end
-	}
+	draw_grid(world.grid_w, world.grid_h,
+		world.tile_l, world.tile_l, world.tile_pad)
+
+	world:draw()
 end
 
 ---
