@@ -441,9 +441,11 @@ function game:draw()
 	love.graphics.setColor(255, 255, 255, BG_ALPHA)
 	bg.draw()
 
+	--love.graphics.setColor(255, 255, 255, 255)
 	draw_grid(world.grid_w, world.grid_h,
 		world.tile_l, world.tile_l, world.tile_pad)
 
+	love.graphics.setColor(255, 255, 255, 255)
 	world:draw()
 end
 
