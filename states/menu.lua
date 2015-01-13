@@ -489,7 +489,8 @@ function menu:update(dt)
 					grid_h = game_params.grid_h,
 
 					music = MUSIC[game_params.music].path,
-					bpm = MUSIC[game_params.music].bpm
+					bpm = MUSIC[game_params.music].bpm,
+					onbeat = MUSIC[game_params.music].onbeat
 				})
 			else
 				love.event.quit()

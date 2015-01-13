@@ -38,6 +38,20 @@ local world = World.new()
 
 ---
 
+local function generate_control_functions(world, keyt)
+	local funcs = {}
+
+	for id, controls in ipairs(keyt) do
+		for dir, key in pairs(controls) do
+			funcs[key] = function()
+				world.player_blocks[id].Direction = dir
+			end
+		end
+	end
+
+	return funcs
+end
+
 function game:init()
 	world:load_system_dir("systems")
 
@@ -78,12 +92,12 @@ function game:init()
 	end
 
 	function world:step_beat_timers()
-		for i, event in ipairs(world.beat_timers) do
+		for i, event in ipairs(self.beat_timers) do
 			event.delay = event.delay - 1
 
 			if event.delay == 0 then
-				event.func(event.func)
-				world.beat_timers[i] = nil
+				event.func(self)
+				self.beat_timers[i] = nil
 			end
 		end
 	end
@@ -119,23 +133,13 @@ function game:init()
 		Active = false
 	}
 	end
+
+	---
+
+	control_functions = generate_control_functions(world, BLOCK_CONTROLS)
 end
 
 ---
-
-local function generate_control_functions(world, keyt)
-	local funcs = {}
-
-	for id, controls in ipairs(keyt) do
-		for dir, key in pairs(controls) do
-			funcs[key] = function()
-				world.player_blocks[id].Direction = dir
-			end
-		end
-	end
-
-	return funcs
-end
 
 local function draw_grid(grid_w, grid_h, tile_w, tile_h, tile_pad)
 	local grid_pixel_w = (grid_w * tile_w) + ((grid_w + 1) * tile_pad)
@@ -197,6 +201,8 @@ function game:enter(previous, arg)
 
 	world.bpm = arg.bpm
 
+	world.onbeat = arg.onbeat
+
 	---
 
 	world.game_speed = arg.game_speed or 1
@@ -204,10 +210,6 @@ function game:enter(previous, arg)
 	---
 
 	world.npairs = arg.npairs or 1
-
-	---
-
-	control_functions = generate_control_functions(world, BLOCK_CONTROLS)
 
 	---
 
@@ -278,7 +280,14 @@ function world:to_game()
 		[3] = 0
 	}
 
+	---
+
 	self.beat_timers = {}
+	if self.onbeat then
+		for beat, func in pairs(self.onbeat) do
+			self:add_beat_timer(beat, func)
+		end
+	end
 
 	world.done_first_beat = false
 
