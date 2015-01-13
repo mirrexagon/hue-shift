@@ -350,7 +350,7 @@ local rows = {
 
 	["START"] = {
 		keypressed = function(self, k)
-			if k == "return" then
+			if k == "return" or k == " " then
 				fade_state = "out"
 				fade_out_to_game = true
 			end
