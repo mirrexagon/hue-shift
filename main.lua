@@ -23,7 +23,7 @@
 			Grid scaling - as above
 
 		Achievements?
-		More backgrounds?
+		More backgrounds? Set by music?
 ]]
 
 gs = require("lib.hump.gamestate")
