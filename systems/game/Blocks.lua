@@ -2,15 +2,6 @@ local util = require("lib.self.util")
 
 ---
 
-local DIRECTION_MAPPING = {
-	up = {x = 0, y = -1},
-	right = {x = 1, y = 0},
-	down = {x = 0, y = 1},
-	left = {x = -1, y = 0}
-}
-
----
-
 local function add_pair(t, ent1, ent2)
 	t[ent1][ent2] = true
 	t[ent2][ent1] = true
