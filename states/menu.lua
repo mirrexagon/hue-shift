@@ -80,13 +80,6 @@ local function calculate_dimensions(screenw, screenh)
 	ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
 end
 
-function menu:resize(screenw, screenh)
-	calculate_dimensions(screenw, screenh)
-
-	game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
-	game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
-end
-
 ---
 
 local function interpolate(value, target, dt, speed)
@@ -249,6 +242,10 @@ local rows = {
 
 		init = function(self)
 			self.x_space = draw_lr_arrows(1, 1)
+		end,
+
+		resize = function(self, screenw, screenh)
+			self.font = love.graphics.newFont(math.floor(36 * (math.min(screenw, screenh) / 600)))
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
@@ -435,6 +432,17 @@ function menu:enter(previous, arg)
 
 	fade_state = "in"
 	global_alpha = 0
+end
+
+function menu:resize(screenw, screenh)
+	calculate_dimensions(screenw, screenh)
+
+	game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
+	game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
+
+	for row_name, row in pairs(rows) do
+		if row.resize then row:resize(screenw, screenh) end
+	end
 end
 
 function menu:update(dt)
