@@ -79,6 +79,9 @@ end
 
 function menu:resize(screenw, screenh)
 	calculate_dimensions(screenw, screenh)
+
+	game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
+	game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
 end
 
 ---
@@ -235,10 +238,10 @@ local rows = {
 				game_params.grid_h = game_params.grid_h - 1
 			end
 
-			if not util.math.range(GRID_W_MIN, game_params.grid_w, GRID_W_MAX + 1) then
+			if not util.math.range(GRID_W_MIN, game_params.grid_w, GRID_W_MAX) then
 				self.w_red = 1
 			end
-			if not util.math.range(GRID_H_MIN, game_params.grid_h, GRID_H_MAX + 1) then
+			if not util.math.range(GRID_H_MIN, game_params.grid_h, GRID_H_MAX) then
 				self.h_red = 1
 			end
 
