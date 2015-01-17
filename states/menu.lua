@@ -12,7 +12,7 @@ local global_alpha = 0
 
 ---
 
-local N_ROWS_ONSCREEN
+local N_ROWS_ONSCREEN = 5
 
 local ROW_PIX_PAD
 local ROW_PIX_W
@@ -28,6 +28,7 @@ local target_scroll_offset = 0
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 local img_arrows = love.graphics.newImage("graphics/arrows.png")
+img_arrows:setFilter("nearest", "nearest")
 
 local font_row_label
 
@@ -78,11 +79,12 @@ local function calculate_dimensions(screenw, screenh)
 
 	local DEFAULT_ROW_PAD = 30
 	ROW_PIX_PAD = util.math.clamp(0, math.floor(DEFAULT_ROW_PAD * (math.min(screenw, screenh) / 600)), DEFAULT_ROW_PAD)
+	--ROW_PIX_PAD = DEFAULT_ROW_PAD
 
 	ROW_PIX_W = screenw - (ROW_PIX_PAD*2)
 
-	--ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
-	N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
+	ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+	--N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
 end
 
 ---
