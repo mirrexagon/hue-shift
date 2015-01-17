@@ -12,11 +12,11 @@ local global_alpha = 0
 
 ---
 
-local N_ROWS_ONSCREEN = 5
+local N_ROWS_ONSCREEN
 
 local ROW_PIX_PAD
 local ROW_PIX_W
-local ROW_PIX_H
+local ROW_PIX_H = 85
 
 local ROW_ALPHA = math.floor(0.7 * 255)
 
@@ -27,10 +27,7 @@ local target_scroll_offset = 0
 ---
 
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
-img_arrow:setFilter("nearest", "nearest")
-
 local img_arrows = love.graphics.newImage("graphics/arrows.png")
-img_arrows:setFilter("nearest", "nearest")
 
 local font_row_label
 
@@ -69,15 +66,23 @@ end
 
 ---
 
+local function calculate_font_size(default)
+	return util.math.clamp(0, math.floor(default * (love.graphics.getWidth() / 600)), default)
+end
+
 local function calculate_dimensions(screenw, screenh)
-	font_row_label = love.graphics.newFont(math.floor(48 * (math.min(screenw, screenh) / 600)))
+	font_row_label = love.graphics.newFont(calculate_font_size(48))
 
 	GRID_W_MAX = math.floor(screenw / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 	GRID_H_MAX = math.floor(screenh / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 
-	ROW_PIX_PAD = math.floor(30 * (math.min(screenw, screenh) / 600))
+	local DEFAULT_ROW_PAD = 30
+	ROW_PIX_PAD = util.math.clamp(0, math.floor(DEFAULT_ROW_PAD * (math.min(screenw, screenh) / 600)), DEFAULT_ROW_PAD)
+
 	ROW_PIX_W = screenw - (ROW_PIX_PAD*2)
-	ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+
+	--ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+	N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
 end
 
 ---
@@ -160,7 +165,7 @@ local rows = {
 
 			local arrow_y = math.floor(row_pix_h/2)
 
-			local scale = math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600
+			local scale = util.math.clamp(0, love.graphics.getWidth() / 600, 1)
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(font_row_label)
@@ -245,7 +250,7 @@ local rows = {
 		end,
 
 		resize = function(self, screenw, screenh)
-			self.font = love.graphics.newFont(math.floor(36 * (math.min(screenw, screenh) / 600)))
+			self.font = love.graphics.newFont(calculate_font_size(36))
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
