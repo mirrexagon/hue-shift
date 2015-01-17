@@ -98,27 +98,20 @@ end
 
 ---
 
-local TRIANGLE_W_FRAC = 0.3
+local TRIANGLE_W_FRAC = 0.06
 local TRIANGLE_H_FRAC = 0.6
-local TRIANGLE_X_SPACE
+local TRIANGLE_X_DIV = 16
 
-local function draw_lr_arrows(y, alpha, active_l, active_r, w_frac, h_frac, x_space, row_pix_w, row_pix_h)
-	w_frac = w_frac or TRIANGLE_W_FRAC
-	h_frac = h_frac or TRIANGLE_H_FRAC
-	x_space = x_space or TRIANGLE_X_SPACE
+local function draw_lr_arrows(y, alpha, active_l, active_r)
+	local triangle_w = TRIANGLE_W_FRAC * ROW_PIX_W
+	local triangle_h = TRIANGLE_H_FRAC * ROW_PIX_H
 
-	row_pix_w = row_pix_w or ROW_PIX_W
-	row_pix_h = row_pix_h or ROW_PIX_H
+	local triangle_l_x = ROW_PIX_W / TRIANGLE_X_DIV
 
-	---
-
-	local triangle_w = w_frac * x_space
-	local triangle_h = h_frac * row_pix_h
-
-	local triangle_l_left_x = (x_space - triangle_w)/2
+	local triangle_l_left_x = triangle_l_x - triangle_w/2
 	local triangle_l_right_x = triangle_l_left_x + triangle_w
 
-	local triangle_r_right_x = row_pix_w - triangle_l_left_x
+	local triangle_r_right_x = ROW_PIX_W - triangle_l_left_x
 	local triangle_r_left_x = triangle_r_right_x - triangle_w
 
 	love.graphics.setColor(255, 255, 255, (active_l and 255 or 64) * alpha)
@@ -277,8 +270,8 @@ local rows = {
 			local text_w = self.font:getWidth(text)
 			local text_h = self.font:getHeight()
 
-			local wraps_full = text_w / self.x_space
-			local text_wraps = (wraps_full < 1) and 0 or util.math.round(text_w / self.x_space)
+			local text_w_actual, text_wraps = self.font:getWrap(text, self.x_space)
+			text_wraps = text_wraps - 1
 
 			self.height = 2 + 0.75 * text_wraps * (text_h / ROW_PIX_H)
 
@@ -434,8 +427,6 @@ end
 
 function menu:enter(previous, arg)
 	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
-
-	TRIANGLE_X_SPACE = math.floor(ROW_PIX_W/4) - (DEFAULT_TILE_LENGTH/2)
 
 	for row_name, row in pairs(rows) do
 		if row.init then row:init() end
