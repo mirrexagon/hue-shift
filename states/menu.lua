@@ -12,11 +12,11 @@ local global_alpha = 0
 
 ---
 
-local N_ROWS_ONSCREEN = 5
+local N_ROWS_ONSCREEN
 
 local ROW_PIX_PAD
 local ROW_PIX_W
-local ROW_PIX_H = 85
+local ROW_PIX_H
 
 local ROW_ALPHA = math.floor(0.7 * 255)
 
@@ -68,7 +68,8 @@ end
 ---
 
 local function calculate_font_size(default)
-	return util.math.clamp(0, math.floor(default * (love.graphics.getWidth() / 600)), default)
+	return util.math.clamp(0, math.floor(default * (
+		math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)), default)
 end
 
 local function calculate_dimensions(screenw, screenh)
@@ -78,13 +79,19 @@ local function calculate_dimensions(screenw, screenh)
 	GRID_H_MAX = math.floor(screenh / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 
 	local DEFAULT_ROW_PAD = 30
-	ROW_PIX_PAD = util.math.clamp(0, math.floor(DEFAULT_ROW_PAD * (math.min(screenw, screenh) / 600)), DEFAULT_ROW_PAD)
+	ROW_PIX_PAD = util.math.clamp(0, math.floor(DEFAULT_ROW_PAD * (
+		math.min(screenw, screenh) / 600)), DEFAULT_ROW_PAD)
 	--ROW_PIX_PAD = DEFAULT_ROW_PAD
 
-	ROW_PIX_W = screenw - (ROW_PIX_PAD*2)
+	ROW_PIX_W = util.math.clamp(0, screenw - (ROW_PIX_PAD*2), 540)
 
-	ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
-	--N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
+	if screenh < 600 then
+		N_ROWS_ONSCREEN = 5
+		ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
+	else
+		ROW_PIX_H = 85
+		N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
+	end
 end
 
 ---
@@ -167,7 +174,7 @@ local rows = {
 
 			local arrow_y = math.floor(row_pix_h/2)
 
-			local scale = util.math.clamp(0, love.graphics.getWidth() / 600, 1)
+			local scale = util.math.clamp(0, math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600, 1)
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(font_row_label)
@@ -397,7 +404,7 @@ local function draw_row_label(row_name, row_pix_w, row_pix_h, alpha)
 	love.graphics.setColor(255, 255, 255, 255 * (alpha or 1))
 	love.graphics.setFont(font_row_label)
 
-	print_centered(row_name, row_pix_w/2, row_pix_h/2)
+	print_centered(row_name, math.floor(row_pix_w/2), math.floor(row_pix_h/2))
 end
 
 local function draw_row(row_n, row_slot, alpha)
@@ -515,6 +522,12 @@ function menu:draw()
 	---
 
 	love.graphics.push()
+
+	local screenw = love.graphics.getWidth()
+	if screenw > 600 then
+		love.graphics.translate((screenw - 600) / 2, 0)
+	end
+
 	love.graphics.translate(0, -math.floor(scroll_offset * (ROW_PIX_H + ROW_PIX_PAD)))
 
 	local offset = 1
