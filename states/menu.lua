@@ -29,6 +29,9 @@ local target_scroll_offset = 0
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 img_arrow:setFilter("nearest", "nearest")
 
+local img_arrows = love.graphics.newImage("graphics/arrows.png")
+img_arrows:setFilter("nearest", "nearest")
+
 local font_row_label
 
 ---
@@ -144,10 +147,6 @@ end
 local function get_row_pix_y(row_slot)
 	return (row_slot - 1) * ROW_PIX_H + (row_slot) * ROW_PIX_PAD
 end
-
----
-
-local img_arrows = love.graphics.newImage("graphics/arrows.png")
 
 ---
 
