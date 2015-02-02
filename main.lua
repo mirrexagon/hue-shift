@@ -9,6 +9,11 @@
 
 --[[
 	TODO:
+		Randomise player starting positions
+		Add pause before game start to show player block positions
+
+		---
+
 		Record scores
 		Obstacle AI
 
