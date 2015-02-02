@@ -67,31 +67,27 @@ end
 
 ---
 
-local function calculate_font_size(default)
-	return util.math.clamp(0, math.floor(default * (
-		math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600)), default)
+local function calculate_item_size(default, nofloor)
+	local value = default * (love.graphics.getWidth() / 600)
+
+	return nofloor and
+		util.math.clamp(0, value, default)
+		or util.math.clamp(0, math.floor(value), default)
 end
 
 local function calculate_dimensions(screenw, screenh)
-	font_row_label = love.graphics.newFont(calculate_font_size(48))
+	font_row_label = love.graphics.newFont(calculate_item_size(48))
 
 	GRID_W_MAX = math.floor(screenw / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 	GRID_H_MAX = math.floor(screenh / (DEFAULT_TILE_LENGTH + DEFAULT_TILE_PAD))
 
 	local DEFAULT_ROW_PAD = 30
-	ROW_PIX_PAD = util.math.clamp(0, math.floor(DEFAULT_ROW_PAD * (
-		math.min(screenw, screenh) / 600)), DEFAULT_ROW_PAD)
-	--ROW_PIX_PAD = DEFAULT_ROW_PAD
+	ROW_PIX_PAD = calculate_item_size(DEFAULT_ROW_PAD)
 
 	ROW_PIX_W = util.math.clamp(0, screenw - (ROW_PIX_PAD*2), 540)
 
-	if screenh < 600 then
-		N_ROWS_ONSCREEN = 5
-		ROW_PIX_H = (screenh - (N_ROWS_ONSCREEN + 1) * ROW_PIX_PAD) / N_ROWS_ONSCREEN
-	else
-		ROW_PIX_H = 85
-		N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
-	end
+	ROW_PIX_H = 85
+	N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
 end
 
 ---
@@ -174,7 +170,7 @@ local rows = {
 
 			local arrow_y = math.floor(row_pix_h/2)
 
-			local scale = util.math.clamp(0, math.min(love.graphics.getWidth(), love.graphics.getHeight()) / 600, 1)
+			local scale = calculate_item_size(1, true)
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(font_row_label)
@@ -259,7 +255,7 @@ local rows = {
 		end,
 
 		resize = function(self, screenw, screenh)
-			self.font = love.graphics.newFont(calculate_font_size(36))
+			self.font = love.graphics.newFont(calculate_item_size(36))
 		end,
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
