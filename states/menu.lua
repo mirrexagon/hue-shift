@@ -526,6 +526,12 @@ function menu:draw()
 
 	love.graphics.translate(0, -math.floor(scroll_offset * (ROW_PIX_H + ROW_PIX_PAD)))
 
+	local total_rowpixh = get_row_pix_h(get_total_row_height())
+	local screenh = love.graphics.getHeight()
+	if total_rowpixh < screenh then
+		love.graphics.translate(0, math.floor((screenh - total_rowpixh)/2) - ROW_PIX_PAD)
+	end
+
 	local offset = 1
 	for row_n, row_name in ipairs(row_order) do
 		draw_row(row_n, offset, global_alpha)
@@ -538,12 +544,42 @@ end
 
 ---
 
+local function deselect_row(row_n)
+	local old_row = get_row(row_n)
+	if old_row then
+		old_row.selected = false
+		if old_row.on_deselect then
+			old_row:on_deselect()
+		end
+	end
+end
+
+local function select_row(row_n)
+	local new_row = get_row(row_n)
+	if new_row then
+		new_row.selected = true
+		if new_row.on_select then
+			new_row:on_select()
+		end
+	end
+end
+
 local function prev_row()
+	deselect_row()
+
+	---
+
 	selected_row = selected_row - 1
 
 	if selected_row < 1 then
 		selected_row = #row_order
-		target_scroll_offset = get_total_row_height() - N_ROWS_ONSCREEN
+
+		local total_rowh = get_total_row_height()
+		if get_row_pix_h(total_rowh) < love.graphics.getHeight() then
+			target_scroll_offset = 0
+		else
+			target_scroll_offset = total_rowh - N_ROWS_ONSCREEN
+		end
 
 	else
 		local t_row_h = get_total_row_height(selected_row - 1)
@@ -551,16 +587,14 @@ local function prev_row()
 			target_scroll_offset = t_row_h
 		end
 	end
+
+	---
+
+	select_row()
 end
 
 local function next_row()
-	local old_row = get_row()
-	if old_row then
-		old_row.selected = false
-		if old_row.on_deselect then
-			old_row:on_deselect()
-		end
-	end
+	deselect_row()
 
 	---
 
@@ -579,13 +613,7 @@ local function next_row()
 
 	---
 
-	local new_row = get_row()
-	if new_row then
-		new_row.selected = true
-		if new_row.on_select then
-			new_row:on_select()
-		end
-	end
+	select_row()
 end
 
 function menu:keypressed(k, isrep)
