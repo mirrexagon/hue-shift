@@ -279,7 +279,7 @@ local rows = {
 			love.graphics.line(0,y, row_pix_w,y)
 			--]]
 
-			self.x_space = draw_lr_arrows(y, alpha, true, true)
+			self.x_space = draw_lr_arrows(y, alpha, false, false)
 
 			love.graphics.setColor(255, 255, 255, 255 * alpha)
 			love.graphics.setFont(self.font)
@@ -358,7 +358,7 @@ local rows = {
 				game_params.npairs = game_params.npairs - 1
 			end
 
-			n_player_blocks = util.math.clamp(1, game_params.npairs, 3)
+			game_params.npairs = util.math.clamp(1, game_params.npairs, 3)
 		end
 	},
 
