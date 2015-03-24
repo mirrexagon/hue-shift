@@ -195,7 +195,7 @@ function game:enter(previous, arg)
 
 	---
 
-	music = love.audio.newSource(arg.music)
+	local music = love.audio.newSource(arg.music)
 	music:setLooping(true)
 	world.music = music
 
@@ -237,11 +237,10 @@ function world:reset_player_blocks()
 	self.player_blocks[3].Direction = "up"
 end
 
-function world:place_goal(id)
+function world:place_goal(id, tries)
 	local goal = self.goal_blocks[id]
-	local success = false
 
-	for try = 1, 10 do
+	for try = 1, tries or 10 do
 		local x = love.math.random(0, world.grid_w - 1)
 		local y = love.math.random(0, world.grid_h - 1)
 
@@ -254,11 +253,11 @@ function world:place_goal(id)
 		end
 		if ok then
 			goal.Position = {x = x, y = y}
-			return
+			return true
 		end
 	end
 
-	if not success then util.printf("Could not place goal block %d", id) end
+	return false
 end
 
 ---
@@ -438,13 +437,15 @@ function game:update(dt)
 end
 
 function game:draw()
+	-- Draw background.
 	love.graphics.setColor(255, 255, 255, BG_ALPHA)
 	bg.draw()
 
-	--love.graphics.setColor(255, 255, 255, 255)
+	-- Draw grid.
 	draw_grid(world.grid_w, world.grid_h,
 		world.tile_l, world.tile_l, world.tile_pad)
 
+	-- Draw entities.
 	love.graphics.setColor(255, 255, 255, 255)
 	world:draw()
 end
