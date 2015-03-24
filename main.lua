@@ -45,7 +45,7 @@ state_game = require("states.game")
 
 GRID_BACKGROUND_ALPHA = 128
 GRID_LINES_ALPHA = 255
-BG_ALPHA = 200
+BG_ALPHA = 160
 
 TRANSITION_DURATION = 0.3
 
