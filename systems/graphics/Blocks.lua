@@ -48,19 +48,21 @@ local function draw_block(entity, world)
 
 	love.graphics.setColor(255, 255, 255, (entity.Alpha or 1) * 255)
 
+	local half_tl = floor(tl/2)
+
 	if entity.Direction then
 		love.graphics.draw(
 			img_arrow,
-			x+tl/2, y+tl/2,
+			floor(x + half_tl), floor(y + half_tl),
 			ROTATION_MAPPING[entity.Direction],
 			1, 1,
-			tl/2, tl/2
+			half_tl, half_tl
 		)
 	elseif not entity.Goal then
 		love.graphics.circle(
 			"fill",
-			x+tl/2, y+tl/2,
-			tl * (5/16)
+			floor(x + half_tl), floor(y + half_tl),
+			floor(tl * (5/16))
 		)
 	end
 end
