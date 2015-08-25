@@ -57,12 +57,12 @@ function Grid:draw()
 
 
 	-- Grid background --
-	love.graphics.setColor(255, 255, 255, self.alpha * self.bg_alpha)
+	love.graphics.setColor(255, 255, 255, 255 * self.alpha * self.bg_alpha)
 	love.graphics.rectangle("fill", x,y, pixel_w,pixel_h)
 
 
 	-- Grid lines --
-	love.graphics.setColor(255, 255, 255, self.alpha * self.lines_alpha)
+	love.graphics.setColor(255, 255, 255, 255 * self.alpha * self.lines_alpha)
 
 	-- Start at 0 to make border.
 	for vert = 0, self.w do
