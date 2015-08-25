@@ -1,6 +1,6 @@
 return {
 	{
-		name = "Keep it simple",
+		name = "keep it simple",
 
 		gridw = 7,
 		gridh = 7
