@@ -101,18 +101,7 @@ BLOCK_COLORS = {
 	[3] = {0, 0, 255}
 }
 
----
-
-MUSIC = require("music")
-
-LEVELS = require("levels")
-
----
-
 function love.load()
-	gs.registerEvents()
-
-	bg.set_timer(love.math.random(0, 300))
-
-	gs.switch(state_menu)
+	gamestate.registerEvents()
+	gamestate.switch(state_menu)
 end

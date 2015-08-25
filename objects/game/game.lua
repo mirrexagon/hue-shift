@@ -40,13 +40,36 @@ function Game:init(args)
 
 	-- Setup player blocks.
 	self.blocks.players = {}
+
+
+	--- Setup timer.
+	self.beat_timer = timer.new()
+
+	-- Main on_beat for block movement and such.
+	self.beat_timer.addPeriodic(1, function()
+		self:on_beat()
+	end)
+end
+
+function Game:on_beat()
+
 end
 
 function Game:update(dt)
+	--- Update theme.
+	self.theme:update(dt)
 
+	--- Update beat timer.
+	self.beat_timer.update(dt)
 end
 
 function Game:draw()
+	--- Draw background.
+	self.theme:draw_bg()
+
+	--- Draw grid.
+	self.grid:draw()
+
 
 end
 --- ==== ---

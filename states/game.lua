@@ -9,11 +9,6 @@ local util = require("lib.self.util")
 --- ==== ---
 
 
---- Classes ---
-local Grid = require("objects.game.grid")
---- ==== ---
-
-
 --- Controls ---
 local BLOCK_CONTROLS = {
 	[1] = {
@@ -60,10 +55,10 @@ end
 
 
 function game:enter(previous, arg)
+	-- Get needed parameters.
 
 
-	---
-
+	-- Setup grid.
 	self.grid = Grid{
 
 	}
