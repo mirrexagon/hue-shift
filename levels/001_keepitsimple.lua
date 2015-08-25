@@ -1,8 +1,16 @@
-return {
+--- Require ---
+local Class = require("lib.hump.class")
+--- ==== ---
+
+
+--- Class
+return Class{
 	{
 		name = "keep it simple",
 
-		gridw = 7,
-		gridh = 7
+		grid = {
+			w = 7,
+			h = 7
+		}
 	}
 }

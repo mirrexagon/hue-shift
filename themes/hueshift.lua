@@ -1,5 +1,5 @@
 --- Require ---
-local class = require("lib.hump.class")
+local Class = require("lib.hump.class")
 local util = require("lib.self.util")
 
 local beat = require("util.beat")
@@ -62,6 +62,13 @@ return Class{
 			[3] = {0, 0, 255}
 		},
 
-		obstacle = {100, 100, 100}
+		obstacle = {100, 100, 100},
+
+		grid = {
+			background = {255, 255, 255, 0.7 * 255},
+			lines = {255, 255, 255, 255}
+		}
 	}
+
+
 }
