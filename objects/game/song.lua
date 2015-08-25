@@ -1,5 +1,6 @@
 --- Require ---
 local class = require("lib.hump.class")
+local util = require("lib.self.util")
 
 local beat = require("util.beat")
 --- ==== ---
@@ -22,15 +23,16 @@ return Class{
 
 		---
 
-		-- TODO: Custom errors for meta file syntax.
-		local meta = love.filesystem.read()
+		for line in love.filesystem.lines(meta_path) do
+			local key, value = line:match("^(%w+)%s-%=%s-(.-)$")
 
-		-- TODO: Split into lines
-		local name, bpm = meta:match("^(.+)\n(.+)")
-		bpm = tonumber(bpm)
+			self[key] = value
+		end
 
-		self.name = name
-		self.bpm = bpm
+		assert(util.table.check(self, {
+			"name",
+			"bpm"
+		}))
 	end,
 
 	---
