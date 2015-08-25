@@ -50,7 +50,7 @@
 		More backgrounds? Set by music?
 ]]
 
-local gamestate = require("lib.hump.gamestate")
+local Gamestate = require("lib.hump.gamestate")
 local util = require("lib.self.util")
 
 ---
@@ -60,14 +60,7 @@ local state_game = require("states.game")
 
 ---
 
-
-
----
-
 TRANSITION_DURATION = 0.3
-
-DEFAULT_TILE_LENGTH = 32
-DEFAULT_TILE_PAD = 2
 
 BLOCK_CONTROLS = {
 	[1] = {
@@ -90,13 +83,7 @@ BLOCK_CONTROLS = {
 	}
 }
 
-BLOCK_COLORS = {
-	[1] = {255, 0, 0},
-	[2] = {0, 255, 0},
-	[3] = {0, 0, 255}
-}
-
 function love.load()
-	gamestate.registerEvents()
-	gamestate.switch(state_menu)
+	Gamestate.registerEvents()
+	Gamestate.switch(state_menu)
 end
