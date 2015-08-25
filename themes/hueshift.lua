@@ -42,8 +42,10 @@ return Class{
 		self.img_h = img_h or 6
 	end,
 
-	update = function(dt)
-		self.timer = self.timer + dt
+	update = function(dbeat)
+		self.timer = self.timer + beat.beattosec(dbeat, 90)
+		-- Speed of background scales with tempo.
+		-- Normalised at laserwash's tempo (90).
 	end,
 
 	drawbg = function(screenw, screenh)
@@ -54,8 +56,13 @@ return Class{
 	end,
 
 	---
+	grid = {
+		color = {255, 255, 255},
+		bg_alpha = 0.7,
+		lines_alpha = 1
+	},
 
-	colors = {
+	blocks = {
 		player = {
 			[1] = {255, 0, 0},
 			[2] = {0, 255, 0},
@@ -63,12 +70,5 @@ return Class{
 		},
 
 		obstacle = {100, 100, 100},
-
-		grid = {
-			background = {255, 255, 255, 0.7 * 255},
-			lines = {255, 255, 255, 255}
-		}
 	}
-
-
 }

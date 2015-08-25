@@ -12,6 +12,7 @@ local util = require("lib.self.util")
 
 --- Classes ---
 local Grid = require("objects.game.grid")
+local DynamicBlock = require("objects.game.blocks.dynamic")
 --- ==== ---
 
 
@@ -29,6 +30,10 @@ function Game:init(args)
 	self.grid = Grid{
 		w = self.level.grid.w,
 		h = self.level.grid.h,
+
+		color = self.theme.grid.color,
+		bg_alpha = self.theme.grid.bg_alpha,
+		lines_alpha = self.theme.grid.lines_alpha
 	}
 
 
@@ -41,26 +46,20 @@ function Game:init(args)
 	-- Setup player blocks.
 	self.blocks.players = {}
 
-
-	--- Setup timer.
-	self.beat_timer = timer.new()
-
-	-- Main on_beat for block movement and such.
-	self.beat_timer.addPeriodic(1, function()
-		self:on_beat()
-	end)
+	for i = 1, self.n_players do
+		self.blocks.players[i] = DynamicBlock{
+			color = self.theme.blocks.player[i]
+		}
+	end
 end
 
-function Game:on_beat()
+function Game:step()
 
 end
 
-function Game:update(dt)
+function Game:update(dbeat)
 	--- Update theme.
-	self.theme:update(dt)
-
-	--- Update beat timer.
-	self.beat_timer.update(dt)
+	self.theme:update(dbeat)
 end
 
 function Game:draw()
