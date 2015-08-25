@@ -15,16 +15,20 @@
 		The layouts have a set grid size.
 			Most should be a standard size, maybe 7x7.
 
-	LAYOUTS:
+	LEVEL:
 		A table representing a grid, or a list of entities? Simplified list of entities?
+
+	MENU:
+
+
+	THEMES:
+		Changing theme makes background and block colors on menu fade to new theme
 
 	---
 	---
 
 	TODO:
 		Add pause before game start to show player block positions
-		Make each song be able to override the background, so you can have backgrounds flashing to the song.
-
 
 		---
 
@@ -46,15 +50,13 @@
 		More backgrounds? Set by music?
 ]]
 
-gs = require("lib.hump.gamestate")
+local gamestate = require("lib.hump.gamestate")
 local util = require("lib.self.util")
-
-bg = require("backgrounds.hueshift")
 
 ---
 
-state_menu = require("states.menu")
-state_game = require("states.game")
+local state_menu = require("states.menu")
+local state_game = require("states.game")
 
 ---
 
@@ -66,10 +68,6 @@ DIRECTION_MAPPING = {
 }
 
 ---
-
-GRID_BACKGROUND_ALPHA = 128
-GRID_LINES_ALPHA = 255
-BG_ALPHA = 160
 
 TRANSITION_DURATION = 0.3
 

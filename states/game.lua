@@ -60,9 +60,13 @@ end
 
 
 function game:enter(previous, arg)
-	assert(arg.music and arg.bpm, "game: music path and/or BPM not supplied!")
+
 
 	---
+
+	self.grid = Grid{
+
+	}
 
 	world.grid_w = arg.grid_w or 7
 	world.grid_h = arg.grid_h or 7

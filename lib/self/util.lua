@@ -85,6 +85,23 @@ function util.table.has(t, keys)
 	return true
 end
 
+-- Like has, but on failure also returns a string detailing the missing fields.
+function util.table.check(t, keys, msg)
+	local missing = {}
+
+	for _, c in ipairs(keys) do
+		if not t[c] then
+			table.insert(missing, c)
+		end
+	end
+
+	if #missing > 0 then
+		return false, (msg and (msg .. ": ") or "") .. "missing fields: " .. table.concat(missing, ", ")
+	else
+		return true
+	end
+end
+
 -- Returns the highest numerical key of t.
 function util.table.maxn(t)
 	local max = -math.huge
