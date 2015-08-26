@@ -32,15 +32,8 @@ end
 
 ---
 
-function Grid:get_pixel_width()
-	local pixel_w = (self.w * self.tile_w) + ((self.w + 1) * self.pad)
-	local pixel_h = (self.h * self.tile_h) + ((self.h + 1) * self.pad)
-
-	return pixel_w, pixel_h
-end
-
-function Grid:get_pixel_coords(grid_x, grid_y)
-	local pixel_w, pixel_h = get_pixel_width()
+function Grid:get_draw_location()
+	local pixel_w, pixel_h = self:get_pixel_width()
 
 	local x = (love.graphics.getWidth() - pixel_w) / 2
 	local y = (love.graphics.getHeight() - pixel_h) / 2
@@ -48,12 +41,30 @@ function Grid:get_pixel_coords(grid_x, grid_y)
 	return x, y
 end
 
+function Grid:get_relative_pixel_coords(grid_x, grid_y)
+	local x = (grid_x * self.tile_w) + ((grid_x + 1) * self.pad)
+	local y = (grid_y * self.tile_h) + ((grid_y + 1) * self.pad)
+
+	return x, y
+end
+
+function Grid:get_pixel_coords(grid_x, grid_y)
+	local x_offset, y_offset = self:get_draw_location()
+	local x, y = self:get_relative_pixel_coords(grid_x, grid_y)
+
+	return x_offset + x, y_offset + y
+end
+
+function Grid:get_pixel_width()
+	return self:get_relative_pixel_coords(self.w, self.h)
+end
+
 ---
 
 function Grid:draw()
 	-- Get needed variables --
-	local pixel_w, pixel_h = get_pixel_width()
-	local x, y = self:get_pixel_coords(0, 0)
+	local pixel_w, pixel_h = self:get_pixel_width()
+	local x, y = self:get_draw_location()
 
 
 	-- Grid background --
@@ -67,7 +78,7 @@ function Grid:draw()
 	-- Start at 0 to make border.
 	for vert = 0, self.w do
 		love.graphics.rectangle("fill",
-			x + (vert * self.tile_w) + (vert * tile_pad), y, self.pad, pixel_h)
+			x + (vert * self.tile_w) + (vert * self.pad), y, self.pad, pixel_h)
 	end
 
 	for hor = 0, self.h do

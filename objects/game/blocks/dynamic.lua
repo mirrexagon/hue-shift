@@ -11,6 +11,7 @@ local Block = require("objects.game.blocks.block")
 
 --- Localised functions ---
 local floor = math.floor
+local min = math.min
 --- ==== ---
 
 
@@ -20,6 +21,19 @@ local DynamicBlock = {__includes = Block}
 
 
 --- Constants ---
+local DIRECTION_MAPPING = {
+	up = {x = 0, y = -1},
+	right = {x = 1, y = 0},
+	down = {x = 0, y = 1},
+	left = {x = -1, y = 0}
+}
+
+local ROTATION_MAPPING = {
+	up = 0,
+	right = math.pi/2,
+	down = math.pi,
+	left = 3*math.pi/2
+}
 --- ==== ---
 
 
@@ -55,14 +69,18 @@ end
 ---
 
 function DynamicBlock:draw_symbol(draw_x, draw_y, tile_w, tile_h)
+	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
+
+	local min_wh = min(tile_w, tile_h)
+
 	love.graphics.draw(
 		img_arrow,
-		draw_x + tile_w/2, draw_y + tile_h/2,
+		draw_x + min_wh/2, draw_y + min_wh/2,
 		ROTATION_MAPPING[self.direction],
 		1, 1,
-		tile_w/2, tile_h/2)
+		min_wh/2, min_wh/2)
 end
 --- ==== ---
 
 
-return Class(Block)
+return Class(DynamicBlock)

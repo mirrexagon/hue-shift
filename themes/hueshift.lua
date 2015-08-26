@@ -22,8 +22,8 @@ local function get_pixel_color(x,y, time)
 		255
 end
 
-local function make_image(time)
-	local imagedata = love.image.newImageData(self.img_w, self.img_h)
+local function make_image(img_w, img_h, time)
+	local imagedata = love.image.newImageData(img_w, img_h)
 
 	imagedata:mapPixel(function(x,y, r,g,b,a)
 		return get_pixel_color(x,y, time)
@@ -42,16 +42,16 @@ return Class{
 		self.img_h = img_h or 6
 	end,
 
-	update = function(dbeat)
+	update = function(self, dbeat)
 		self.timer = self.timer + beat.beattosec(dbeat, 90)
 		-- Speed of background scales with tempo.
 		-- Normalised at laserwash's tempo (90).
 	end,
 
-	drawbg = function(screenw, screenh)
+	draw_bg = function(self, screenw, screenh)
 		love.graphics.push()
 		love.graphics.scale(screenw / self.img_w, screenh / self.img_h)
-		love.graphics.draw(make_image(self.timer))
+		love.graphics.draw(make_image(self.img_w, self.img_h, self.timer))
 		love.graphics.pop()
 	end,
 

@@ -1,1 +1,50 @@
+--- Require ---
+local util = require("lib.self.util")
+--- ==== ---
+
+
+--- Classes ---
+local Game = require("objects.game.game")
+
+local Song = require("objects.game.song")
+--- ==== ---
+
+
+--- Gamestate definition ---
 local game = {}
+--- ==== ---
+
+
+--- Gamestate functions ---
+function game:init()
+
+end
+
+function game:enter(prev, ...)
+	self.game = Game{
+		level = require("levels.001_keepitsimple"),
+		music = Song("music/laserwash.ogg"),
+		theme = require("themes.hueshift")(),
+
+		n_players = 1,
+		speed = 1
+	}
+end
+
+function game:update(dt)
+
+end
+
+function game:draw()
+	self.game:draw()
+end
+
+function game:keypressed(key)
+	if key == " " then
+		self.game:step()
+	end
+end
+--- ==== ---
+
+
+return game

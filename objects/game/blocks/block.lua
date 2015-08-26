@@ -15,19 +15,7 @@ local Block = {}
 
 
 --- Constants ---
-local DIRECTION_MAPPING = {
-	up = {x = 0, y = -1},
-	right = {x = 1, y = 0},
-	down = {x = 0, y = 1},
-	left = {x = -1, y = 0}
-}
 
-local ROTATION_MAPPING = {
-	up = 0,
-	right = math.pi/2,
-	down = math.pi,
-	left = 3*math.pi/2
-}
 
 local STATIC_DOT_SIZE_MULT = 5/16
 
@@ -45,8 +33,8 @@ local img_arrow = love.graphics.newImage("graphics/arrow.png")
 function Block:init(args)
 	self.grid = args.grid
 
-	self.x = args.x
-	self.y = args.y
+	self.x = args.x or 0
+	self.y = args.y or 0
 
 	self.color = args.color
 	self.alpha = 1
@@ -82,7 +70,7 @@ end
 
 function Block:draw()
 	local draw_x, draw_y = self.grid:get_pixel_coords(self.x, self.y)
-	local tile_w, tile_h = grid.tile_w, grid.tile_h
+	local tile_w, tile_h = self.grid.tile_w, self.grid.tile_h
 
 	self:draw_block(draw_x, draw_y, tile_w, tile_h)
 	self:draw_symbol(draw_x, draw_y, tile_w, tile_h)

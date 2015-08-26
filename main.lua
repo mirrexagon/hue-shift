@@ -55,7 +55,7 @@ local util = require("lib.self.util")
 
 ---
 
-local state_menu = require("states.menu")
+--local state_menu = require("states.menu")
 local state_game = require("states.game")
 
 ---
@@ -85,5 +85,5 @@ BLOCK_CONTROLS = {
 
 function love.load()
 	Gamestate.registerEvents()
-	Gamestate.switch(state_menu)
+	Gamestate.switch(state_game)
 end
