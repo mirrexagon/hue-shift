@@ -38,9 +38,7 @@ function Game:init(args)
 		w = self.level.grid.w,
 		h = self.level.grid.h,
 
-		color = self.theme.grid.color,
-		bg_alpha = self.theme.grid.bg_alpha,
-		lines_alpha = self.theme.grid.lines_alpha
+		color = self.theme.grid.color
 	}
 
 
@@ -81,7 +79,7 @@ function Game:update(dt)
 	local dbeat = beat.sectobeat(dt, self.music.bpm)
 end
 
-function Game:draw()
+function Game:draw(alpha)
 	--- Draw background.
 	self.theme:draw_bg(love.graphics.getDimensions())
 

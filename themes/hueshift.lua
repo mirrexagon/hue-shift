@@ -57,9 +57,7 @@ return Class{
 
 	---
 	grid = {
-		color = {255, 255, 255},
-		bg_alpha = 0.7,
-		lines_alpha = 1
+		color = {255, 255, 255}
 	},
 
 	blocks = {
