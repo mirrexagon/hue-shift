@@ -28,10 +28,8 @@ function Game:init(args)
 	self.n_players = args.n_players
 	self.speed = args.speed or 1
 
-
-	self.beat = 1
-	self.lastbeat = 0
-
+	self.canvas = love.graphics.newCanvas()
+	self.alpha = 1
 
 	--- Setup grid.
 	self.grid = Grid{
@@ -84,14 +82,21 @@ function Game:update(dt)
 	local dbeat = beat.sectobeat(dt, self.music.bpm)
 end
 
-function Game:draw(alpha)
+function Game:draw()
+	love.graphics.setColor(255, 255, 255, 255)
+
 	--- Draw background.
 	self.theme:draw_bg(love.graphics.getDimensions())
 
-	--- Draw grid.
+
+	---- Canvas for fading.
+	self.canvas:clear()
+	love.graphics.setCanvas(self.canvas)
+
+	-- Draw grid.
 	self.grid:draw()
 
-	--- Draw blocks.
+	-- Draw blocks.
 	for i, goal in ipairs(self.blocks.goals) do
 		goal:draw()
 	end
@@ -103,6 +108,12 @@ function Game:draw(alpha)
 	for i, obstacle in ipairs(self.blocks.obstacles) do
 		obstacle:draw()
 	end
+
+	love.graphics.setCanvas()
+
+	--- Draw the canvas.
+	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
+	love.graphics.draw(self.canvas)
 end
 --- ==== ---
 

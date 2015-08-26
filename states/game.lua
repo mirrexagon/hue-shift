@@ -44,6 +44,14 @@ function game:keypressed(key)
 		self.game:step()
 	end
 end
+
+function game:mousepressed(x, y, b)
+	if b == "wu" then
+		self.game.alpha = util.math.clamp(0, self.game.alpha + 0.1, 1)
+	elseif b == "wd" then
+		self.game.alpha = util.math.clamp(0, self.game.alpha - 0.1, 1)
+	end
+end
 --- ==== ---
 
 
