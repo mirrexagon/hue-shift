@@ -1,5 +1,5 @@
 --[[
-	Hue Shift, a game by LegoSpacy
+	Hue Shift v3, a game by LegoSpacy
 
 	---
 
@@ -62,26 +62,7 @@ local state_game = require("states.game")
 
 TRANSITION_DURATION = 0.3
 
-BLOCK_CONTROLS = {
-	[1] = {
-		up = "w",
-		right = "d",
-		down = "s",
-		left = "a"
-	},
-	[2] = {
-		up = "t",
-		right = "h",
-		down = "g",
-		left = "f"
-	},
-	[3] = {
-		up = "i",
-		right = "l",
-		down = "k",
-		left = "j"
-	}
-}
+---
 
 function love.load()
 	Gamestate.registerEvents()

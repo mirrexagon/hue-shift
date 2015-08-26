@@ -1,5 +1,7 @@
 --- Require ---
 local Class = require("lib.hump.class")
+local timer = require("lib.hump.timer")
+
 local util = require("lib.self.util")
 --- ==== ---
 
@@ -15,17 +17,19 @@ local Block = {}
 
 
 --- Constants ---
-
-
 local STATIC_DOT_SIZE_MULT = 5/16
-
-local DYNAMIC_FADE_TIME
-local GOAL_FADE_TIME
 --- ==== ---
 
 
 --- Images ---
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
+--- ==== ---
+
+
+--- Local functions ---
+local function lerp(a, b, t)
+	return a + (a - b) * t
+end
 --- ==== ---
 
 
@@ -39,7 +43,7 @@ function Block:init(args)
 	self.color = args.color
 	self.alpha = 1
 
-	self.fade_time = args.fade_time or 0
+	self.fade_time = args.fade_time or 1
 end
 
 ---
@@ -51,7 +55,15 @@ end
 ---
 
 function Block:update_alpha(beat_fraction)
+	-- eg. self.fade_time = 0.8
 
+	local border_time = 1 - self.fade_time
+	-- eg. border_time = 0.2
+
+	if beat_fraction < border_time then
+	-- eg. if beat_fraction < 0.2
+		-- tween
+	end
 end
 
 ---

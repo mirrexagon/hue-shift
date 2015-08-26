@@ -55,13 +55,16 @@ function Game:init(args)
 	for i = 1, self.n_players do
 		self.blocks.players[i] = DynamicBlock{
 			grid = self.grid,
+			color = self.theme.blocks.player[i],
 
-			color = self.theme.blocks.player[i]
+			x = self.level.players[i].x,
+			y = self.level.players[i].y
 		}
 	end
 end
 
 function Game:step()
+	--- Step blocks in their appropriate directions.
 	for i, player in ipairs(self.blocks.players) do
 		player:step()
 	end
@@ -69,6 +72,8 @@ function Game:step()
 	for i, obstacle in ipairs(self.blocks.obstacles) do
 		obstacle:step()
 	end
+
+	--- Check collisions.
 end
 
 function Game:update(dt)

@@ -46,7 +46,7 @@ local img_arrow = love.graphics.newImage("graphics/arrow.png")
 function DynamicBlock:init(args)
 	self.direction = args.direction or "up"
 
-	args.fade_time = 0.2
+	args.fade_time = 0.8 -- On 80% of the beat, fade during the leading and ending 10%s.
 
 	Block.init(self, args)
 end
