@@ -42,8 +42,8 @@ return Class{
 		self.img_h = img_h or 6
 	end,
 
-	update = function(self, dbeat)
-		self.timer = self.timer + beat.beattosec(dbeat, 90)
+	update = function(self, dt, song)
+		self.timer = self.timer + dt * (song.bpm / 90)
 		-- Speed of background scales with tempo.
 		-- Normalised at laserwash's tempo (90).
 	end,

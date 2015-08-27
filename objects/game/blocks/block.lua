@@ -56,11 +56,11 @@ end
 
 function Block:update_alpha(beat_fraction)
 	local left_time = 1 - self.fade_time
-	local right_time = self.fade_Time
+	local right_time = self.fade_time
 
-	if beat_fraction <= border_time then
+	if beat_fraction <= left_time then
 		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
-	elseif beat_fraction >= (1 - beat) then
+	elseif beat_fraction >= right_time then
 		self.alpha = util.math.map(beat_fraction, right_time,1, 1,0)
 	else
 		self.alpha = 1

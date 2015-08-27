@@ -52,6 +52,24 @@ end
 function Song:set_pitch(pitch)
 	self.source:setPitch(pitch)
 end
+
+---
+
+function Song:pause()
+	self.source:pause()
+end
+
+function Song:is_paused()
+	return self.source:isPaused()
+end
+
+function Song:rewind()
+	self.source:rewind()
+end
+
+function Song:play()
+	self.source:play()
+end
 --- ==== ---
 
 

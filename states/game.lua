@@ -32,7 +32,7 @@ function game:enter(prev, ...)
 end
 
 function game:update(dt)
-
+	self.game:update(dt)
 end
 
 function game:draw()

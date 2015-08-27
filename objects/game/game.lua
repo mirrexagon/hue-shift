@@ -8,6 +8,11 @@ local beat = require("util.beat")
 --- ==== ---
 
 
+--- Localised functions ---
+local floor = math.floor
+--- ==== ---
+
+
 --- Classes ---
 local Grid = require("objects.game.grid")
 local DynamicBlock = require("objects.game.blocks.dynamic")
@@ -21,7 +26,7 @@ local Game = {}
 
 --- Class functions ---
 function Game:init(args)
-	--- Store needed variables.
+	--- Store/initialise needed variables.
 	self.level = args.level
 	self.music = args.music
 	self.theme = args.theme
@@ -31,6 +36,9 @@ function Game:init(args)
 	self.canvas = love.graphics.newCanvas()
 	self.alpha = 1
 
+	self.last_beat = 0
+	self.done_first_beat = false
+
 	--- Setup grid.
 	self.grid = Grid{
 		w = self.level.grid.w,
@@ -38,7 +46,6 @@ function Game:init(args)
 
 		color = self.theme.grid.color
 	}
-
 
 	--- Setup blocks.
 	self.blocks = {}
@@ -59,6 +66,9 @@ function Game:init(args)
 			y = self.level.players[i].y
 		}
 	end
+
+	--- Start game by playing music.
+	self.music:play()
 end
 
 function Game:step()
@@ -75,11 +85,52 @@ function Game:step()
 end
 
 function Game:update(dt)
-	--- Update theme.
-	self.theme:update(dt)
-
 	--- Update beat.
-	local dbeat = beat.sectobeat(dt, self.music.bpm)
+	local current_beat = self.music:get_beat()
+
+	--- Step the game on a beat EXCEPT the first.
+	if current_beat > floor(self.last_beat) + 1 then
+		if current_beat >= 2 and not self.done_first_beat then
+			self.done_first_beat = true
+		end
+
+		if self.done_first_beat then
+			self:step()
+		end
+	end
+
+	--- Update music pitch.
+	if self.speed == 0 and not self.music:is_paused() then
+		self.music:pause()
+		self.music:set_pitch(0.0001)
+	else
+		self.music:set_pitch(self.speed)
+		if self.music:is_paused() then
+			self.music:play()
+		end
+	end
+
+	--- Update theme.
+	self.theme:update(dt, self.music)
+
+	--- Update block alpha.
+	local beat_int, beat_fraction = math.modf(current_beat)
+
+	for i, goal in ipairs(self.blocks.goals) do
+		goal:update_alpha(beat_fraction)
+	end
+
+	for i, player in ipairs(self.blocks.players) do
+		player:update_alpha(beat_fraction)
+	end
+
+	for i, obstacle in ipairs(self.blocks.obstacles) do
+		obstacle:update_alpha(beat_fraction)
+	end
+
+
+	---
+	self.last_beat = current_beat
 end
 
 function Game:draw()
@@ -87,7 +138,6 @@ function Game:draw()
 
 	--- Draw background.
 	self.theme:draw_bg(love.graphics.getDimensions())
-
 
 	---- Canvas for fading.
 	self.canvas:clear()
@@ -109,6 +159,7 @@ function Game:draw()
 		obstacle:draw()
 	end
 
+	-- Set no canvas.
 	love.graphics.setCanvas()
 
 	--- Draw the canvas.
