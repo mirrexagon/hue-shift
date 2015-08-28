@@ -15,7 +15,9 @@ local floor = math.floor
 
 --- Classes ---
 local Grid = require("objects.game.grid")
+
 local DynamicBlock = require("objects.game.blocks.dynamic")
+local GoalBlock = require("objects.game.blocks.goal")
 --- ==== ---
 
 
@@ -77,6 +79,14 @@ function Game:init(args)
 	self.last_beat = 0
 	self.done_first_beat = false
 
+	self.score = {
+		[1] = 0,
+		[2] = 0,
+		[3] = 0
+	}
+
+	self.beat_timer = timer.new()
+
 	--- Setup grid.
 	self.grid = Grid{
 		w = self.level.grid.w,
@@ -103,6 +113,13 @@ function Game:init(args)
 			x = self.level.players[i].x,
 			y = self.level.players[i].y
 		}
+
+		self.blocks.goals[i] = GoalBlock{
+			grid = self.grid,
+			color = self.theme.blocks.player[i]
+		}
+
+		self:replace_block(self.blocks.goals[i])
 	end
 
 	--- Setup controls.
@@ -112,7 +129,63 @@ function Game:init(args)
 	self.music:play()
 end
 
+function Game:get_blocks_at(x, y)
+	local blocks = {}
+
+	local function check(block)
+		if block.x == x and block.y == y then
+			blocks[#blocks + 1] = block
+		end
+	end
+
+	for i, goal in ipairs(self.blocks.goals) do
+		check(goal)
+	end
+
+	for i, player in ipairs(self.blocks.players) do
+		check(player)
+	end
+
+	for i, obstacle in ipairs(self.blocks.obstacles) do
+		check(obstacle)
+	end
+
+	return blocks
+end
+
+function Game:replace_block(block)
+	while true do
+		local new_x = love.math.random(self.grid.w - 1)
+		local new_y = love.math.random(self.grid.h - 1)
+
+		if #(self:get_blocks_at(new_x, new_y)) == 0 then
+			block.x = new_x
+			block.y = new_y
+
+			break
+		end
+	end
+end
+
+function Game:check_player_goal_collisions()
+	for i = 1, self.n_players do
+		local player = self.blocks.players[i]
+		local goal = self.blocks.goals[i]
+
+		if player.x == goal.x and player.y == goal.y then
+			self.score[i] = self.score[i] + 1
+
+			self.beat_timer.add(1, function()
+				self:replace_block(goal)
+			end)
+		end
+	end
+end
+
 function Game:step()
+	--- Update beat timer.
+	self.beat_timer.update(1)
+
 	--- Step blocks in their appropriate directions.
 	for i, player in ipairs(self.blocks.players) do
 		player:step()
@@ -123,6 +196,8 @@ function Game:step()
 	end
 
 	--- Check collisions.
+	-- Goals.
+	self:check_player_goal_collisions()
 end
 
 function Game:update(dt)

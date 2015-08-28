@@ -16,11 +16,6 @@ local Block = {}
 --- ==== ---
 
 
---- Constants ---
-local STATIC_DOT_SIZE_MULT = 5/16
---- ==== ---
-
-
 --- Images ---
 local img_arrow = love.graphics.newImage("graphics/arrow.png")
 --- ==== ---
