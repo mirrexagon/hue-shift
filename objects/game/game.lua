@@ -72,20 +72,24 @@ function Game:init(args)
 	self.theme = args.theme
 	self.n_players = args.n_players
 	self.speed = args.speed or 1
+	self.modifiers = args.modifiers or {}
 
+	--- Setup canvas for whole-grid fading.
 	self.canvas = love.graphics.newCanvas()
 	self.alpha = 1
 
+	--- Setup beat counting.
 	self.last_beat = 0
 	self.done_first_beat = false
 
+	self.beat_timer = timer.new()
+
+	--- Initialise score.
 	self.score = {
 		[1] = 0,
 		[2] = 0,
 		[3] = 0
 	}
-
-	self.beat_timer = timer.new()
 
 	--- Setup grid.
 	self.grid = Grid{
@@ -129,6 +133,7 @@ function Game:init(args)
 	self.music:play()
 end
 
+--- Block operations.
 function Game:get_blocks_at(x, y)
 	local blocks = {}
 
@@ -182,6 +187,22 @@ function Game:check_player_goal_collisions()
 	end
 end
 
+function Game:check_player_obstacles_collisions()
+	for i = 1, self.n_players do
+		local player = self.blocks.players[i]
+		local goal = self.blocks.goals[i]
+
+		if player.x == goal.x and player.y == goal.y then
+			self.score[i] = self.score[i] + 1
+
+			self.beat_timer.add(1, function()
+				self:replace_block(goal)
+			end)
+		end
+	end
+end
+
+--- Updating.
 function Game:step()
 	--- Update beat timer.
 	self.beat_timer.update(1)
@@ -241,6 +262,7 @@ function Game:update(dt)
 	self.last_beat = current_beat
 end
 
+-- Drawing.
 function Game:draw()
 	love.graphics.setColor(255, 255, 255, 255)
 
@@ -270,7 +292,7 @@ function Game:draw()
 	-- Set no canvas.
 	love.graphics.setCanvas()
 
-	--- Draw the canvas.
+	--- Draw the canvas with the game's alpha.
 	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
 	love.graphics.draw(self.canvas)
 end

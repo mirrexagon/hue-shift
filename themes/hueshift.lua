@@ -49,6 +49,7 @@ return Class{
 		self.timer = self.timer + dt * (song.bpm / 90)
 		-- Speed of background scales with tempo.
 		-- Normalised at laserwash's tempo (90).
+		-- Note this won't stay in sync with the song.
 	end,
 
 	draw_bg = function(self, screenw, screenh)
