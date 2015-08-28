@@ -216,18 +216,10 @@ function Game:update(dt)
 	end
 
 	--- Update music pitch.
-	if self.speed == 0 and not self.music:is_paused() then
-		self.music:pause()
-		self.music:set_pitch(0.0001)
-	else
-		self.music:set_pitch(self.speed)
-		if self.music:is_paused() then
-			self.music:play()
-		end
-	end
+	self.music:set_pitch(self.speed)
 
 	--- Update theme.
-	self.theme:update(dt, self.music)
+	self.theme:update(dt * self.speed, self.music)
 
 	--- Update block alpha.
 	local beat_int, beat_fraction = math.modf(current_beat)

@@ -49,8 +49,21 @@ end
 
 ---
 
-function Song:set_pitch(pitch)
+function Song:_set_pitch(pitch)
 	self.source:setPitch(pitch)
+end
+
+function Song:set_pitch(pitch)
+	if pitch == 0 then
+		if not self:is_paused() then
+			self:pause()
+		end
+	else
+		self:_set_pitch(pitch)
+		if self:is_paused() then
+			self:play()
+		end
+	end
 end
 
 ---
