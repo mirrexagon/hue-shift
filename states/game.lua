@@ -40,9 +40,7 @@ function game:draw()
 end
 
 function game:keypressed(key)
-	if key == " " then
-		self.game:step()
-	end
+	self.game:keypressed(key)
 end
 
 function game:mousepressed(x, y, b)

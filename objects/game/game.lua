@@ -24,6 +24,44 @@ local Game = {}
 --- ==== ---
 
 
+--- Local functions ---
+local BLOCK_CONTROLS = {
+	[1] = {
+		up = "w",
+		right = "d",
+		down = "s",
+		left = "a"
+	},
+	[2] = {
+		up = "t",
+		right = "h",
+		down = "g",
+		left = "f"
+	},
+	[3] = {
+		up = "i",
+		right = "l",
+		down = "k",
+		left = "j"
+	}
+}
+
+local function generate_control_functions(players)
+	local funcs = {}
+
+	for id, controls in ipairs(BLOCK_CONTROLS) do
+		for dir, key in pairs(controls) do
+			funcs[key] = function()
+				players[id]:set_direction(dir)
+			end
+		end
+	end
+
+	return funcs
+end
+--- ==== ---
+
+
 --- Class functions ---
 function Game:init(args)
 	--- Store/initialise needed variables.
@@ -50,7 +88,7 @@ function Game:init(args)
 	--- Setup blocks.
 	self.blocks = {}
 
-	-- Setup level obstacles.
+	-- Setup obstacle blocks.
 	self.blocks.obstacles = {}
 
 	-- Setup player and goal blocks.
@@ -66,6 +104,9 @@ function Game:init(args)
 			y = self.level.players[i].y
 		}
 	end
+
+	--- Setup controls.
+	self.controls = generate_control_functions(self.blocks.players)
 
 	--- Start game by playing music.
 	self.music:play()
@@ -165,6 +206,12 @@ function Game:draw()
 	--- Draw the canvas.
 	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
 	love.graphics.draw(self.canvas)
+end
+
+function Game:keypressed(k)
+	if self.controls[k] then
+		self.controls[k]()
+	end
 end
 --- ==== ---
 

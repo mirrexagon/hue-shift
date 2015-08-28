@@ -29,7 +29,10 @@ local function make_image(img_w, img_h, time)
 		return get_pixel_color(x,y, time)
 	end)
 
-	return love.graphics.newImage(imagedata)
+	local img = love.graphics.newImage(imagedata)
+	--img:setFilter("nearest", "nearest")
+
+	return img
 end
 --- ==== ---
 
@@ -38,8 +41,8 @@ return Class{
 	init = function(self, inittimer, img_w, img_h)
 		self.timer = inittimer or 0
 
-		self.img_w = img_w or 6
-		self.img_h = img_h or 6
+		self.img_w = img_w or 8
+		self.img_h = img_h or 8
 	end,
 
 	update = function(self, dt, song)
