@@ -107,10 +107,10 @@ function Game:init(args)
 	}
 
 	--- Setup blocks.
-	self:reset_blocks()
+	self:reset_level()
 
 	--- Setup controls.
-	self.controls = generate_control_functions(self.blocks.players)
+
 
 	--- Start game!
 	self:start()
@@ -120,7 +120,7 @@ function Game:calculate_transition_duration()
 	return beat.beattosec(2, self.music.bpm * self.saved_speed)
 end
 
-function Game:reset_blocks()
+function Game:reset_level()
 	--- Setup blocks.
 	self.blocks = {}
 
@@ -147,6 +147,9 @@ function Game:reset_blocks()
 
 		self:replace_block(self.blocks.goals[i])
 	end
+
+	-- Setup player block controls.
+	self.controls = generate_control_functions(self.blocks.players)
 end
 
 --- Block operations.
@@ -200,6 +203,7 @@ function Game:check_player_goal_collisions()
 		if player.x == goal.x and player.y == goal.y then
 			self.score[i] = self.score[i] + 1
 
+			-- Only replace goal block after player leaves it.
 			self.beat_timer.add(1, function()
 				self:replace_block(goal)
 			end)
@@ -224,9 +228,8 @@ end
 
 --- Game parameters.
 function Game:set_speed(speed)
-	self.saved_speed = speed
-
 	if self.state == "running" then
+		self.saved_speed = speed
 		self.speed = speed
 	end
 end
@@ -235,7 +238,10 @@ end
 function Game:start()
 	self.state = "running"
 
-	self:reset_blocks()
+	self.timer.cancel(self._speed_tween or 1)
+	self.speed = self.saved_speed
+
+	self:reset_level()
 
 	self.music:rewind()
 	self.music:play()
@@ -246,14 +252,14 @@ function Game:stopping()
 
 	local trans_dur = self:calculate_transition_duration()
 
-	self.timer.tween(trans_dur,
+	self._speed_tween = self.timer.tween(trans_dur,
 		self, {speed = 0},
 		"linear", function()
 			self:stop()
 		end)
 
 	self:for_all_blocks(function(block)
-		self.timer.tween(trans_dur,
+		block._alpha_tween = self.timer.tween(trans_dur,
 			block, {alpha = 1},
 			"linear")
 	end)
@@ -262,9 +268,11 @@ end
 function Game:stop()
 	self.state = "stopped"
 
+	self.timer.cancel(self._speed_tween)
 	self.speed = 0
 
 	self:for_all_blocks(function(block)
+		self.timer.cancel(block._alpha_tween)
 		block.alpha = 1
 	end)
 end
@@ -274,14 +282,14 @@ function Game:restart()
 
 	local trans_dur = self:calculate_transition_duration()
 
-	self.timer.tween(trans_dur,
+	self._speed_tween = self.timer.tween(trans_dur,
 		self, {speed = self.saved_speed},
 		"linear", function()
 			self:start()
 		end)
 
 	self:for_all_blocks(function(block)
-		self.timer.tween(trans_dur,
+		block._alpha_tween = self.timer.tween(trans_dur,
 			block, {alpha = 0},
 			"linear")
 	end)
@@ -370,10 +378,18 @@ function Game:keypressed(k)
 	if self.controls[k] then
 		self.controls[k]()
 
-	elseif k == "escape" and self.state == "running" then
-		self:stopping()
-	elseif k == " " and self.state == "stopped" then
-		self:restart()
+	elseif k == "escape" then
+		if self.state == "running" then
+			self:stopping()
+		elseif self.state == "stopping" then
+			self:stop()
+		end
+	elseif k == " " then
+		if self.state == "stopped" then
+			self:restart()
+		elseif self.state == "resetting" then
+			self:start()
+		end
 	end
 end
 --- ==== ---

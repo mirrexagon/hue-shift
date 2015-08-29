@@ -45,9 +45,9 @@ end
 
 function game:mousepressed(x, y, b)
 	if b == "wu" then
-		self.game:set_speed(util.math.clamp(0, self.game.speed + 0.2, 7))
+		self.game:set_speed(util.math.clamp(0.2, self.game.speed + 0.2, 7))
 	elseif b == "wd" then
-		self.game:set_speed(util.math.clamp(0, self.game.speed - 0.2, 7))
+		self.game:set_speed(util.math.clamp(0.2, self.game.speed - 0.2, 7))
 	end
 end
 --- ==== ---
