@@ -54,7 +54,7 @@ function Song:_set_pitch(pitch)
 end
 
 function Song:set_pitch(pitch)
-	if pitch == 0 then
+	if pitch < 0.001 then
 		if not self:is_paused() then
 			self:pause()
 		end

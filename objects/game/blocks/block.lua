@@ -22,9 +22,6 @@ local img_arrow = love.graphics.newImage("graphics/arrow.png")
 
 
 --- Local functions ---
-local function lerp(a, b, t)
-	return a + (a - b) * t
-end
 --- ==== ---
 
 

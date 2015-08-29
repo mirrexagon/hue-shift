@@ -26,7 +26,7 @@ local Game = {}
 --- ==== ---
 
 
---- Local functions ---
+--- Constants ---
 local BLOCK_CONTROLS = {
 	[1] = {
 		up = "w",
@@ -47,7 +47,10 @@ local BLOCK_CONTROLS = {
 		left = "j"
 	}
 }
+--- ==== ---
 
+
+--- Local functions ---
 local function generate_control_functions(players)
 	local funcs = {}
 
@@ -71,8 +74,11 @@ function Game:init(args)
 	self.music = args.music
 	self.theme = args.theme
 	self.n_players = args.n_players
-	self.speed = args.speed or 1
 	self.modifiers = args.modifiers or {}
+
+	self.state = "stopped"
+	self.speed = args.speed or 1
+	self.saved_speed = self.speed
 
 	--- Setup canvas for whole-grid fading.
 	self.canvas = love.graphics.newCanvas()
@@ -83,6 +89,7 @@ function Game:init(args)
 	self.done_first_beat = false
 
 	self.beat_timer = timer.new()
+	self.timer = timer.new()
 
 	--- Initialise score.
 	self.score = {
@@ -99,6 +106,21 @@ function Game:init(args)
 		color = self.theme.grid.color
 	}
 
+	--- Setup blocks.
+	self:reset_blocks()
+
+	--- Setup controls.
+	self.controls = generate_control_functions(self.blocks.players)
+
+	--- Start game!
+	self:start()
+end
+
+function Game:calculate_transition_duration()
+	return beat.beattosec(2, self.music.bpm * self.saved_speed)
+end
+
+function Game:reset_blocks()
 	--- Setup blocks.
 	self.blocks = {}
 
@@ -125,15 +147,23 @@ function Game:init(args)
 
 		self:replace_block(self.blocks.goals[i])
 	end
-
-	--- Setup controls.
-	self.controls = generate_control_functions(self.blocks.players)
-
-	--- Start game by playing music.
-	self.music:play()
 end
 
 --- Block operations.
+function Game:for_all_blocks(func)
+	for i, goal in ipairs(self.blocks.goals) do
+		func(goal)
+	end
+
+	for i, player in ipairs(self.blocks.players) do
+		func(player)
+	end
+
+	for i, obstacle in ipairs(self.blocks.obstacles) do
+		func(obstacle)
+	end
+end
+
 function Game:get_blocks_at(x, y)
 	local blocks = {}
 
@@ -143,17 +173,7 @@ function Game:get_blocks_at(x, y)
 		end
 	end
 
-	for i, goal in ipairs(self.blocks.goals) do
-		check(goal)
-	end
-
-	for i, player in ipairs(self.blocks.players) do
-		check(player)
-	end
-
-	for i, obstacle in ipairs(self.blocks.obstacles) do
-		check(obstacle)
-	end
+	self:for_all_blocks(check)
 
 	return blocks
 end
@@ -202,19 +222,80 @@ function Game:check_player_obstacles_collisions()
 	end
 end
 
+--- Game parameters.
+function Game:set_speed(speed)
+	self.saved_speed = speed
+
+	if self.state == "running" then
+		self.speed = speed
+	end
+end
+
+--- States.
+function Game:start()
+	self.state = "running"
+
+	self:reset_blocks()
+
+	self.music:rewind()
+	self.music:play()
+end
+
+function Game:stopping()
+	self.state = "stopping"
+
+	local trans_dur = self:calculate_transition_duration()
+
+	self.timer.tween(trans_dur,
+		self, {speed = 0},
+		"linear", function()
+			self:stop()
+		end)
+
+	self:for_all_blocks(function(block)
+		self.timer.tween(trans_dur,
+			block, {alpha = 1},
+			"linear")
+	end)
+end
+
+function Game:stop()
+	self.state = "stopped"
+
+	self.speed = 0
+
+	self:for_all_blocks(function(block)
+		block.alpha = 1
+	end)
+end
+
+function Game:restart()
+	self.state = "resetting"
+
+	local trans_dur = self:calculate_transition_duration()
+
+	self.timer.tween(trans_dur,
+		self, {speed = self.saved_speed},
+		"linear", function()
+			self:start()
+		end)
+
+	self:for_all_blocks(function(block)
+		self.timer.tween(trans_dur,
+			block, {alpha = 0},
+			"linear")
+	end)
+end
+
 --- Updating.
 function Game:step()
 	--- Update beat timer.
 	self.beat_timer.update(1)
 
 	--- Step blocks in their appropriate directions.
-	for i, player in ipairs(self.blocks.players) do
-		player:step()
-	end
-
-	for i, obstacle in ipairs(self.blocks.obstacles) do
-		obstacle:step()
-	end
+	self:for_all_blocks(function(block)
+		block:step()
+	end)
 
 	--- Check collisions.
 	-- Goals.
@@ -222,6 +303,9 @@ function Game:step()
 end
 
 function Game:update(dt)
+	--- Update normal timer.
+	self.timer.update(dt)
+
 	--- Update beat.
 	local current_beat = self.music:get_beat()
 
@@ -231,7 +315,7 @@ function Game:update(dt)
 			self.done_first_beat = true
 		end
 
-		if self.done_first_beat then
+		if self.done_first_beat and self.state == "running" then
 			self:step()
 		end
 	end
@@ -245,20 +329,14 @@ function Game:update(dt)
 	--- Update block alpha.
 	local beat_int, beat_fraction = math.modf(current_beat)
 
-	for i, goal in ipairs(self.blocks.goals) do
-		goal:update_alpha(beat_fraction)
+	if self.state == "running" then
+		self:for_all_blocks(function(block)
+			block:update_alpha(beat_fraction)
+		end)
 	end
-
-	for i, player in ipairs(self.blocks.players) do
-		player:update_alpha(beat_fraction)
-	end
-
-	for i, obstacle in ipairs(self.blocks.obstacles) do
-		obstacle:update_alpha(beat_fraction)
-	end
-
 
 	---
+
 	self.last_beat = current_beat
 end
 
@@ -269,7 +347,7 @@ function Game:draw()
 	--- Draw background.
 	self.theme:draw_bg(love.graphics.getDimensions())
 
-	---- Canvas for fading.
+	-- Draw game.
 	self.canvas:clear()
 	love.graphics.setCanvas(self.canvas)
 
@@ -277,22 +355,13 @@ function Game:draw()
 	self.grid:draw()
 
 	-- Draw blocks.
-	for i, goal in ipairs(self.blocks.goals) do
-		goal:draw()
-	end
+	self:for_all_blocks(function(block)
+		block:draw()
+	end)
 
-	for i, player in ipairs(self.blocks.players) do
-		player:draw()
-	end
-
-	for i, obstacle in ipairs(self.blocks.obstacles) do
-		obstacle:draw()
-	end
-
-	-- Set no canvas.
 	love.graphics.setCanvas()
 
-	--- Draw the canvas with the game's alpha.
+	--- Draw the canvases with the game's alpha.
 	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
 	love.graphics.draw(self.canvas)
 end
@@ -300,6 +369,11 @@ end
 function Game:keypressed(k)
 	if self.controls[k] then
 		self.controls[k]()
+
+	elseif k == "escape" and self.state == "running" then
+		self:stopping()
+	elseif k == " " and self.state == "stopped" then
+		self:restart()
 	end
 end
 --- ==== ---
