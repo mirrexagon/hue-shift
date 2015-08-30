@@ -58,7 +58,9 @@ local function generate_control_functions(players)
 	for id, controls in ipairs(BLOCK_CONTROLS) do
 		for dir, key in pairs(controls) do
 			funcs[key] = function()
-				players[id]:set_direction(dir)
+				if players[id] then
+					players[id]:set_direction(dir)
+				end
 			end
 		end
 	end
