@@ -27,6 +27,9 @@
 	---
 	---
 
+	BUGS:
+		On song loop, game is off by half a beat. This continues through all subsequent loops.
+
 	TODO:
 		Show both blocks or indicate when two blocks overlap.
 
