@@ -75,7 +75,7 @@ function DynamicBlock:draw_symbol(draw_x, draw_y, tile_w, tile_h)
 
 	love.graphics.draw(
 		img_arrow,
-		draw_x + min_wh/2, draw_y + min_wh/2,
+		draw_x + tile_w/2, draw_y + tile_h/2,
 		ROTATION_MAPPING[self.direction],
 		1, 1,
 		min_wh/2, min_wh/2)

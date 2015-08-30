@@ -73,12 +73,18 @@ function Block:draw_symbol(draw_x, draw_y, tile_w, tile_h)
 
 end
 
+function Block:draw_at(x, y)
+	local tile_w = self.grid.tile_w
+	local tile_h = self.grid.tile_h
+
+	self:draw_block(x, y, tile_w, tile_h)
+	self:draw_symbol(x, y, tile_w, tile_h)
+end
+
 function Block:draw()
 	local draw_x, draw_y = self.grid:get_pixel_coords(self.x, self.y)
-	local tile_w, tile_h = self.grid.tile_w, self.grid.tile_h
 
-	self:draw_block(draw_x, draw_y, tile_w, tile_h)
-	self:draw_symbol(draw_x, draw_y, tile_w, tile_h)
+	self:draw_at(draw_x, draw_y)
 end
 --- ==== ---
 

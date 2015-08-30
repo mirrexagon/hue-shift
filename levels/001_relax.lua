@@ -1,5 +1,5 @@
 return {
-	name = "keep it simple",
+	name = "RELAX",
 
 	grid = {
 		w = 7,
