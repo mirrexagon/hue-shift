@@ -1,5 +1,5 @@
 local level = {
-	name = "relax",
+	name = "small problem",
 
 	grid = {
 		w = 7,
@@ -29,7 +29,14 @@ local level = {
 		}
 	},
 
-	obstacles = {}
+	obstacles = {
+		{
+			x = 3,
+			y = 3,
+
+			type = "static"
+		}
+	}
 }
 
 ---

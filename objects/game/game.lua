@@ -16,7 +16,7 @@ local floor = math.floor
 --- Classes ---
 local Grid = require("objects.game.grid")
 
-local StaticBlock = require("objects.game.blocks.goal")
+local StaticBlock = require("objects.game.blocks.static")
 local DynamicBlock = require("objects.game.blocks.dynamic")
 local GoalBlock = require("objects.game.blocks.goal")
 --- ==== ---
@@ -110,9 +110,6 @@ function Game:init(args)
 	--- Setup blocks.
 	self:reset_level()
 
-	--- Setup controls.
-
-
 	--- Start game!
 	self:start()
 end
@@ -128,6 +125,27 @@ function Game:reset_level()
 	-- Setup obstacle blocks.
 	self.blocks.obstacles = {}
 
+	for i, obs_data in ipairs(self.level.obstacles) do
+		local Constructor
+		if obs_data.type == "static" then
+			Constructor = StaticBlock
+		else
+			Constructor = DynamicBlock
+		end
+
+		---
+
+		self.blocks.obstacles[i] = Constructor{
+			grid = self.grid,
+			color = self.theme.blocks.obstacle,
+
+			x = obs_data.x,
+			y = obs_data.y,
+
+			direction = obs_data.direction
+		}
+	end
+
 	-- Setup player and goal blocks.
 	self.blocks.players = {}
 	self.blocks.goals = {}
@@ -138,7 +156,9 @@ function Game:reset_level()
 			color = self.theme.blocks.player[i],
 
 			x = self.level.players[i].x,
-			y = self.level.players[i].y
+			y = self.level.players[i].y,
+
+			direction = self.level.players[i].direction
 		}
 
 		self.blocks.goals[i] = GoalBlock{
