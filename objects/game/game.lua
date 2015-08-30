@@ -81,7 +81,7 @@ function Game:init(args)
 
 	self.state = "stopped"
 	self.speed = args.speed or 1
-	self.saved_speed = self.speed
+	self._speed = self.speed
 
 	--- Setup canvas for whole-grid fading.
 	self.canvas = love.graphics.newCanvas()
@@ -117,7 +117,7 @@ function Game:init(args)
 end
 
 function Game:calculate_transition_duration()
-	return beat.beattosec(2, self.music.bpm * self.saved_speed)
+	return beat.beattosec(2, self.music.bpm * self.speed)
 end
 
 function Game:reset_level()
@@ -247,19 +247,12 @@ function Game:check_player_obstacle_collisions()
 end
 
 --- Game parameters.
-function Game:set_speed(speed)
-	if self.state == "running" then
-		self.saved_speed = speed
-		self.speed = speed
-	end
-end
-
 --- States.
 function Game:start()
 	self.state = "running"
 
 	self.timer.cancel(self._speed_tween or 1)
-	self.speed = self.saved_speed
+	self._speed = self.speed
 
 	self:reset_level()
 
@@ -273,7 +266,7 @@ function Game:stopping()
 	local trans_dur = self:calculate_transition_duration()
 
 	self._speed_tween = self.timer.tween(trans_dur,
-		self, {speed = 0},
+		self, {_speed = 0},
 		"linear", function()
 			self:stop()
 		end)
@@ -289,7 +282,7 @@ function Game:stop()
 	self.state = "stopped"
 
 	self.timer.cancel(self._speed_tween)
-	self.speed = 0
+	self._speed = 0
 
 	self:for_all_blocks(function(block)
 		self.timer.cancel(block._alpha_tween)
@@ -303,7 +296,7 @@ function Game:restart()
 	local trans_dur = self:calculate_transition_duration()
 
 	self._speed_tween = self.timer.tween(trans_dur,
-		self, {speed = self.saved_speed},
+		self, {_speed = self.speed},
 		"linear", function()
 			self:start()
 		end)
@@ -334,6 +327,11 @@ function Game:update(dt)
 	--- Update normal timer.
 	self.timer.update(dt)
 
+	--- Update speed.
+	if self.state == "running" then
+		self._speed = self.speed
+	end
+
 	--- Update beat.
 	local current_beat = self.music:get_beat()
 
@@ -349,10 +347,10 @@ function Game:update(dt)
 	end
 
 	--- Update music pitch.
-	self.music:set_pitch(self.speed)
+	self.music:set_pitch(self._speed)
 
 	--- Update theme.
-	self.theme:update(dt * self.speed, self.music)
+	self.theme:update(dt * self._speed, self.music)
 
 	--- Update block alpha.
 	local beat_int, beat_fraction = math.modf(current_beat)
@@ -395,7 +393,7 @@ function Game:draw()
 end
 
 function Game:keypressed(k)
-	if self.controls[k] then
+	if self.controls[k] and self.state == "running" then
 		self.controls[k]()
 
 	elseif k == "escape" then
