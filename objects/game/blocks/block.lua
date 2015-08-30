@@ -46,16 +46,18 @@ end
 
 ---
 
-function Block:update_alpha(beat_fraction, snappy)
+function Block:update_alpha(beat_fraction, snappy, mod)
+	mod = mod or 1
+
 	local fade_mod = snappy and 1.07 or 1
 
 	local right_time = clamp(0.5, self.fade_time * fade_mod, 1)
 	local left_time = 1 - right_time
 
 	if beat_fraction <= left_time then
-		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
+		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1) * mod
 	elseif beat_fraction >= right_time then
-		self.alpha = util.math.map(beat_fraction, right_time,1, 1,0)
+		self.alpha = util.math.map(beat_fraction, right_time,1, 1,0) * mod
 	else
 		self.alpha = 1
 	end
