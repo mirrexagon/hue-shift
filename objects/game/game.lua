@@ -16,6 +16,7 @@ local floor = math.floor
 --- Classes ---
 local Grid = require("objects.game.grid")
 
+local StaticBlock = require("objects.game.blocks.goal")
 local DynamicBlock = require("objects.game.blocks.dynamic")
 local GoalBlock = require("objects.game.blocks.goal")
 --- ==== ---
@@ -196,8 +197,7 @@ function Game:replace_block(block)
 end
 
 function Game:check_player_goal_collisions()
-	for i = 1, self.n_players do
-		local player = self.blocks.players[i]
+	for i, player in ipairs(self.blocks.players) do
 		local goal = self.blocks.goals[i]
 
 		if player.x == goal.x and player.y == goal.y then
@@ -211,17 +211,15 @@ function Game:check_player_goal_collisions()
 	end
 end
 
-function Game:check_player_obstacles_collisions()
-	for i = 1, self.n_players do
-		local player = self.blocks.players[i]
-		local goal = self.blocks.goals[i]
+function Game:check_player_obstacle_collisions()
+	for i, player in ipairs(self.blocks.players) do
+		for i, obstacle in ipairs(self.blocks.obstacles) do
 
-		if player.x == goal.x and player.y == goal.y then
-			self.score[i] = self.score[i] + 1
+			if player.x == obstacle.x and player.y == obstacle.y then
+				self:stopping()
 
-			self.beat_timer.add(1, function()
-				self:replace_block(goal)
-			end)
+				-- TODO: Indicate where the player died.
+			end
 		end
 	end
 end
@@ -306,7 +304,7 @@ function Game:step()
 	end)
 
 	--- Check collisions.
-	-- Goals.
+	self:check_player_obstacle_collisions()
 	self:check_player_goal_collisions()
 end
 
@@ -355,7 +353,7 @@ function Game:draw()
 	--- Draw background.
 	self.theme:draw_bg(love.graphics.getDimensions())
 
-	-- Draw game.
+	--- Draw game.
 	self.canvas:clear()
 	love.graphics.setCanvas(self.canvas)
 
