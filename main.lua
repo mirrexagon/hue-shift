@@ -28,9 +28,7 @@
 	---
 
 	TODO:
-		Add pause before game start to show player block positions
-
-		---
+		Show both blocks or indicate when two blocks overlap.
 
 		Record scores
 		Obstacle AI

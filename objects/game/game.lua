@@ -241,6 +241,8 @@ function Game:check_player_obstacle_collisions()
 				self:stopping()
 
 				-- TODO: Indicate where the player died.
+				-- Along with system for highlighting overlapping blocks,
+				-- specially indicate this spot with a crosshair or such.
 			end
 		end
 	end
