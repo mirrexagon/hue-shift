@@ -35,7 +35,7 @@ end
 ---
 
 function StaticBlock:draw_symbol(draw_x, draw_y, tile_w, tile_h)
-	love.graphics.setColor(255, 255, 255, 255 * self._alpha * self.alpha)
+	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
 
 	local min_wh = min(tile_w, tile_h)
 	love.graphics.circle("fill", draw_x + tile_w/2, draw_y + tile_h/2, min_wh * STATIC_DOT_SIZE_MULT)

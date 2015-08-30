@@ -33,8 +33,6 @@ function Block:init(args)
 	self.y = args.y or 0
 
 	self.color = args.color
-
-	self._alpha = 1
 	self.alpha = 1
 
 	self.fade_time = args.fade_time or 1
@@ -55,11 +53,11 @@ function Block:update_alpha(beat_fraction, snappy)
 	local left_time = 1 - right_time
 
 	if beat_fraction <= left_time then
-		self._alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
+		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
 	elseif beat_fraction >= right_time then
-		self._alpha = util.math.map(beat_fraction, right_time,1, 1,0)
+		self.alpha = util.math.map(beat_fraction, right_time,1, 1,0)
 	else
-		self._alpha = 1
+		self.alpha = 1
 	end
 end
 
@@ -67,7 +65,7 @@ end
 
 function Block:draw_block(draw_x, draw_y, tile_w, tile_h)
 	love.graphics.setColor(self.color[1],
-		self.color[2], self.color[3], 255 * self._alpha * self.alpha)
+		self.color[2], self.color[3], 255 * self.alpha)
 
 	love.graphics.rectangle("fill", draw_x,draw_y,
 		tile_w,tile_h)
