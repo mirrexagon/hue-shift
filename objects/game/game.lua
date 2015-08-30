@@ -336,7 +336,7 @@ function Game:update(dt)
 	local current_beat = self.music:get_beat()
 
 	--- Step the game on a beat EXCEPT the first.
-	if current_beat > floor(self.last_beat) + 1 then
+	if floor(current_beat) ~= floor(self.last_beat) then
 		if current_beat >= 2 and not self.done_first_beat then
 			self.done_first_beat = true
 		end
