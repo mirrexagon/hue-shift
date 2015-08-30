@@ -31,6 +31,12 @@ function Song:init(path)
 	for line in love.filesystem.lines(meta_path) do
 		local key, value = line:match("^(%w+)%s-%=%s-(.-)$")
 
+		if value == "true" or value == "yes" then
+			value = true
+		elseif value == "false" or value == "no" then
+			value = false
+		end
+
 		self[key] = value
 	end
 
