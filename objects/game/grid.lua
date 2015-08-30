@@ -11,6 +11,9 @@ local Grid = {}
 --- ==== ---
 
 
+-- TODO: Make grid contain blocks, not the other way around.
+
+
 --- Class functions ---
 function Grid:init(args)
 	self:set(args)
