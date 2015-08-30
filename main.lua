@@ -39,6 +39,8 @@
 			+ Wrong goal block is obstacle
 			+ Time limit, step limit, etc
 			+ Game speed
+				+ Faster
+				+ Changes randomly
 
 		Effects:
 			Screen shake - a shake happens every beat, specify intensity level per song?
@@ -50,7 +52,9 @@
 		More backgrounds? Set by music?
 ]]
 
-local Gamestate = require("lib.hump.gamestate")
+local gamestate = require("lib.hump.gamestate")
+local timer = require("lib.hump.timer")
+
 local util = require("lib.self.util")
 
 ---
@@ -60,11 +64,12 @@ local state_game = require("states.game")
 
 ---
 
-TRANSITION_DURATION = 0.3
-
----
-
 function love.load()
-	Gamestate.registerEvents()
-	Gamestate.switch(state_game)
+	gamestate.registerEvents()
+	gamestate.switch(state_game)
+end
+
+function love.update(dt)
+	--- Update global timer.
+	timer.update(dt)
 end
