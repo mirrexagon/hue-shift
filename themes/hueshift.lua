@@ -41,8 +41,8 @@ return Class{
 	init = function(self, inittimer, img_w, img_h)
 		self.timer = inittimer or 0
 
-		self.img_w = img_w or 8
-		self.img_h = img_h or 8
+		self.img_w = img_w or 6
+		self.img_h = img_h or 6
 	end,
 
 	update = function(self, dt, song)
