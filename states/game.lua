@@ -23,7 +23,7 @@ end
 function game:enter(prev, ...)
 	self.game = Game{
 		level = require("levels.001_relax"),
-		music = Song("music/laserwash.ogg"),
+		music = Song("music/hueshift.ogg"),
 		theme = require("themes.hueshift")(),
 
 		n_players = 3,

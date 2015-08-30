@@ -357,7 +357,7 @@ function Game:update(dt)
 
 	if self.state == "running" then
 		self:for_all_blocks(function(block)
-			block:update_alpha(beat_fraction)
+			block:update_alpha(beat_fraction, self.music.snappy)
 		end)
 	end
 
@@ -407,6 +407,8 @@ function Game:keypressed(k)
 			self:restart()
 		elseif self.state == "resetting" then
 			self:start()
+		else
+			self.music:rewind()
 		end
 	end
 end

@@ -7,7 +7,7 @@ local util = require("lib.self.util")
 
 
 --- Localised functions ---
-
+local clamp = util.math.clamp
 --- ==== ---
 
 
@@ -46,9 +46,11 @@ end
 
 ---
 
-function Block:update_alpha(beat_fraction)
-	local left_time = 1 - self.fade_time
-	local right_time = self.fade_time
+function Block:update_alpha(beat_fraction, snappy)
+	local fade_mod = snappy and 1.07 or 1
+
+	local right_time = clamp(0.5, self.fade_time * fade_mod, 1)
+	local left_time = 1 - right_time
 
 	if beat_fraction <= left_time then
 		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
