@@ -17,6 +17,9 @@ function Grid:init(args)
 end
 
 function Grid:set(args)
+	self.x = args.x
+	self.y = args.y
+
 	self.w = args.w or 8
 	self.h = args.h or 8
 
@@ -31,12 +34,16 @@ end
 ---
 
 function Grid:get_draw_location()
-	local pixel_w, pixel_h = self:get_pixel_width()
+	if self.x and self.y then
+		return self.x, self.y
+	else
+		local pixel_w, pixel_h = self:get_pixel_width()
 
-	local x = (love.graphics.getWidth() - pixel_w) / 2
-	local y = (love.graphics.getHeight() - pixel_h) / 2
+		local x = (love.graphics.getWidth() - pixel_w) / 2
+		local y = (love.graphics.getHeight() - pixel_h) / 2
 
-	return x, y
+		return x, y
+	end
 end
 
 function Grid:get_relative_pixel_coords(grid_x, grid_y)
@@ -59,10 +66,11 @@ end
 
 ---
 
-function Grid:draw(alpha)
+function Grid:draw()
 	-- Get needed variables --
-	local pixel_w, pixel_h = self:get_pixel_width()
 	local x, y = self:get_draw_location()
+
+	local pixel_w, pixel_h = self:get_pixel_width()
 	alpha = alpha or 1
 
 
