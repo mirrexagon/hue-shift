@@ -218,6 +218,22 @@ function Game:replace_block(block)
 	end
 end
 
+function Game:check_visual_collisions()
+	self:for_all_blocks(function(block1)
+		self:for_all_blocks(function(block2)
+			if block1 ~= block2 then
+				if block1.x == block2.x and block1.y == block2.y then
+					block1.ghost = true
+					block2.ghost = true
+				else
+					block1.ghost = false
+					block2.ghost = false
+				end
+			end
+		end)
+	end)
+end
+
 function Game:check_player_goal_collisions()
 	for i, player in ipairs(self.blocks.players) do
 		local goal = self.blocks.goals[i]
@@ -346,6 +362,8 @@ function Game:update(dt)
 		if self.done_first_beat and self.state == "running" then
 			self:step()
 		end
+
+		self:check_visual_collisions()
 	end
 
 	--- Update music pitch.

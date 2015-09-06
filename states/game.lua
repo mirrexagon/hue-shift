@@ -26,7 +26,7 @@ function game:enter(prev, ...)
 		music = Song("music/hueshift.ogg"),
 		theme = require("themes.hueshift")(),
 
-		n_players = 3,
+		n_players = 2,
 		speed = 1
 	}
 end
