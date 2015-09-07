@@ -69,8 +69,6 @@ end
 ---
 
 function DynamicBlock:draw_symbol(draw_x, draw_y, tile_w, tile_h)
-	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
-
 	local min_wh = min(tile_w, tile_h)
 
 	love.graphics.draw(

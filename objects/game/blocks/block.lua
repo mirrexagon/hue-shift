@@ -67,9 +67,6 @@ end
 ---
 
 function Block:draw_block(draw_x, draw_y, tile_w, tile_h)
-	love.graphics.setColor(self.color[1],
-		self.color[2], self.color[3], 255 * self._alpha)
-
 	love.graphics.rectangle("fill", draw_x,draw_y,
 		tile_w,tile_h)
 end
@@ -82,7 +79,11 @@ function Block:draw_at(x, y)
 	local tile_w = self.grid.tile_w
 	local tile_h = self.grid.tile_h
 
+	love.graphics.setColor(self.color[1],
+		self.color[2], self.color[3], 255 * self._alpha)
 	self:draw_block(x, y, tile_w, tile_h)
+
+	love.graphics.setColor(255, 255, 255, 255 * self._alpha)
 	self:draw_symbol(x, y, tile_w, tile_h)
 end
 
