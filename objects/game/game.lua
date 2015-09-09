@@ -83,6 +83,9 @@ function Game:init(args)
 	self.speed = args.speed or 1
 	self._speed = self.speed
 
+	self.blink_level = 0
+	self.blink_dir = 1
+
 	--- Setup canvas for whole-grid fading.
 	self.canvas = love.graphics.newCanvas()
 	self.alpha = 1
@@ -218,20 +221,23 @@ function Game:replace_block(block)
 	end
 end
 
-function Game:check_visual_collisions()
-	self:for_all_blocks(function(block1)
-		self:for_all_blocks(function(block2)
-			if block1 ~= block2 then
-				if block1.x == block2.x and block1.y == block2.y then
-					block1.ghost = true
-					block2.ghost = true
+function Game:check_player_player_collisions()
+	for i, player1 in ipairs(self.blocks.players) do
+		for j, player2 in ipairs(self.blocks.players) do
+			if player1 ~= player2 then
+				if player1.x == player2.x and player1.y == player2.y then
+					player1.blink = true
+					player1.blink_dir = true
+
+					player2.blink = true
+					player2.blink_dir = false
 				else
-					block1.ghost = false
-					block2.ghost = false
+					player1.blink = false
+					player2.blink = false
 				end
 			end
-		end)
-	end)
+		end
+	end
 end
 
 function Game:check_player_goal_collisions()
@@ -255,6 +261,12 @@ function Game:check_player_obstacle_collisions()
 
 			if player.x == obstacle.x and player.y == obstacle.y then
 				self:stopping()
+
+				player.blink = true
+				player.blinkdir = true
+
+				obstacle.blink = true
+				obstacle.blinkdir = false
 
 				-- TODO: Indicate where the player died.
 				-- Along with system for highlighting overlapping blocks,
@@ -306,6 +318,9 @@ function Game:stop()
 		self.timer.cancel(block._alpha_tween)
 		block.alpha = 1
 	end)
+
+	self.blink_level = 0
+	self.blink_dir = 1
 end
 
 function Game:restart()
@@ -363,7 +378,7 @@ function Game:update(dt)
 			self:step()
 		end
 
-		self:check_visual_collisions()
+		self:check_player_player_collisions()
 	end
 
 	--- Update music pitch.
@@ -375,11 +390,33 @@ function Game:update(dt)
 	--- Update block alpha.
 	local beat_int, beat_fraction = math.modf(current_beat)
 
-	if self.state == "running" then
-		self:for_all_blocks(function(block)
-			block:update_alpha(beat_fraction, self.music.snappy)
-		end)
+	--- Update blink.
+	if self.state == "stopped" then
+		self.blink_level = self.blink_level
+			+ dt * 1/beat.beattosec(2, self.music.bpm) * self.blink_dir
+		if not util.math.range(0, self.blink_level, 1) then
+			self.blink_level = util.math.clamp(0, self.blink_level, 1)
+			self.blink_dir = self.blink_dir * -1
+		end
 	end
+
+	self:for_all_blocks(function(block)
+		if self.state == "running" then
+			block:update_alpha(beat_fraction, self.music.snappy)
+		end
+
+		if block.blink then
+			if self.state == "running" then
+				-- Use beat timer.
+				local amp = (block.blink_dir and beat_fraction or 1 - beat_fraction)
+				block.alpha = amp
+			elseif self.state == "stopped" then
+				-- Use a timer.
+				local amp = (block.blink_dir and self.blink_level or 1 - self.blink_level)
+				block.alpha = amp
+			end
+		end
+	end)
 
 	---
 
