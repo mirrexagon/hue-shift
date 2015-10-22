@@ -8,6 +8,7 @@ local util = require("lib.self.util")
 
 --- Localised functions ---
 local clamp = util.math.clamp
+local map = util.math.map
 --- ==== ---
 
 
@@ -16,12 +17,21 @@ local Block = {}
 --- ==== ---
 
 
---- Images ---
-local img_arrow = love.graphics.newImage("graphics/arrow.png")
---- ==== ---
-
-
 --- Local functions ---
+local function default_alpha_curve(self, beat_fraction, snappy)
+	local fade_mod = snappy and 1.07 or 1
+
+	local right_time = clamp(0.5, self.fade_time, 1)
+	local left_time = 1 - right_time
+
+	if beat_fraction <= left_time then
+		return map(beat_fraction, 0,left_time, 0,1)
+	elseif beat_fraction >= right_time then
+		return map(beat_fraction, right_time,1, 1,0)
+	else
+		return 1
+	end
+end
 --- ==== ---
 
 
@@ -34,8 +44,10 @@ function Block:init(args)
 
 	self.color = args.color
 
-	self.alpha = 1
-	self._alpha = 1
+	self.alpha_curve = default_alpha_curve
+
+	self.alpha = 1 -- Alpha without regard to ghosting.
+	self._alpha = 1 -- True alpha.
 	self.ghost = args.ghost or false
 
 	self.fade_time = args.fade_time or 1
@@ -49,19 +61,10 @@ end
 
 ---
 
+-- TODO: General alpha curve function as a function of `beat_fraction` and `snappy`.
+
 function Block:update_alpha(beat_fraction, snappy)
-	local fade_mod = snappy and 1.07 or 1
-
-	local right_time = clamp(0.5, self.fade_time, 1)
-	local left_time = 1 - right_time
-
-	if beat_fraction <= left_time then
-		self.alpha = util.math.map(beat_fraction, 0,left_time, 0,1)
-	elseif beat_fraction >= right_time then
-		self.alpha = util.math.map(beat_fraction, right_time,1, 1,0)
-	else
-		self.alpha = 1
-	end
+	self.alpha = self:alpha_curve(beat_fraction, snappy)
 end
 
 ---

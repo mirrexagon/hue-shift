@@ -226,14 +226,20 @@ function Game:check_player_player_collisions()
 		for j, player2 in ipairs(self.blocks.players) do
 			if player1 ~= player2 then
 				if player1.x == player2.x and player1.y == player2.y then
-					player1.blink = true
-					player1.blink_dir = true
+					--player1.blink = true
+					--player1.blink_dir = true
 
-					player2.blink = true
-					player2.blink_dir = false
+					--player2.blink = true
+					--player2.blink_dir = false
+
+					player1.ghost = true
+					player2.ghost = true
 				else
-					player1.blink = false
-					player2.blink = false
+					--player1.blink = false
+					--player2.blink = false
+
+					player1.ghost = false
+					player2.ghost = false
 				end
 			end
 		end
