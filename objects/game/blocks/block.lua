@@ -46,8 +46,8 @@ function Block:init(args)
 
 	self.alpha_curve = default_alpha_curve
 
-	self.alpha = 1 -- Alpha without regard to ghosting.
-	self._alpha = 1 -- True alpha.
+	self.alpha = 0 -- Alpha without regard to ghosting.
+	self._alpha = 0 -- True alpha.
 	self.ghost = args.ghost or false
 
 	self.fade_time = args.fade_time or 1

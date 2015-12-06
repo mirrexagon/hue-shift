@@ -13,10 +13,7 @@
 		The player can choose any song to play any level, and choose the number of player blocks.
 
 		The layouts have a set grid size.
-			Most should be a standard size, maybe 7x7.
-
-	LEVEL:
-		A table representing a grid, or a list of entities? Simplified list of entities?
+			Most should be a standard size, 7x7.
 
 	MENU:
 

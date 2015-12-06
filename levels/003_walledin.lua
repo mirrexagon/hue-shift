@@ -1,5 +1,5 @@
 local level = {
-	name = "RELAX",
+	name = "walled in",
 
 	grid = {
 		w = 9,

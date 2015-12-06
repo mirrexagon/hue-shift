@@ -114,9 +114,6 @@ function Game:init(args)
 
 	--- Setup blocks.
 	self:reset_level()
-
-	--- Start game!
-	self:start()
 end
 
 function Game:calculate_transition_duration()
@@ -290,8 +287,6 @@ function Game:start()
 	self.timer.cancel(self._speed_tween or 1)
 	self._speed = self.speed
 
-	self:reset_level()
-
 	self.music:rewind()
 	self.music:play()
 end
@@ -337,6 +332,7 @@ function Game:restart()
 	self._speed_tween = self.timer.tween(trans_dur,
 		self, {_speed = self.speed},
 		"linear", function()
+			self:reset_level()
 			self:start()
 		end)
 
@@ -450,7 +446,7 @@ function Game:draw()
 
 	love.graphics.setCanvas()
 
-	--- Draw the canvases with the game's alpha.
+	--- Draw the canvas with the game's alpha.
 	love.graphics.setColor(255, 255, 255, 255 * self.alpha)
 	love.graphics.draw(self.canvas)
 end
@@ -463,15 +459,16 @@ function Game:keypressed(k)
 		if self.state == "running" then
 			self:stopping()
 		elseif self.state == "stopping" then
-			self:stop()
+			self:stop() -- Stop game immediately because player is mashing escape.
 		end
 	elseif k == " " then
-		if self.state == "stopped" then
+		if self.state == "stopping" then
+			self:stop() -- Stop game immediately because player is mashing space.
+		elseif self.state == "stopped" then
 			self:restart()
 		elseif self.state == "resetting" then
-			self:start()
-		else
-			self.music:rewind()
+			self:reset_level()
+			self:start() -- Start game immediately because player is mashing space.
 		end
 	end
 end
