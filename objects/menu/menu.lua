@@ -42,4 +42,4 @@ end
 --- ==== ---
 
 
-return Class(Game)
+return Class(Menu)

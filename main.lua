@@ -1,5 +1,5 @@
 --[[
-	Hue Shift v3, a game by LegoSpacy
+	Hue Shift, a game by LegoSpacy
 
 	---
 
@@ -26,6 +26,8 @@
 
 	BUGS:
 		On song loop, game is off by half a beat. This continues through all subsequent loops.
+		Fading in and out doesn't look as nice as v2: fading the whole thing via a canvas looks bad.
+			Should fade each element individually.
 
 	TODO:
 		Record scores
