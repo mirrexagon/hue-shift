@@ -1,6 +1,6 @@
 function love.conf(t)
 	--t.identity = "ls-hueshift"
-	t.version = "0.9.2"
+	t.version = "0.10.1"
 	t.console = false
 
 	t.window.title = "Hue Shift"
@@ -12,7 +12,7 @@ function love.conf(t)
 	t.window.minwidth = 300
 	t.window.minheight = 300
 	t.window.fullscreen = false
-	t.window.fullscreentype = "normal"
+	t.window.fullscreentype = "desktop"
 	t.window.vsync = true
 	t.window.fsaa = 0
 	t.window.display = 1

@@ -433,8 +433,8 @@ function Game:draw()
 	self.theme:draw_bg(love.graphics.getDimensions())
 
 	--- Draw game.
-	self.canvas:clear()
 	love.graphics.setCanvas(self.canvas)
+	love.graphics.clear()
 
 	-- Draw grid.
 	self.grid:draw()
