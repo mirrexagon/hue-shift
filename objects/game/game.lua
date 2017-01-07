@@ -461,7 +461,7 @@ function Game:keypressed(k)
 		elseif self.state == "stopping" then
 			self:stop() -- Stop game immediately because player is mashing escape.
 		end
-	elseif k == " " then
+	elseif k == "space" then
 		if self.state == "stopping" then
 			self:stop() -- Stop game immediately because player is mashing space.
 		elseif self.state == "stopped" then
