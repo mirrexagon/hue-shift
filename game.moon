@@ -41,9 +41,20 @@ class HueShiftBackground extends Background
 		r = f time + x * @_MAGIC[1]
 		g = f time * @_MAGIC[2] + y * @_MAGIC[3]
 		b = f x * @_MAGIC[4] + y * @_MAGIC[5] - time * @_MAGIC[6]
-		
+
 		r, g, b, 255
 
+---
+
+class Theme
+	new: (Background) =>
+		@background = Background!
+
+
+class HueShiftTheme extends Theme
+	new: =>
+		super HueShiftBackground
+		
 ---
 
 class Game
@@ -51,14 +62,14 @@ class Game
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "entering"
 		@speed = 1
-		@background = HueShiftBackground!
+		@theme = HueShiftTheme!
 
 	---
 
 	update: (dt) =>
 		scaled_dt = dt * @speed
 
-		@background\update scaled_dt
+		@theme.background\update scaled_dt
 
 	draw: =>
-		@background\draw!
+		@theme.background\draw!
