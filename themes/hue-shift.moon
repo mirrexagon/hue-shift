@@ -11,11 +11,13 @@ class Background extends theme.Background
 		@time = 0
 		@image_w = 6
 		@image_h = 6
+		@alpha = 0.65
 
 	update: (dt) =>
 		@time += dt -- Good at 90 BPM, scale with BPM?
 
 	draw: =>
+		love.graphics.setColor(255, 255, 255, 255 * @alpha)
 		love.graphics.push!
 		love.graphics.scale love.graphics.getWidth! / @image_w,
 			love.graphics.getHeight! / @image_h
