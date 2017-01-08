@@ -1,4 +1,4 @@
-SOURCES = $(wildcard *.moon)
+SOURCES = $(wildcard *.moon) $(wildcard **/*.moon)
 OUTPUTS = $(SOURCES:.moon=.lua)
 
 .PHONY: all clean
