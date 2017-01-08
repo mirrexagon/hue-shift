@@ -5,6 +5,9 @@ OUTPUTS = $(SOURCES:.moon=.lua)
 
 all: $(OUTPUTS)
 
+run: $(OUTPUTS)
+	love .
+
 clean:
 	$(RM) $(OUTPUTS)
 
