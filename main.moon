@@ -2,17 +2,12 @@
 
 
 --- Require ---
---- ==== ---
-
-
---- ==== ---
 Game = require("game")
 --- ==== ---
 
 
---- Helper functions ---
-beat_to_seconds = (beat, bpm) -> ((beat - 1) * 60) / bpm
-seconds_to_beat = (seconds, bpm) -> seconds * (bpm / 60) + 1
+--- Import ---
+from require "util.beat" import seconds_to_beats, beats_to_seconds
 --- ==== ---
 
 
