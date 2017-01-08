@@ -1,5 +1,4 @@
---- Require ---
---- ==== ---
+--! Main game class.
 
 
 class Grid
