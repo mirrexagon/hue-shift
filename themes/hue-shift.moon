@@ -27,7 +27,9 @@ class Background extends theme.Background
 	_generate_image: =>
 		image_data = love.image.newImageData @image_w, @image_h
 		image_data\mapPixel (x, y, r, g, b, a) -> @_compute_pixel x, y, @time
-		love.graphics.newImage image_data
+		img = love.graphics.newImage image_data
+		--img\setFilter "nearest", "nearest" -- Uncomment to disable blending.
+		img
 
 	-- Adapted from http://www.love2d.org/wiki/Chromatic_Paths
 	_MAGIC: {0.1, 0.1, 0.1, 0.1, 0.1, 0.8}
