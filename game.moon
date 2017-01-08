@@ -1,36 +1,8 @@
 --! Main game class and auxiliary classes.
 
 
---- Import ---
-from require "util.beat" import seconds_to_beats, beats_to_seconds
+--- Require ---
 --- ==== ---
-
-
-class Music
-	new: (name, path, bpm) =>
-		@name = name
-		-- There seems to be a bug with at least some looped streaming audio, where
-		-- `source:tell()` isn't quite right after a loop.
-		@source = love.audio.newSource path "static"
-		@bpm = bpm
-		
-		@source\setLooping true
-		
-	pos_seconds: => @source\tell!
-	pos_beats: => seconds_to_beats @source\tell!
-	
-	play: => @source\play!
-	rewind: => @source\rewind!
-	pause: => @source\pause!
-	is_paused: => @source\isPaused!
-	
-	set_pitch: (pitch) =>
-		if pitch == 0
-			if not @is_paused!
-				@pause!
-		else
-			@source\setPitch(pitch)
-			if @is_paused! then @play!
 
 
 class Grid
@@ -90,11 +62,18 @@ class Grid
 
 
 class Game
-	new: =>
+	new: (music) =>
+		@DEBUG = false
+		
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "entering"
 		@theme = (require "themes.hue-shift")!
 		@speed = 1
+		
+		@music = music
+		music\pause!
+		music\rewind!
+		music\play!
 		
 		@grid = Grid 7, 7
 
@@ -104,6 +83,7 @@ class Game
 		scaled_dt = dt * @speed
 
 		@theme.background\update scaled_dt
+		@music\set_pitch @speed
 
 	draw: =>
 		@theme.background\draw!
@@ -112,3 +92,9 @@ class Game
 		love.graphics.translate @grid\screen_pad!
 		@grid\draw!
 		love.graphics.pop!
+		
+		if @DEBUG
+			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f")\format @music\pos_seconds!, 
+				@music\pos_beats!, @speed
+			love.graphics.print status_line, 10, 10
+
