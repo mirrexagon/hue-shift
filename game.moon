@@ -1,5 +1,4 @@
 --- Require ---
-theme = require "theme"
 --- ==== ---
 
 
@@ -8,7 +7,7 @@ class Game
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "entering"
 		@speed = 1
-		@theme = theme.HueShiftTheme!
+		@theme = (require "themes.hue-shift")!
 
 	---
 

@@ -6,7 +6,7 @@ theme = require "theme"
 --- ==== ---
 
 
-class HueShiftBackground extends theme.Background
+class Background extends theme.Background
 	new: =>
 		@time = 0
 		@image_w = 6
@@ -42,7 +42,10 @@ class HueShiftBackground extends theme.Background
 		r, g, b, 255
 
 
-class HueShiftTheme extends theme.Theme
+class Theme extends theme.Theme
 	new: =>
-		super HueShiftBackground
+		super Background
 
+---
+
+Theme
