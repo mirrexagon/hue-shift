@@ -16,9 +16,8 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 local game
 
 love.load = ->
-	laserwash = Music "coda - laserwash", "assets/music/laserwash.ogg", 90
-	swagger = Music "Mirrexagon - Swagger", "assets/music/mirrexagon_-_swagger.ogg", 82
-	game = Game swagger
+	laserwash = Music "assets/music/laserwash.ogg"
+	game = Game laserwash
 	game.DEBUG = true
 	
 love.update = (dt) ->
