@@ -6,15 +6,15 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 --- A piece of music (with a constant tempo, currently).
 class Music
 	new: (path, name, bpm) =>
-		-- There seems to be a bug with at least some looped streaming audio, where
-		-- `source:tell()` isn't quite right after a loop.
 		@path = path
 		@name = name
 		@bpm = bpm
 
 	load: =>
 		if @source == nil
-			@source = love.audio.newSource @path
+			-- There seems to be a bug with at least some looped streaming audio, where
+			-- `source:tell()` isn't quite right after a loop.
+			@source = love.audio.newSource @path--, "static"
 			@source\setLooping true
 
 	unload: =>
