@@ -14,7 +14,7 @@ class Music
 		if @source == nil
 			-- There seems to be a bug with at least some looped streaming audio, where
 			-- `source:tell()` isn't quite right after a loop.
-			@source = love.audio.newSource @path--, "static"
+			@source = love.audio.newSource @path, "static"
 			@source\setLooping true
 
 	unload: =>

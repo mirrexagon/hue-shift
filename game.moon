@@ -76,6 +76,9 @@ class Game
 
 		music\load!
 		music\play!
+		
+	deinit: =>
+		@music\unload!
 
 	---
 
