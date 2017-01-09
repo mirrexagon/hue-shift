@@ -16,19 +16,20 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 local game
 
 love.load = ->
+	theme = (require "themes.hue-shift")!
 	music = MusicLibrary "assets/music"
-	game = Game music[1]
+	game = Game music[1], theme
 	game.DEBUG = true
-	
+
 love.update = (dt) ->
 	game\update dt
 
 love.draw = ->
 	game\draw!
-	
+
 love.wheelmoved = (x, y) ->
 	game.speed += 0.1 * (if y > 0 then 1 else -1)
-	
+
 	if game.speed < 0.1
 		game.speed = 0.1
 --- ==== ---

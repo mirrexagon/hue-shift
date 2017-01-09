@@ -17,6 +17,9 @@ class Grid
 
 		@blocks = {}
 
+	set_alpha: (alpha) =>
+		@alpha = alpha
+
 	draw: =>
 		@draw_grid!
 
@@ -62,25 +65,29 @@ class Grid
 
 
 class Game
-	new: (music) =>
+	new: (music, theme) =>
 		@DEBUG = false
 
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "entering"
-		@theme = (require "themes.hue-shift")!
+		@music = music
+		@theme = theme
 		@speed = 1
 
-		@music = music
-		
+		@alpha = 1
+
 		@grid = Grid 7, 7
 
 		music\load!
 		music\play!
-		
+
 	deinit: =>
 		@music\unload!
 
 	---
+
+	set_alpha: (alpha) =>
+		@grid\set_alpha alpha
 
 	update: (dt) =>
 		scaled_dt = dt * @speed
