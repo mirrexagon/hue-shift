@@ -83,6 +83,8 @@ class Game
 		@grid = Grid 7, 7
 
 		music\load!
+		
+	run: =>
 		music\play!
 
 	deinit: =>

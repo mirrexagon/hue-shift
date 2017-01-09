@@ -2,8 +2,10 @@
 
 
 --- Require ---
-MusicLibrary = require("music")
-Game = require("game")
+MusicLibrary = require "music"
+
+Menu = require "menu"
+Game = require "game"
 --- ==== ---
 
 
@@ -13,23 +15,32 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 
 
 --- Main ---
+local menu
 local game
 
 love.load = ->
 	theme = (require "themes.hue-shift")!
-	music = MusicLibrary "assets/music"
-	game = Game music[1], theme
+	music_library = MusicLibrary "assets/music"
+
+	menu = Menu love.graphics.getWidth!, love.graphics.getHeight!, theme
+
+	game = Game music_library[1], theme
 	game.DEBUG = true
 
 love.update = (dt) ->
-	game\update dt
+	--game\update dt
+	menu\update dt
 
 love.draw = ->
-	game\draw!
+	--game\draw!
+	menu\draw!
 
 love.wheelmoved = (x, y) ->
 	game.speed += 0.1 * (if y > 0 then 1 else -1)
 
 	if game.speed < 0.1
 		game.speed = 0.1
+		
+love.resize = (w, h) ->
+	menu\set_dimensions w, h
 --- ==== ---

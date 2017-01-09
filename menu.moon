@@ -2,8 +2,8 @@ print_centered = (text, x, y) ->
 	font = love.graphics.getFont!
 
 	love.graphics.print text,
-		x - ((font:getWidth text) / 2),
-		y - ((font:getHeight! / 2)
+		x - ((font\getWidth text) / 2),
+		y - (font\getHeight! / 2)
 
 
 interpolate = (value, target, dt, speed) ->
@@ -62,12 +62,12 @@ class Menu
 	update: (dt) =>
 		@theme.background\update dt
 		
-		@scroll_offset = interpolate scroll_offset, 
+		@scroll_offset = interpolate @scroll_offset, 
 			@target_scroll_offset, dt, 5
 
 	draw: =>
 		@theme.background\draw!
 		
 		love.graphics.push!
-		love.graphics.translate(0, scroll_offset)
+		love.graphics.translate(0, @scroll_offset)
 		love.graphics.pop!
