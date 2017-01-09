@@ -2,7 +2,7 @@
 
 
 --- Require ---
-Music = require("music")
+MusicLibrary = require("music")
 Game = require("game")
 --- ==== ---
 
@@ -16,8 +16,8 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 local game
 
 love.load = ->
-	laserwash = Music "assets/music/laserwash.ogg"
-	game = Game laserwash
+	music = MusicLibrary "assets/music"
+	game = Game music[1]
 	game.DEBUG = true
 	
 love.update = (dt) ->

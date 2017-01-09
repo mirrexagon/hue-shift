@@ -5,26 +5,22 @@ import seconds_to_beats, beats_to_seconds from require "util.beat"
 
 --- A piece of music (with a constant tempo, currently).
 class Music
-	new: (path) =>
-		meta_path = path .. ".lua"
-
-		if not ((love.filesystem.isFile path) and (love.filesystem.isFile meta_path))
-			error path .. " and/or its .lua file do not exist", 2
-
-		meta = (assert love.filesystem.load meta_path)!
-		assert meta.name and meta.bpm,
-			meta_path .. " needs at least a `name` and a `bpm` field"
-
-		@from_components meta.name, path, meta.bpm
-
-	from_components: (name, path, bpm) =>
-		@name = name
+	new: (path, name, bpm) =>
 		-- There seems to be a bug with at least some looped streaming audio, where
 		-- `source:tell()` isn't quite right after a loop.
-		@source = love.audio.newSource path, "static"
+		@path = path
+		@name = name
 		@bpm = bpm
 
-		@source\setLooping true
+	load: =>
+		if @source == nil
+			@source = love.audio.newSource @path
+			@source\setLooping true
+
+	unload: =>
+		if @source ~= nil
+			@source = nil
+			collectgarbage!
 
 	---
 
@@ -43,3 +39,11 @@ class Music
 		else
 			@source\setPitch(pitch)
 			if @is_paused! then @play!
+
+
+class MusicLibrary
+	new: (dir) =>
+		lib = (assert love.filesystem.load dir .. "/init.lua")!
+
+		for music in *lib
+			table.insert @, Music dir .. "/" .. music.file, music.name, music.bpm

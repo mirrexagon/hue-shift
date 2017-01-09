@@ -1,4 +1,4 @@
-SOURCES = $(wildcard *.moon) $(wildcard **/*.moon)
+SOURCES = $(shell find -name "*.moon")
 OUTPUTS = $(SOURCES:.moon=.lua)
 
 .PHONY: all clean
