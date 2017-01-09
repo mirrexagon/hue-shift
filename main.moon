@@ -17,7 +17,8 @@ local game
 
 love.load = ->
 	laserwash = Music "coda - laserwash", "assets/music/laserwash.ogg", 90
-	game = Game laserwash
+	swagger = Music "Mirrexagon - Swagger", "assets/music/mirrexagon_-_swagger.ogg", 82
+	game = Game swagger
 	game.DEBUG = true
 	
 love.update = (dt) ->
