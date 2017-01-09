@@ -47,3 +47,6 @@ class MusicLibrary
 
 		for music in *lib
 			table.insert @, Music dir .. "/" .. music.file, music.name, music.bpm
+			
+
+{ :Music, :MusicLibrary }

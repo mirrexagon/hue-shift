@@ -116,3 +116,5 @@ class Game
 				@music\pos_beats!, @speed
 			love.graphics.print status_line, 10, 10
 
+
+{ :Game }

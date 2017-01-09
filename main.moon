@@ -2,15 +2,14 @@
 
 
 --- Require ---
-MusicLibrary = require "music"
-
-Menu = require "menu"
-Game = require "game"
 --- ==== ---
 
 
 --- Import ---
 import seconds_to_beats, beats_to_seconds from require "util.beat"
+import Menu, MenuItem from require "menu"
+import Game from require "game"
+import Music, MusicLibrary from require "music"
 --- ==== ---
 
 
@@ -23,6 +22,8 @@ love.load = ->
 	music_library = MusicLibrary "assets/music"
 
 	menu = Menu love.graphics.getWidth!, love.graphics.getHeight!, theme
+	menu_item = MenuItem 85
+	menu\add_item menu_item
 
 	game = Game music_library[1], theme
 	game.DEBUG = true
