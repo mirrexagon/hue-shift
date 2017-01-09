@@ -5,3 +5,6 @@ love.conf = (t) ->
 	t.window.icon = "assets/graphics/icon.png"
 	t.window.width = 600
 	t.window.height = 600
+	t.window.minwidth = 600
+	t.window.minheight = 600
+	t.window.resizable = true
