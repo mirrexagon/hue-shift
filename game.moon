@@ -16,9 +16,13 @@ class Grid
 		@alpha = 1
 
 		@blocks = {}
+		
+	---
 
-	set_alpha: (alpha) =>
+	set_alpha: (alpha) => 
 		@alpha = alpha
+		
+	---
 
 	draw: =>
 		@draw_grid!
@@ -88,6 +92,8 @@ class Game
 
 	set_alpha: (alpha) =>
 		@grid\set_alpha alpha
+		
+	---
 
 	update: (dt) =>
 		scaled_dt = dt * @speed
