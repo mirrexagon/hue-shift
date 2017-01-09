@@ -6,12 +6,12 @@
 
 
 class Grid
-	new: (w,h, cell_w,cell_h, pad) =>
+	new: (w,h, cell_w = 32,cell_h = 32, pad = 2) =>
 		@w = w
 		@h = h
-		@cell_w = cell_w or 32
-		@cell_h = cell_h or 32
-		@pad = pad or 2
+		@cell_w = cell_w
+		@cell_h = cell_h
+		@pad = pad
 		
 		@alpha = 1
 		
