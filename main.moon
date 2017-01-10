@@ -21,9 +21,9 @@ love.load = ->
 	theme = (require "themes.hue-shift")!
 	music_library = MusicLibrary "assets/music"
 
-	menu = Menu love.graphics.getWidth!, love.graphics.getHeight!, theme
+	menu = Menu love.graphics.getWidth!, theme
 	menu_item = MenuItem 85
-	menu\add_item menu_item
+	menu\add_item menu_item, "HUE SHIFT"
 
 	game = Game music_library[1], theme
 	game.DEBUG = true
@@ -43,5 +43,5 @@ love.wheelmoved = (x, y) ->
 		game.speed = 0.1
 		
 love.resize = (w, h) ->
-	menu\set_dimensions w, h
+	menu\set_width w
 --- ==== ---
