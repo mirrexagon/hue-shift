@@ -5,8 +5,8 @@ print_centered = (text, x, y) ->
 	font = love.graphics.getFont!
 
 	love.graphics.print text,
-		x - ((font\getWidth text) / 2),
-		y - (font\getHeight! / 2)
+		x - (math.floor (font\getWidth text) / 2),
+		y - (math.floor font\getHeight! / 2)
 
 
 interpolate = (value, target, dt, speed) ->
@@ -21,23 +21,8 @@ class MenuItem
 
 	---
 
-	-- Methods used by the menu to tell the item stuff.
-	set_width: (width) =>
-		@width = width
-		@label_font = love.graphics.newFont (@width / 600) * 48
-
-	---
-
-	draw_label: =>
-		love.graphics.setFont(@label_font)
-		print_centered @label, @width/2, @height/2
-
-	---
-
 	-- Override this!
-	draw: (alpha) =>
-		if @label
-			@draw_label!
+	draw: (width, alpha) =>
 
 
 class Menu
@@ -53,10 +38,11 @@ class Menu
 		@selected = 1
 
 		@set_width width
+		@set_alpha 1
+
 		@theme = theme
 
-		@alpha = 1
-
+		@label_font = love.graphics.newFont math.floor (@width / 600) * 48
 
 		@scroll_offset = 0
 		@target_scroll_offset = 0
@@ -75,9 +61,6 @@ class Menu
 
 	set_width: (width) =>
 		@width = width
-
-		for item in *@items
-			item\set_width width
 
 	set_alpha: (alpha) =>
 		@alpha = alpha
@@ -100,18 +83,24 @@ class Menu
 		item_y = @ITEM_VERT_PAD
 
 		for i, item in ipairs @items
-			love.graphics.setColor 255, 255, 255,
-				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
-			love.graphics.rectangle "fill", item_x, item_y, @ITEM_WIDTH, item.height
-
 			love.graphics.push!
 			love.graphics.translate item_x, item_y
-			item\draw @alpha
+			
+			love.graphics.setColor 255, 255, 255,
+				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
+			love.graphics.rectangle "fill", 0, 0, @ITEM_WIDTH, item.height
+
+			if item.label
+				love.graphics.setColor 255, 255, 255, 255
+				love.graphics.setFont @label_font
+				print_centered item.label, (math.floor @ITEM_WIDTH/2), (math.floor 85/2)
+
+			item\draw @ITEM_WIDTH, @alpha
 			love.graphics.pop!
 
 			item_y += item.height + @ITEM_VERT_PAD
 
-		love.graphics.pop!
+			love.graphics.pop!
 
 
 { :MenuItem, :Menu }

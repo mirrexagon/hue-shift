@@ -22,8 +22,8 @@ love.load = ->
 	music_library = MusicLibrary "assets/music"
 
 	menu = Menu love.graphics.getWidth!, theme
-	menu_item = MenuItem 85
-	menu\add_item menu_item, "HUE SHIFT"
+	menu_item = MenuItem 85, "FANCY LOGO HERE"
+	menu\add_item menu_item
 
 	game = Game music_library[1], theme
 	game.DEBUG = true
