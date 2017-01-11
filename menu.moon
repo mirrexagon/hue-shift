@@ -15,7 +15,7 @@ interpolate = (value, target, dt, speed) ->
 
 
 class MenuItem
-	new: (height = 85, label) =>
+	new: (height = 0, label) =>
 		@height = height
 		@label = label
 
@@ -26,6 +26,7 @@ class MenuItem
 
 
 class Menu
+	LABEL_AREA_HEIGHT: 85
 	ITEM_VERT_PAD: 30
 	ITEM_WIDTH: 540
 	ITEM_SELECTED_ALPHA: 0.7
@@ -86,21 +87,39 @@ class Menu
 			love.graphics.push!
 			love.graphics.translate item_x, item_y
 			
+			---
+
+			-- Rectangle
+			item_full_height = item.height + if item.label then @LABEL_AREA_HEIGHT else 0
+			
 			love.graphics.setColor 255, 255, 255,
 				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
-			love.graphics.rectangle "fill", 0, 0, @ITEM_WIDTH, item.height
+			love.graphics.rectangle "fill", 0, 0, @ITEM_WIDTH, item_full_height
 
+			-- Label
 			if item.label
 				love.graphics.setColor 255, 255, 255, 255
 				love.graphics.setFont @label_font
-				print_centered item.label, (math.floor @ITEM_WIDTH/2), (math.floor 85/2)
+				print_centered item.label, (math.floor @ITEM_WIDTH/2),
+					(math.floor 85/2)
+					
+			-- Draw callback
+			if item.label
+				love.graphics.push!
+				love.graphics.translate 0, @LABEL_AREA_HEIGHT
 
 			item\draw @ITEM_WIDTH, @alpha
-			love.graphics.pop!
+			
+			if item.label
+				love.graphics.pop!
+			
+			---
+
+			love.graphics.pop! -- item_x, item_y
 
 			item_y += item.height + @ITEM_VERT_PAD
 
-			love.graphics.pop!
+		love.graphics.pop! -- scroll_offset
 
 
 { :MenuItem, :Menu }
