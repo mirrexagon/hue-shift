@@ -13,6 +13,13 @@ import Music, MusicLibrary from require "music"
 --- ==== ---
 
 
+--- Menu items ---
+menu_header = MenuItem 0, "FANCY LOGO HERE"
+
+menu_music = MenuItem Menu.ITEM_STANDARD_HEIGHT, "MUSIC"
+--- ==== ---
+
+
 --- Main ---
 local menu
 local game
@@ -22,8 +29,8 @@ love.load = ->
 	music_library = MusicLibrary "assets/music"
 
 	menu = Menu love.graphics.getWidth!, theme
-	menu_item = MenuItem 0, "FANCY LOGO HERE"
-	menu\add_item menu_item
+	menu\add_item menu_header
+	menu\add_item menu_music
 
 	game = Game music_library[1], theme
 	game.DEBUG = true

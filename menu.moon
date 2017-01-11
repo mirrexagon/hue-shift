@@ -19,14 +19,23 @@ class MenuItem
 		@height = height
 		@label = label
 
-	---
+	-- Overridable methods.
 
-	-- Override this!
-	draw: (width, alpha) =>
+	init: =>
+
+	resize: (width) =>
+
+	update: (dt) =>
+
+	draw: (alpha) =>
+
+	keypressed: (key, scancode, isrepeat) =>
+
+	keyreleased: (key, scancode) =>
 
 
 class Menu
-	LABEL_AREA_HEIGHT: 85
+	ITEM_STANDARD_HEIGHT: 85
 	ITEM_VERT_PAD: 30
 	ITEM_WIDTH: 540
 	ITEM_SELECTED_ALPHA: 0.7
@@ -52,6 +61,8 @@ class Menu
 
 	add_item: (item) =>
 		table.insert @items, item
+		item\init!
+		item\resize @width
 
 	---
 
@@ -73,6 +84,9 @@ class Menu
 
 		@scroll_offset = interpolate @scroll_offset,
 			@target_scroll_offset, dt, 5
+			
+		for item in *@items
+			item\update dt
 
 	draw: =>
 		@theme.background\draw!
@@ -86,12 +100,12 @@ class Menu
 		for i, item in ipairs @items
 			love.graphics.push!
 			love.graphics.translate item_x, item_y
-			
+
 			---
 
 			-- Rectangle
-			item_full_height = item.height + if item.label then @LABEL_AREA_HEIGHT else 0
-			
+			item_full_height = item.height + if item.label then @ITEM_STANDARD_HEIGHT else 0
+
 			love.graphics.setColor 255, 255, 255,
 				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
 			love.graphics.rectangle "fill", 0, 0, @ITEM_WIDTH, item_full_height
@@ -102,24 +116,32 @@ class Menu
 				love.graphics.setFont @label_font
 				print_centered item.label, (math.floor @ITEM_WIDTH/2),
 					(math.floor 85/2)
-					
+
 			-- Draw callback
 			if item.label
 				love.graphics.push!
-				love.graphics.translate 0, @LABEL_AREA_HEIGHT
+				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
 			item\draw @ITEM_WIDTH, @alpha
-			
+
 			if item.label
 				love.graphics.pop!
-			
+
 			---
 
 			love.graphics.pop! -- item_x, item_y
 
-			item_y += item.height + @ITEM_VERT_PAD
+			item_y += item_full_height + @ITEM_VERT_PAD
 
 		love.graphics.pop! -- scroll_offset
+		
+	keypressed: (key, scancode, isrepeat) =>
+		for item in *@items
+			item\keypressed key, scancode, isrepeat
+
+	keyreleased: (key, scancode) =>
+		for item in *@items
+			item\keyreleased key, scancode
 
 
 { :MenuItem, :Menu }
