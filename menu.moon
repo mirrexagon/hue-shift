@@ -88,7 +88,7 @@ class Menu
 		@theme.background\draw!
 
 		love.graphics.push!
-		love.graphics.translate(0, @scroll_offset)
+		love.graphics.translate(0, -@scroll_offset)
 
 		item_x = (@width - @ITEM_WIDTH)/2
 		item_y = @ITEM_VERT_PAD
