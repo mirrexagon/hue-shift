@@ -22,6 +22,9 @@ class MenuItem
 
 	init: =>
 
+	set_width: (width) =>
+		@width = width
+
 	update: (dt) =>
 
 	draw: (alpha) =>
@@ -59,6 +62,7 @@ class Menu
 	add_item: (item) =>
 		table.insert @items, item
 		item\init!
+		item\set_width @item_width
 
 	---
 
@@ -69,6 +73,7 @@ class Menu
 
 	set_window_width: (width) =>
 		@window_width = width
+		@item_width = @WIDTH - 2*@ITEM_PAD
 
 	set_alpha: (alpha) =>
 		@alpha = alpha
@@ -90,8 +95,7 @@ class Menu
 		love.graphics.push!
 		love.graphics.translate(0, -@scroll_offset)
 
-		item_width = @WIDTH - @ITEM_PAD
-		item_x = (@window_width - item_width)/2
+		item_x = (@window_width - @item_width)/2
 		item_y = @ITEM_PAD
 
 		for i, item in ipairs @items
@@ -105,13 +109,13 @@ class Menu
 
 			love.graphics.setColor 255, 255, 255,
 				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
-			love.graphics.rectangle "fill", 0, 0, item_width, item_full_height
+			love.graphics.rectangle "fill", 0, 0, @item_width, item_full_height
 
 			-- Label
 			if item.label
 				love.graphics.setColor 255, 255, 255, 255
 				love.graphics.setFont @label_font
-				print_centered item.label, (math.floor item_width/2),
+				print_centered item.label, (math.floor @item_width/2),
 					(math.floor 85/2)
 
 			-- Draw callback

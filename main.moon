@@ -7,16 +7,18 @@
 
 --- Import ---
 import seconds_to_beats, beats_to_seconds from require "util.beat"
+
 import Menu, MenuItem from require "menu"
+import MusicMenuItem from require "menu.music"
+
 import Game from require "game"
+
 import Music, MusicLibrary from require "music"
 --- ==== ---
 
 
 --- Menu items ---
 menu_header = MenuItem 0, "FANCY LOGO HERE"
-
-menu_music = MenuItem Menu.ITEM_STANDARD_HEIGHT, "MUSIC"
 --- ==== ---
 
 
@@ -30,7 +32,7 @@ love.load = ->
 
 	menu = Menu love.graphics.getWidth!, theme
 	menu\add_item menu_header
-	menu\add_item menu_music
+	menu\add_item MusicMenuItem music_library
 
 	game = Game music_library[1], theme
 	game.DEBUG = true
