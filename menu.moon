@@ -13,7 +13,6 @@ interpolate = (value, target, dt, speed) ->
 	value + (target - value) * speed * dt
 
 
-
 class MenuItem
 	new: (height = 0, label) =>
 		@height = height
