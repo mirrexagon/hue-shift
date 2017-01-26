@@ -23,8 +23,6 @@ class MenuItem
 
 	init: =>
 
-	resize: (width) =>
-
 	update: (dt) =>
 
 	draw: (alpha) =>
@@ -62,7 +60,6 @@ class Menu
 	add_item: (item) =>
 		table.insert @items, item
 		item\init!
-		item\resize @width
 
 	---
 
