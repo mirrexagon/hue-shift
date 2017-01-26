@@ -50,5 +50,5 @@ love.wheelmoved = (x, y) ->
 		game.speed = 0.1
 		
 love.resize = (w, h) ->
-	menu\set_width w
+	menu\set_window_width w
 --- ==== ---

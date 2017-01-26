@@ -32,9 +32,9 @@ class MenuItem
 
 
 class Menu
+	WIDTH: 600
 	ITEM_STANDARD_HEIGHT: 85
-	ITEM_VERT_PAD: 30
-	ITEM_WIDTH: 540
+	ITEM_PAD: 30
 	ITEM_SELECTED_ALPHA: 0.7
 	ITEM_UNSELECTED_ALPHA: 0.7 * 0.5
 
@@ -44,12 +44,12 @@ class Menu
 		@items = {}
 		@selected = 1
 
-		@set_width width
+		@set_window_width width
 		@set_alpha 1
 
 		@theme = theme
 
-		@label_font = love.graphics.newFont math.floor (@width / 600) * 48
+		@label_font = love.graphics.newFont math.floor (@window_width / 600) * 48
 
 		@scroll_offset = 0
 		@target_scroll_offset = 0
@@ -67,8 +67,8 @@ class Menu
 
 	---
 
-	set_width: (width) =>
-		@width = width
+	set_window_width: (width) =>
+		@window_width = width
 
 	set_alpha: (alpha) =>
 		@alpha = alpha
@@ -90,8 +90,9 @@ class Menu
 		love.graphics.push!
 		love.graphics.translate(0, -@scroll_offset)
 
-		item_x = (@width - @ITEM_WIDTH)/2
-		item_y = @ITEM_VERT_PAD
+		item_width = @WIDTH - @ITEM_PAD
+		item_x = (@window_width - item_width)/2
+		item_y = @ITEM_PAD
 
 		for i, item in ipairs @items
 			love.graphics.push!
@@ -104,13 +105,13 @@ class Menu
 
 			love.graphics.setColor 255, 255, 255,
 				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
-			love.graphics.rectangle "fill", 0, 0, @ITEM_WIDTH, item_full_height
+			love.graphics.rectangle "fill", 0, 0, item_width, item_full_height
 
 			-- Label
 			if item.label
 				love.graphics.setColor 255, 255, 255, 255
 				love.graphics.setFont @label_font
-				print_centered item.label, (math.floor @ITEM_WIDTH/2),
+				print_centered item.label, (math.floor item_width/2),
 					(math.floor 85/2)
 
 			-- Draw callback
@@ -118,7 +119,7 @@ class Menu
 				love.graphics.push!
 				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
-			item\draw @ITEM_WIDTH, @alpha
+			item\draw @item_width, @alpha
 
 			if item.label
 				love.graphics.pop!
@@ -127,7 +128,7 @@ class Menu
 
 			love.graphics.pop! -- item_x, item_y
 
-			item_y += item_full_height + @ITEM_VERT_PAD
+			item_y += item_full_height + @ITEM_PAD
 
 		love.graphics.pop! -- scroll_offset
 		
