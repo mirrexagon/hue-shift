@@ -25,6 +25,9 @@ class MenuItem
 	set_width: (width) =>
 		@width = width
 
+	get_width: =>
+		@width
+
 	update: (dt) =>
 
 	draw: (alpha) =>
