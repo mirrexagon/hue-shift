@@ -49,6 +49,14 @@ love.draw = ->
 	menu\draw!
 
 
+love.keypressed = (key, scancode, isrepeat) ->
+	menu\keypressed key, scancode, isrepeat
+
+
+love.keyreleased = (key, scancode) ->
+	menu\keyreleased key, scancode
+
+
 love.wheelmoved = (x, y) ->
 	game.speed += 0.1 * (if y > 0 then 1 else -1)
 
