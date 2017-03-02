@@ -26,30 +26,41 @@ menu_header = MenuItem 0, "FANCY LOGO HERE"
 local menu
 local game
 
+---
+
 love.load = ->
+	-- Load and instantiate default theme.
 	theme = (require "themes.hue-shift")!
+
+	-- Instantiate music library.
 	music_library = MusicLibrary "assets/music"
 
-	menu = Menu love.graphics.getWidth!, theme
-	menu\add_item menu_header
-	menu\add_item MusicMenuItem music_library
+	-- Instantiate menu and add MenuItems.
+	menu = with Menu love.graphics.getWidth!, theme
+		\add_item menu_header
+		\add_item MusicMenuItem music_library
 
+	-- Instantiate game.
 	game = Game music_library[1], theme
 	game.DEBUG = true
+
 
 love.update = (dt) ->
 	--game\update dt
 	menu\update dt
 
+
 love.draw = ->
 	--game\draw!
 	menu\draw!
+
 
 love.wheelmoved = (x, y) ->
 	game.speed += 0.1 * (if y > 0 then 1 else -1)
 
 	if game.speed < 0.1
 		game.speed = 0.1
+
 		
 love.resize = (w, h) ->
 	menu\set_window_width w
