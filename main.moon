@@ -40,18 +40,12 @@ love.load = ->
 		\add_item menu_header
 		\add_item MusicMenuItem music_library
 
-	-- Instantiate game.
-	game = Game music_library[1], theme
-	game.DEBUG = true
-
 
 love.update = (dt) ->
-	--game\update dt
 	menu\update dt
 
 
 love.draw = ->
-	--game\draw!
 	menu\draw!
 
 

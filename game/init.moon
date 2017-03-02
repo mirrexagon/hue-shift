@@ -69,7 +69,7 @@ class Grid
 
 
 class Game
-	new: (music, theme) =>
+	new: (music, theme) => -- TODO: Also specify level in constructor
 		@DEBUG = false
 
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
