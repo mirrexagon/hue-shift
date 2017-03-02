@@ -22,6 +22,7 @@ class MenuItem
 
 	init: =>
 
+	-- Called by Menu, shouldn't be called elsewhere.
 	set_width: (width) =>
 		@width = width
 
