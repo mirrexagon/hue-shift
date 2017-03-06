@@ -1,6 +1,9 @@
 --! Number of player block pairs (player and goal) selection MenuItem
 
 
+-- TODO: Make it easier to see how many blocks are active when this item is not selected.
+
+
 --- Import ---
 import Menu, MenuItem from require "menu"
 --- ==== ---
