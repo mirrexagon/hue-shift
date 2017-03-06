@@ -58,20 +58,24 @@ class Menu
 
 	---
 
-	new: (width, theme) =>
+	new: (theme) =>
 		@items = {}
 		@selected = 1
+		@item_width = @WIDTH - 2*@ITEM_PAD
 
-		@set_window_width width
 		@set_alpha 1
 		@set_interactable true
 
 		@theme = theme
 
-		@label_font = love.graphics.newFont math.floor (@window_width / 600) * 48
+		@label_font = love.graphics.newFont 48
 
 		@scroll_offset = 0
 		@target_scroll_offset = 0
+
+	---
+
+	get_width: => @WIDTH
 
 	---
 
@@ -92,10 +96,6 @@ class Menu
 		@selected = cycle @selected - 1, #@items
 
 	---
-
-	set_window_width: (width) =>
-		@window_width = width
-		@item_width = @WIDTH - 2*@ITEM_PAD
 
 	set_alpha: (alpha) =>
 		@alpha = alpha
@@ -120,7 +120,7 @@ class Menu
 		love.graphics.push!
 		love.graphics.translate(0, -@scroll_offset)
 
-		item_x = (@window_width - @item_width)/2
+		item_x = @ITEM_PAD
 		item_y = @ITEM_PAD
 
 		for i, item in ipairs @items

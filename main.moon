@@ -35,7 +35,7 @@ love.load = ->
 	music_library = MusicLibrary "assets/music"
 
 	-- Instantiate menu and add MenuItems.
-	menu = with Menu love.graphics.getWidth!, theme
+	menu = with Menu theme
 		\add_item MenuItem 0, "FANCY LOGO HERE"
 		\add_item MenuItem 0, "GRID"
 		\add_item MusicMenuItem music_library
@@ -64,5 +64,4 @@ love.wheelmoved = (x, y) ->
 
 
 love.resize = (w, h) ->
-	menu\set_window_width w
 --- ==== ---
