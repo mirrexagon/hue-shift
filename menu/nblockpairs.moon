@@ -27,7 +27,7 @@ class NBlockPairsMenuItem extends MenuItem
 		block_y = math.floor height/2 - BLOCK_HEIGHT/2
 
 		for pair_n = 1, 3 do
-			alpha = (pair_n <= game_params.n_block_pairs and 1 or 0.5) * alpha
+			block_alpha = (pair_n <= game_params.n_block_pairs and 1 or 0.25) * alpha
 
 			---
 
@@ -35,7 +35,7 @@ class NBlockPairsMenuItem extends MenuItem
 				game_params.theme.BLOCK_PAIR_COLORS[pair_n][1],
 				game_params.theme.BLOCK_PAIR_COLORS[pair_n][2],
 				game_params.theme.BLOCK_PAIR_COLORS[pair_n][3],
-				alpha * 255
+				block_alpha * 255
 			)
 
 			block_x = math.floor width/4 * pair_n - BLOCK_WIDTH/2
@@ -45,11 +45,19 @@ class NBlockPairsMenuItem extends MenuItem
 
 			---
 
-			love.graphics.setColor 255, 255, 255, alpha * 255
+			love.graphics.setColor 255, 255, 255, block_alpha * 255
 			love.graphics.draw(img_arrow, block_x, block_y)
 
 
-	keypressed: (key, scancode, isrepeat) =>
+	keypressed: (key, scancode, isrepeat, game_params) =>
+		switch key
+			when "left", "a"
+				game_params.n_block_pairs -= 1
+			when "right", "d"				
+				game_params.n_block_pairs += 1
+
+		if game_params.n_block_pairs < 1 then game_params.n_block_pairs = 1
+		if game_params.n_block_pairs > 3 then game_params.n_block_pairs = 3
 		
 
 { :NBlockPairsMenuItem }

@@ -217,12 +217,12 @@ class Menu
 					-- TODO: Fade out and quit
 				else
 					for item in *@items
-						item\keypressed key, scancode, isrepeat
+						item\keypressed key, scancode, isrepeat, @game_params
 
 	keyreleased: (key, scancode) =>
 		if @interactable
 			for item in *@items
-				item\keyreleased key, scancode
+				item\keyreleased key, scancode, @game_params
 
 	wheelmoved: (x, y) =>
 		if @interactable
