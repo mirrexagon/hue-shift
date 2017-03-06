@@ -13,6 +13,15 @@ interpolate = (value, target, dt, speed) ->
 	value + (target - value) * speed * dt
 
 
+cycle = (i, len) ->
+	i = i % len
+
+	if i == 0
+		i = len
+
+	i
+
+
 class MenuItem
 	new: (height = 0, label) =>
 		@height = height
@@ -71,7 +80,10 @@ class Menu
 	---
 
 	select_next: =>
+		@selected = cycle @selected + 1, #@items
+
 	select_prev: =>
+		@selected = cycle @selected - 1, #@items
 
 	---
 
@@ -141,6 +153,14 @@ class Menu
 		love.graphics.pop! -- scroll_offset
 		
 	keypressed: (key, scancode, isrepeat) =>
+		switch key
+			when "up", "w"
+				@select_prev!
+			when "down", "s"
+				@select_next!
+			--when "escape"
+				-- TODO: Fade out and quit
+		
 		for item in *@items
 			item\keypressed key, scancode, isrepeat
 
