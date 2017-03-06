@@ -86,16 +86,42 @@ class Menu
 		item\init!
 		item\set_width @item_width
 
+	---
+
 	get_item_height: (item_i) =>
-		@ITEM_STANDARD_HEIGHT + items[item_i].height
+		@ITEM_STANDARD_HEIGHT + @items[item_i].height
 
 	---
 
-	select_next: =>
-		@selected = cycle @selected + 1, #@items
-
 	select_prev: =>
-		@selected = cycle @selected - 1, #@items
+		@selected -= 1
+
+		if @selected < 1
+			-- Wrap around to last item.
+			@selected = #@items
+
+
+	select_next: =>
+		@selected += 1
+
+		if @selected > #@items
+			-- Wrap around to first item.
+			@selected = 1
+			@target_scroll_offset = 0
+		else
+
+			items_height = 0
+
+			for i = 1, @selected do
+				items_height += @ITEM_PAD + @get_item_height i
+
+			-- Add the pad below the now-selected item.
+			items_height += @ITEM_PAD
+
+			-- If any part of the now-selected item (including pad below it) 
+			-- is offscreen, scroll down so it (and pad) is just onscreen.
+			if items_height - @target_scroll_offset > love.graphics.getHeight!
+				@target_scroll_offset = items_height - love.graphics.getHeight!
 
 	---
 
@@ -120,7 +146,7 @@ class Menu
 		@theme.background\draw!
 
 		love.graphics.push!
-		love.graphics.translate(0, -@scroll_offset)
+		love.graphics.translate(0, -(math.floor @scroll_offset))
 
 		item_x = @ITEM_PAD
 		item_y = @ITEM_PAD
