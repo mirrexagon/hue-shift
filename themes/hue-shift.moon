@@ -1,7 +1,7 @@
---! The default theme.
+-- The default theme.
 
 
---- REquire ---
+--- Require ---
 theme = require "theme"
 --- ==== ---
 
@@ -48,7 +48,7 @@ class Background extends theme.Background
 
 class Theme extends theme.Theme
 	new: =>
-		super Background
+		@background = Background!
 
 ---
 

@@ -1,4 +1,4 @@
---! Base classes for themes.
+-- Base classes for themes.
 
 
 -- TODO: How to allow sync with beat?
@@ -9,8 +9,15 @@ class Background
 
 
 class Theme
-	new: (Background) =>
-		@background = Background!
+	BLOCK_PAIR_COLORS: {
+		{255, 0, 0},
+		{0, 255, 0},
+		{0, 0, 255}
+	}
+	
+	---
+
+	new: =>
 
 
 { :Background, :Theme }

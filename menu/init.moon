@@ -28,19 +28,15 @@ class MenuItem
 		@label = label
 
 	-- Called by Menu, shouldn't be called elsewhere.
-	set_width: (width) =>
+	_set_width: (width) =>
 		@width = width
 
-	get_width: =>
-		@width
-
 	-- Overridable methods.
-
 	init: =>
 
 	update: (dt) =>
 
-	draw: (alpha) =>
+	draw: (width, height, alpha) =>
 
 	keypressed: (key, scancode, isrepeat) =>
 	keyreleased: (key, scancode) =>
@@ -84,7 +80,6 @@ class Menu
 	add_item: (item) =>
 		table.insert @items, item
 		item\init!
-		item\set_width @item_width
 
 	---
 
@@ -195,7 +190,7 @@ class Menu
 				love.graphics.push!
 				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
-			item\draw @item_width, @alpha * item_alpha_mod
+			item\draw @item_width, item.height, @alpha * item_alpha_mod
 
 			if item.label
 				love.graphics.pop!
