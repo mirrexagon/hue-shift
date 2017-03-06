@@ -37,7 +37,11 @@ love.load = ->
 	-- Instantiate menu and add MenuItems.
 	menu = with Menu love.graphics.getWidth!, theme
 		\add_item MenuItem 0, "FANCY LOGO HERE"
+		\add_item MenuItem 0, "GRID"
 		\add_item MusicMenuItem music_library
+		\add_item MenuItem 0, "BLOCKS"
+		\add_item MenuItem 0, "OBSTACLES"
+		\add_item MenuItem 0, "START"
 
 
 love.update = (dt) ->
@@ -57,12 +61,8 @@ love.keyreleased = (key, scancode) ->
 
 
 love.wheelmoved = (x, y) ->
-	game.speed += 0.1 * (if y > 0 then 1 else -1)
 
-	if game.speed < 0.1
-		game.speed = 0.1
 
-		
 love.resize = (w, h) ->
 	menu\set_window_width w
 --- ==== ---
