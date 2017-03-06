@@ -100,6 +100,27 @@ class Menu
 			-- Wrap around to last item.
 			@selected = #@items
 
+			-- Get offset from top of menu to bottom of last item, plus bottom pad.
+			items_height = 0
+
+			for i = 1, #@items do
+				items_height += @ITEM_PAD + @get_item_height i
+
+			items_height += @ITEM_PAD
+
+			-- Scroll so the bottom of the lowest pad is at the bottom of the window.
+			@target_scroll_offset = items_height - love.graphics.getHeight!
+		else
+			items_height = 0
+
+			for i = 1, @selected - 1 do
+				items_height += @ITEM_PAD + @get_item_height i
+
+			-- If any part of the item ABOVE the now-selected item 
+			-- is offscreen, scroll up so it is just onscreen.
+			if items_height - @target_scroll_offset < 0
+				@target_scroll_offset = items_height
+
 
 	select_next: =>
 		@selected += 1
@@ -109,7 +130,6 @@ class Menu
 			@selected = 1
 			@target_scroll_offset = 0
 		else
-
 			items_height = 0
 
 			for i = 1, @selected do
@@ -119,7 +139,7 @@ class Menu
 			items_height += @ITEM_PAD
 
 			-- If any part of the now-selected item (including pad below it) 
-			-- is offscreen, scroll down so it (and pad) is just onscreen.
+			-- is offscreen, scroll down so it (and the pad) is just onscreen.
 			if items_height - @target_scroll_offset > love.graphics.getHeight!
 				@target_scroll_offset = items_height - love.graphics.getHeight!
 
