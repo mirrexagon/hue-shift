@@ -27,16 +27,17 @@ class MenuItem
 		@height = height
 		@label = label
 
-	-- Overridable methods.
-
-	init: =>
-
 	-- Called by Menu, shouldn't be called elsewhere.
 	set_width: (width) =>
 		@width = width
 
 	get_width: =>
 		@width
+
+	-- Overridable methods.
+
+	init: =>
+
 
 	update: (dt) =>
 
@@ -51,8 +52,10 @@ class Menu
 	WIDTH: 600
 	ITEM_STANDARD_HEIGHT: 85
 	ITEM_PAD: 30
-	ITEM_SELECTED_ALPHA: 0.7
-	ITEM_UNSELECTED_ALPHA: 0.7 * 0.5
+
+	ITEM_BAR_ALPHA: 0.7
+	ITEM_TEXT_ALPHA: 1.0
+	ITEM_UNSELECTED_ALPHA_MOD: 0.5
 
 	---
 
@@ -76,6 +79,9 @@ class Menu
 		table.insert @items, item
 		item\init!
 		item\set_width @item_width
+
+	get_item_height: (item_i) =>
+		@ITEM_STANDARD_HEIGHT
 
 	---
 
@@ -122,24 +128,24 @@ class Menu
 
 			-- Rectangle
 			item_full_height = item.height + if item.label then @ITEM_STANDARD_HEIGHT else 0
+			item_alpha_mod = if i == @selected then 1 else @ITEM_UNSELECTED_ALPHA_MOD
 
-			love.graphics.setColor 255, 255, 255,
-				255 * if i == @selected then @ITEM_SELECTED_ALPHA else @ITEM_UNSELECTED_ALPHA
+			love.graphics.setColor 255, 255, 255, @ITEM_BAR_ALPHA * item_alpha_mod * 255
 			love.graphics.rectangle "fill", 0, 0, @item_width, item_full_height
 
 			-- Label
 			if item.label
-				love.graphics.setColor 255, 255, 255, 255
+				love.graphics.setColor 255, 255, 255, @ITEM_TEXT_ALPHA * item_alpha_mod * 255
 				love.graphics.setFont @label_font
 				print_centered item.label, (math.floor @item_width/2),
-					(math.floor 85/2)
+					(math.floor @ITEM_STANDARD_HEIGHT/2)
 
 			-- Draw callback
 			if item.label
 				love.graphics.push!
 				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
-			item\draw @item_width, @alpha
+			item\draw @item_width, @alpha * item_alpha_mod
 
 			if item.label
 				love.graphics.pop!
