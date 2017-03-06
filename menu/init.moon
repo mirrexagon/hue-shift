@@ -38,7 +38,6 @@ class MenuItem
 
 	init: =>
 
-
 	update: (dt) =>
 
 	draw: (alpha) =>
@@ -65,6 +64,7 @@ class Menu
 
 		@set_window_width width
 		@set_alpha 1
+		@set_interactable true
 
 		@theme = theme
 
@@ -99,6 +99,9 @@ class Menu
 
 	set_alpha: (alpha) =>
 		@alpha = alpha
+
+	set_interactable: (interactable) =>
+		@interactable = interactable
 
 	---
 
@@ -159,20 +162,22 @@ class Menu
 		love.graphics.pop! -- scroll_offset
 		
 	keypressed: (key, scancode, isrepeat) =>
-		switch key
-			when "up", "w"
-				@select_prev!
-			when "down", "s"
-				@select_next!
-			--when "escape"
-				-- TODO: Fade out and quit
-		
-		for item in *@items
-			item\keypressed key, scancode, isrepeat
+		if @interactable
+			switch key
+				when "up", "w"
+					@select_prev!
+				when "down", "s"
+					@select_next!
+				--when "escape"
+					-- TODO: Fade out and quit
+			
+			for item in *@items
+				item\keypressed key, scancode, isrepeat
 
 	keyreleased: (key, scancode) =>
-		for item in *@items
-			item\keyreleased key, scancode
+		if @interactable
+			for item in *@items
+				item\keyreleased key, scancode
 
 
 { :MenuItem, :Menu }
