@@ -1,4 +1,4 @@
--- Number of player block pairs (player and goal) selection MenuItem
+--! Number of player block pairs (player and goal) selection MenuItem
 
 
 --- Import ---
@@ -10,6 +10,8 @@ class NBlockPairsMenuItem extends MenuItem
 	new: =>
 		super Menu.ITEM_STANDARD_HEIGHT, "BLOCKS"
 		@n_block_pairs = 1
+
+	get_n_block_pairs: => @n_block_pairs
 		
 	draw: (width, height, alpha) =>
 		love.graphics.setColor 255, 255, 255, alpha

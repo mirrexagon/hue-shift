@@ -6,7 +6,7 @@
 
 
 class Grid
-	new: (w,h, cell_w = 32,cell_h = 32, pad = 2) =>
+	new: (w,h, cell_w = BLOCK_WIDTH,cell_h = BLOCK_HEIGHT, pad = 2) =>
 		@w = w
 		@h = h
 		@cell_w = cell_w

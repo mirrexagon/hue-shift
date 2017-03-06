@@ -9,15 +9,12 @@
 import seconds_to_beats, beats_to_seconds from require "util.beat"
 
 import Menu, MenuItem from require "menu"
+import NBlockPairsMenuItem from require "menu.nblockpairs"
 import MusicMenuItem from require "menu.music"
 
 import Game from require "game"
 
 import Music, MusicLibrary from require "music"
---- ==== ---
-
-
---- Menu items ---
 --- ==== ---
 
 
@@ -37,9 +34,9 @@ love.load = ->
 	-- Instantiate menu and add MenuItems.
 	menu = with Menu theme
 		\add_item MenuItem 0, "FANCY LOGO HERE"
-		\add_item MenuItem 0, "GRID"
 		\add_item MusicMenuItem music_library
-		\add_item MenuItem 0, "BLOCKS"
+		\add_item NBlockPairsMenuItem!
+		\add_item MenuItem 0, "GRID"
 		\add_item MenuItem 0, "OBSTACLES"
 		\add_item MenuItem 0, "START"
 
