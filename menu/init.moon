@@ -43,8 +43,10 @@ class MenuItem
 	draw: (alpha) =>
 
 	keypressed: (key, scancode, isrepeat) =>
-
 	keyreleased: (key, scancode) =>
+
+	selected: => -- TODO
+	deselected: => -- TODO
 
 
 class Menu
@@ -85,7 +87,7 @@ class Menu
 		item\set_width @item_width
 
 	get_item_height: (item_i) =>
-		@ITEM_STANDARD_HEIGHT
+		@ITEM_STANDARD_HEIGHT + items[item_i].height
 
 	---
 
