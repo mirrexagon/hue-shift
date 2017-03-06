@@ -13,15 +13,6 @@ interpolate = (value, target, dt, speed) ->
 	value + (target - value) * speed * dt
 
 
-cycle = (i, len) ->
-	i = i % len
-
-	if i == 0
-		i = len
-
-	i
-
-
 class MenuItem
 	new: (height = 0, label) =>
 		@height = height
