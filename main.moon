@@ -61,6 +61,7 @@ love.keyreleased = (key, scancode) ->
 
 
 love.wheelmoved = (x, y) ->
+	menu\wheelmoved x, y
 
 
 love.resize = (w, h) ->

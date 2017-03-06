@@ -170,14 +170,21 @@ class Menu
 					@select_next!
 				--when "escape"
 					-- TODO: Fade out and quit
-			
-			for item in *@items
-				item\keypressed key, scancode, isrepeat
+				else
+					for item in *@items
+						item\keypressed key, scancode, isrepeat
 
 	keyreleased: (key, scancode) =>
 		if @interactable
 			for item in *@items
 				item\keyreleased key, scancode
+
+	wheelmoved: (x, y) =>
+		if @interactable
+			if y > 0
+				@select_prev!
+			elseif y < 0
+				@select_next!
 
 
 { :MenuItem, :Menu }
