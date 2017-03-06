@@ -18,7 +18,6 @@ import Music, MusicLibrary from require "music"
 
 
 --- Menu items ---
-menu_header = MenuItem 0, "FANCY LOGO HERE"
 --- ==== ---
 
 
