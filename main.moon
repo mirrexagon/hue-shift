@@ -37,7 +37,7 @@ love.load = ->
 
 	-- Instantiate menu and add MenuItems.
 	menu = with Menu love.graphics.getWidth!, theme
-		\add_item menu_header
+		\add_item MenuItem 0, "FANCY LOGO HERE"
 		\add_item MusicMenuItem music_library
 
 
