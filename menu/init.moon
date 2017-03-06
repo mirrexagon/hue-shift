@@ -32,11 +32,11 @@ class MenuItem
 		@width = width
 
 	-- Overridable methods.
-	init: =>
+	init: (game_params) =>
 
-	update: (dt) =>
+	update: (dt, game_params) =>
 
-	draw: (width, height, alpha) =>
+	draw: (width, height, alpha, params) =>
 
 	keypressed: (key, scancode, isrepeat) =>
 	keyreleased: (key, scancode) =>
@@ -71,6 +71,8 @@ class Menu
 		@scroll_offset = 0
 		@target_scroll_offset = 0
 
+		@game_params = { theme: @theme }
+
 	---
 
 	get_width: => @WIDTH
@@ -79,7 +81,7 @@ class Menu
 
 	add_item: (item) =>
 		table.insert @items, item
-		item\init!
+		item\init @game_params
 
 	---
 
@@ -154,7 +156,7 @@ class Menu
 			@target_scroll_offset, dt, 5
 			
 		for item in *@items
-			item\update dt
+			item\update dt, @game_params
 
 	draw: =>
 		@theme.background\draw!
@@ -190,7 +192,8 @@ class Menu
 				love.graphics.push!
 				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
-			item\draw @item_width, item.height, @alpha * item_alpha_mod
+			item\draw @item_width, item.height, 
+				@alpha * item_alpha_mod, @game_params
 
 			if item.label
 				love.graphics.pop!

@@ -18,6 +18,12 @@ import Music, MusicLibrary from require "music"
 --- ==== ---
 
 
+--- Constants ---
+export BLOCK_WIDTH = 32
+export BLOCK_HEIGHT = 32
+--- ==== ---
+
+
 --- Main ---
 local menu
 local game
