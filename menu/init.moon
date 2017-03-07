@@ -23,13 +23,13 @@ class MenuItem
 
 	update: (dt, game_params) =>
 
-	draw: (width, height, alpha, params) =>
+	draw: (width, height, alpha, game_params) =>
 
-	keypressed: (key, scancode, isrepeat) =>
-	keyreleased: (key, scancode) =>
+	keypressed: (key, scancode, isrepeat, game_params) =>
+	keyreleased: (key, scancode, game_params) =>
 
-	selected: => -- TODO
-	deselected: => -- TODO
+	selected: (game_params) =>
+	deselected: (game_params) =>
 
 
 class Menu
@@ -88,6 +88,10 @@ class Menu
 	---
 
 	select_prev: =>
+		@items[@selected]\deselected @game_params
+		
+		---
+		
 		@selected -= 1
 
 		if @selected < 1
@@ -108,8 +112,16 @@ class Menu
 			if items_height - @target_scroll_offset < 0
 				@target_scroll_offset = items_height
 
+		---
+
+		@items[@selected]\selected @game_params
+
 
 	select_next: =>
+		@items[@selected]\deselected @game_params
+
+		---
+
 		@selected += 1
 
 		if @selected > #@items
@@ -125,6 +137,10 @@ class Menu
 			-- is offscreen, scroll down so it (and the pad) is just onscreen.
 			if items_height - @target_scroll_offset > love.graphics.getHeight!
 				@target_scroll_offset = items_height - love.graphics.getHeight!
+
+		---
+
+		@items[@selected]\selected @game_params
 
 	---
 
