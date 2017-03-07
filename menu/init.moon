@@ -18,10 +18,6 @@ class MenuItem
 		@height = height
 		@label = label
 
-	-- Called by Menu, shouldn't be called elsewhere.
-	_set_width: (width) =>
-		@width = width
-
 	-- Overridable methods.
 	init: (game_params) =>
 
