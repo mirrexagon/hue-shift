@@ -2,6 +2,7 @@
 
 
 -- TODO: Make it easier to see how many blocks are active when this item is not selected.
+-- TODO: Maybe draw black outline or shadow for text and other white objects?
 
 
 --- Import ---
@@ -50,6 +51,11 @@ class NBlockPairsMenuItem extends MenuItem
 
 			love.graphics.setColor 255, 255, 255, block_alpha * 255
 			love.graphics.draw(img_arrow, block_x, block_y)
+
+		-- Draw arrows on each side.
+		@draw_lr_arrows width/2, width/2.3, height/2, 35, 55, alpha, 
+			game_params.n_block_pairs > 1, 
+			game_params.n_block_pairs < 3
 
 
 	keypressed: (key, scancode, isrepeat, game_params) =>

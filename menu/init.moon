@@ -31,6 +31,22 @@ class MenuItem
 	selected: (game_params) =>
 	deselected: (game_params) =>
 
+	-- Utility methods.
+	draw_lr_arrows: (x_center, x_center_offset, y_center, width, height, alpha, active_l, active_r) =>
+		love.graphics.setColor 255, 255, 255, (active_l and 255 or 64) * alpha
+		love.graphics.polygon("fill",
+			x_center - x_center_offset - width/2, y_center,
+			x_center - x_center_offset + width/2, y_center - height/2,
+			x_center - x_center_offset + width/2, y_center + height/2
+		)
+
+		love.graphics.setColor 255, 255, 255, (active_r and 255 or 64) * alpha
+		love.graphics.polygon("fill",
+			x_center + x_center_offset + width/2, y_center,
+			x_center + x_center_offset - width/2, y_center - height/2,
+			x_center + x_center_offset - width/2, y_center + height/2
+		)
+
 
 class Menu
 	WIDTH: 600
@@ -234,5 +250,9 @@ class Menu
 			elseif y < 0
 				@select_next!
 
+---
+
+
+---
 
 { :MenuItem, :Menu }
