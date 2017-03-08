@@ -1,4 +1,4 @@
--- TODO: be able to have submenus to the right of menus.
+-- TODO: be able to have submenus to the right of menus. (Is this necessary? Would be cool to have everything in the main menu)
 
 
 print_centered = (text, x, y) ->

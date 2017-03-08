@@ -1,7 +1,7 @@
 --! Music selection MenuItem
 
 
--- TODO: Use submenu list for music?
+-- TODO: Use submenu list for music? Or have list directly in MenuItem?
 
 
 --- Import ---
