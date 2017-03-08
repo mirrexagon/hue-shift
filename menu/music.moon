@@ -1,6 +1,9 @@
 --! Music selection MenuItem
 
 
+-- TODO: Use submenu list for music?
+
+
 --- Import ---
 import Menu, MenuItem from require "menu"
 --- ==== ---
@@ -8,7 +11,7 @@ import Menu, MenuItem from require "menu"
 
 class MusicMenuItem extends MenuItem
 	new: (music_library) =>
-		super Menu.ITEM_STANDARD_HEIGHT, "MUSIC"
+		super 0, "MUSIC"
 		@music_library = music_library
 		
 	draw: (width, height, alpha) =>
