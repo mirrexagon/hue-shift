@@ -235,13 +235,11 @@ class Menu
 				--when "escape"
 					-- TODO: Fade out and quit
 				else
-					for item in *@items
-						item\keypressed key, scancode, isrepeat, @game_params
+					@items[@selected]\keypressed key, scancode, isrepeat, @game_params
 
 	keyreleased: (key, scancode) =>
 		if @interactable
-			for item in *@items
-				item\keyreleased key, scancode, @game_params
+			@items[@selected]\keyreleased key, scancode, @game_params
 
 	wheelmoved: (x, y) =>
 		if @interactable
