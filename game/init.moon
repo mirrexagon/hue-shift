@@ -5,6 +5,46 @@
 --- ==== ---
 
 
+--- Constants ---
+BLOCK_CONTROLS = {
+	[1]: {
+		up: "w"
+		right: "d"
+		down: "s"
+		left: "a"
+	}
+
+	[2]: {
+		up: "t"
+		right: "h"
+		down: "g"
+		left: "f"
+	}
+
+	[3]: {
+		up: "i"
+		right: "l"
+		down: "k"
+		left: "j"
+	}
+}
+--- ==== ---
+
+
+--- Helpers ---
+generate_control_functions = (players) ->
+	funcs = {}
+
+	for id, controls in ipairs(BLOCK_CONTROLS) do
+		for dir, key in pairs(controls) do
+			funcs[key] = ->
+				if players[id]
+					players[id]:set_direction(dir)
+
+	funcs
+--- ==== ---
+
+
 class Grid
 	new: (w,h, cell_w = BLOCK_WIDTH,cell_h = BLOCK_HEIGHT, pad = 2) =>
 		@w = w
