@@ -8,7 +8,7 @@ STATIC_DOT_SIZE_MULT = 5/16
 --- ==== ---
 
 
-class StaticBlock
+class StaticBlock extends Block
 	new: (game, color, x, y) =>
 		super game, color, x, y
 
@@ -24,4 +24,4 @@ class StaticBlock
 			x + @w/2, y + @h/2, min_wh * STATIC_DOT_SIZE_MULT
 
 
-{ :DynamicBlock }
+{ :StaticBlock }

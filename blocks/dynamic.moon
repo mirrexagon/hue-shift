@@ -26,7 +26,7 @@ img_arrow = love.graphics.newImage "assets/graphics/arrow.png"
 
 
 --- Blocks that move in the direction they're facing, one cell per beat.
-class DynamicBlock
+class DynamicBlock extends Block
 	new: (game, color, x, y, direction) =>
 		super game, color, x, y
 

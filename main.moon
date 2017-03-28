@@ -31,5 +31,5 @@ love.load = ->
 	game = Game music_library[1], theme, level, 1
 
 	gamestate.registerEvents!
-	gamestate.switch menu_state
+	gamestate.switch game
 --- ==== ---

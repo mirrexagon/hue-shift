@@ -8,7 +8,9 @@ timer = require "lib.hump.timer"
 
 --- Import ---
 import beats_to_seconds from require "util.beat"
-import StaticBlock, DynamicBlock, GoalBlock from require "blocks"
+import StaticBlock from require "blocks.static"
+import DynamicBlock from require "blocks.dynamic"
+import GoalBlock from require "blocks.goal"
 --- ==== ---
 
 
@@ -309,7 +311,7 @@ class Game
 
 
 			for obs_data in *level.obstacles
-				Constructor = DynamicBlock if obs_data.dynamic else StaticBlock
+				Constructor = if obs_data.dynamic then DynamicBlock else StaticBlock
 
 				table.insert @blocks.obstacles,
 					(Constructor self, @theme.OBSTACLE_COLOR,

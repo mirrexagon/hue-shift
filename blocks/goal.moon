@@ -3,7 +3,7 @@ import Block from require "blocks"
 --- ==== ---
 
 
-class GoalBlock
+class GoalBlock extends Block
 	new: (game, color, x, y) =>
 		super game, color, x, y
 
@@ -12,4 +12,4 @@ class GoalBlock
 		@fade_time = 0.5
 
 
-{ :DynamicBlock }
+{ :GoalBlock }
