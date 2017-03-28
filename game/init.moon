@@ -45,6 +45,41 @@ generate_control_functions = (players) ->
 --- ==== ---
 
 
+class Level
+	@name = "<BASE>"
+
+	@grid_w = 7
+	@grid_w = 7
+
+	@players = {
+		[1]: {
+			x: 0
+			y: 6
+			direction: "up"
+		}
+
+		[2]: {
+			x: 3
+			y: 6
+			direction: "up"
+		}
+
+		[3]: {
+			x: 6
+			y: 6
+			direction: "up"
+		}
+	}
+
+	@obstacles = {
+		{
+			x: 3
+			y: 3
+			type: "static"
+		}
+	}
+
+
 class Grid
 	new: (w,h, cell_w = BLOCK_WIDTH,cell_h = BLOCK_HEIGHT, pad = 2) =>
 		@w = w
@@ -55,13 +90,21 @@ class Grid
 
 		@alpha = 1
 
-		@blocks = {}
-		
+		@reset!
+
 	---
 
 	set_alpha: (alpha) => 
 		@alpha = alpha
 		
+	---
+
+	reset: (level) =>
+		@blocks = {
+			players: {}
+			goals: {}
+			obstacles: {}
+
 	---
 
 	draw: =>
@@ -134,7 +177,7 @@ class Game
 
 	set_alpha: (alpha) =>
 		@grid\set_alpha alpha
-		
+
 	---
 
 	update: (dt) =>
