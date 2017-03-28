@@ -248,9 +248,5 @@ class Menu
 			elseif y < 0
 				@select_next!
 
----
-
-
----
 
 { :MenuItem, :Menu }
