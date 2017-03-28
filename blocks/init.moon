@@ -1,5 +1,5 @@
 --- Import ---
-import linear_map from require "util.math"
+import clamp, linear_map from require "util.math"
 --- ==== ---
 
 
@@ -50,18 +50,20 @@ class Block
 	draw_symbol: (x, y) =>
 
 
-	draw_at: (x, y) =>
-		alpha = compute_alpha!
+	draw_at: (x, y, in_alpha, beat_fraction) =>
+		alpha = (@compute_alpha beat_fraction) * in_alpha
 
 		love.graphics.setColor @color[1], @color[2], @color[3],
 			255 * alpha
 		@draw_block x, y
 
-		love.graphics.set_color 255, 255, 255, 255 * alpha
+		love.graphics.setColor 255, 255, 255, 255 * alpha
 		@draw_symbol x, y
 
 
-	draw: =>
-		draw_at @game\pixel_coords @x, @y
+	draw: (alpha, beat_fraction) =>
+		x, y = @game\pixel_coords @x, @y
+		@draw_at x, y, alpha, beat_fraction
+
 
 { :Block }

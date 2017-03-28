@@ -37,6 +37,10 @@ BLOCK_CONTROLS = {
 		left: "j"
 	}
 }
+
+
+-- Duration of entering/exiting transitions (not resetting/stopping).
+TRANSITION_DURATION = 0.5
 --- ==== ---
 
 
@@ -103,9 +107,6 @@ class Game
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
-		@level = level
-		@load_level @level
-
 		@alpha = 1
 		@speed = 1
 		@score = {0, 0, 0}
@@ -118,11 +119,14 @@ class Game
 
 		-- These are just constants.
 		@grid_cell_w = BLOCK_WIDTH
-		@grid_cell_h = BLOCK_WIDTH
+		@grid_cell_h = BLOCK_HEIGHT
 		@grid_pad = 2
 
 		@transition_duration = @compute_transition_duration!
 		@music\load!
+
+		@level = level
+		@load_level @level
 
 		@enter!
 
@@ -142,15 +146,15 @@ class Game
 
 	--- Callbacks ---
 	update: (dt) =>
-		@timer.update dt
+		@timer\update dt
 
-		@theme.background\update scaled_dt * @speed
+		@theme.background\update dt * @speed
 		@music\set_pitch @speed
 
 		current_beat = @music\pos_beats!
 
 		-- Step the game on any beat EXCEPT the first.
-		if math.floor current_beat ~= math.floor @last_beat
+		if (math.floor current_beat) ~= (math.floor @last_beat)
 			if current_beat >= 2 and not @done_first_beat
 				done_first_beat = true
 
@@ -166,7 +170,7 @@ class Game
 		@theme.background\draw!
 
 		love.graphics.push!
-		love.graphics.translate @grid\screen_pad!
+		love.graphics.translate @screen_pad!
 		@draw_grid!
 		@draw_blocks!
 		love.graphics.pop!
@@ -210,7 +214,8 @@ class Game
 
 	-- Called at the start of each beat.
 	step: =>
-		@beat_timer.update 1
+		-- TODO: Put in update?
+		@beat_timer\update 1
 
 		@for_all_blocks (block) ->
 			block\step!
@@ -225,14 +230,14 @@ class Game
 	enter: =>
 		@state = "entering"
 
-		@_alpha_tween = timer.tween TRANSITION_DURATION, self,
+		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
 			{alpha: 1}, "linear", -> @start!
 
 	exit: (after) =>
 		@state = "exiting"
 
-		@_alpha_tween = timer.tween TRANSITION_DURATION, self,
-			{alpha: 0}, "linear", -> after self
+		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
+			{alpha: 0}, "linear", -> after @
 
 
 	-- entering|resetting -> running
@@ -242,19 +247,19 @@ class Game
 		if @_speed_tween then @timer\cancel @_speed_tween
 		@speed = @game_speed
 
-		music\rewind!
-		music\play!
+		@music\rewind!
+		@music\play!
 
 
 	-- running -> stopping
 	stopping: =>
 		@state = "stopping"
 
-		@_speed_tween = @timer.tween @transition_duration,
-			self, {speed: 0}, "linear", -> @stop!
+		@_speed_tween = @timer\tween @transition_duration,
+			@, {speed: 0}, "linear", -> @stop!
 
 		@for_all_blocks (block) ->
-			block._alpha_tween = @timer.tween @transition_duration,
+			block._alpha_tween = @timer\tween @transition_duration,
 				block, {alpha: 1}, "linear"
 
 
@@ -262,11 +267,11 @@ class Game
 	stop: =>
 		@state = "stopped"
 
-		@timer.cancel @_speed_tween
+		@timer\cancel @_speed_tween
 		@speed = 0
 
 		@for_all_blocks (block) ->
-			@timer.cancel block._alpha_tween
+			@timer\cancel block._alpha_tween
 			block.alpha = 1
 
 
@@ -274,13 +279,13 @@ class Game
 	reset: =>
 		@state = "resetting"
 
-		@_speed_tween = @timer.tween @transition_duration,
-			self, {speed: @game_speed}, "linear", ->
+		@_speed_tween = @timer\tween @transition_duration,
+			@, {speed: @game_speed}, "linear", ->
 				@reset_level!
 				@start!
 
 		@for_all_blocks (block) ->
-			block._alpha_tween = @timer.tween @transition_duration,
+			block._alpha_tween = @timer\tween @transition_duration,
 				block, {alpha: 0}, "linear"
 	--- ==== ---
 
@@ -301,12 +306,12 @@ class Game
 				player_data = @level.players[i]
 
 				table.insert @blocks.players,
-					(DynamicBlock self, @theme.BLOCK_PAIR_COLORS[i],
+					(DynamicBlock @, @theme.BLOCK_PAIR_COLORS[i],
 						player_data.x, player_data.y,
 						player_data.direction)
 
 				table.insert @blocks.goals,
-					(GoalBlock self, @theme.BLOCK_PAIR_COLORS[i],
+					(GoalBlock @, @theme.BLOCK_PAIR_COLORS[i],
 						0, 0)
 
 
@@ -314,7 +319,7 @@ class Game
 				Constructor = if obs_data.dynamic then DynamicBlock else StaticBlock
 
 				table.insert @blocks.obstacles,
-					(Constructor self, @theme.OBSTACLE_COLOR,
+					(Constructor @, @theme.OBSTACLE_COLOR,
 						obs_data.x, obs_data.y,
 						obs_data.direction)
 
@@ -324,7 +329,7 @@ class Game
 
 	--- Beat ---
 	do_after_beats: (beats, callback) =>
-		@beat_timer.add beats, callback
+		@beat_timer\add beats, callback
 	--- ==== ---
 
 
@@ -437,8 +442,10 @@ class Game
 
 
 	draw_blocks: =>
+		current_beat = @music\pos_beats!
+		beat_fraction = current_beat - math.floor(current_beat)
 		@for_all_blocks (block) ->
-			block\draw @alpha
+			block\draw @alpha, beat_fraction
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered
