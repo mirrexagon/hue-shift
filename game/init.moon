@@ -99,7 +99,7 @@ class Game
 		@DEBUG = false
 
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
-		@state = "entering"
+		@state = "init"
 
 		@music = music
 		@theme = theme
@@ -128,8 +128,6 @@ class Game
 		@level = level
 		@load_level @level
 
-		@enter!
-
 
 	run: =>
 		music\play!
@@ -145,6 +143,12 @@ class Game
 
 
 	--- Callbacks ---
+	enter: (previous, ...) =>
+		@state_enter!
+
+	leave: =>
+
+
 	update: (dt) =>
 		@timer\update dt
 
@@ -200,25 +204,25 @@ class Game
 				when "escape"
 					switch @state
 						when "running"
-							@stopping!
+							@state_stopping!
 						when "stopping"
 							-- Stop game immediately because player is mashing escape.
-							@stop!
+							@state_stop!
 						when "stopped"
-							@exit -> love.event.quit!
+							@state_exit -> love.event.quit!
 						--when "exiting"
 							-- Exit because player is mashing escape.
 				when "space"
 					switch @state
 						when "stopping"
 							-- Stop game immediately because player is mashing space.
-							@stop!
+							@state_stop!
 						when "stopped"
-							@reset!
+							@state_reset!
 						when "resetting"
 							-- Start game immediately because player is mashing space.
 							@load_level @level
-							@start!
+							@state_start!
 	--- ==== ---
 
 
@@ -237,13 +241,13 @@ class Game
 
 
 	--- State transitions ---
-	enter: =>
+	state_enter: =>
 		@state = "entering"
 
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
-			{alpha: 0.5}, "linear", -> @start!
+			{alpha: 1}, "linear", -> @state_start!
 
-	exit: (after) =>
+	state_exit: (after) =>
 		@state = "exiting"
 
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
@@ -251,7 +255,7 @@ class Game
 
 
 	-- entering|resetting -> running
-	start: =>
+	state_start: =>
 		@state = "running"
 
 		if @_speed_tween then @timer\cancel @_speed_tween
@@ -262,11 +266,11 @@ class Game
 
 
 	-- running -> stopping
-	stopping: =>
+	state_stopping: =>
 		@state = "stopping"
 
 		@_speed_tween = @timer\tween @transition_duration,
-			@, {speed: 0}, "linear", -> @stop!
+			@, {speed: 0}, "linear", -> @state_stop!
 
 		@for_all_blocks (block) ->
 			block._alpha_tween = @timer\tween @transition_duration,
@@ -274,7 +278,7 @@ class Game
 
 
 	-- stopping -> stopped
-	stop: =>
+	state_stop: =>
 		@state = "stopped"
 
 		if @_speed_tween then @timer\cancel @_speed_tween
@@ -286,13 +290,13 @@ class Game
 
 
 	-- stopped -> resetting
-	reset: =>
+	state_reset: =>
 		@state = "resetting"
 
 		@_speed_tween = @timer\tween @transition_duration,
 			@, {speed: @game_speed}, "linear", ->
 				@load_level @level
-				@start!
+				@state_start!
 
 		@for_all_blocks (block) ->
 			block._alpha_tween = @timer\tween @transition_duration,
@@ -399,7 +403,7 @@ class Game
 
 
 	on_player_obstacle_collisions: (collisions) =>
-		@stopping!
+		@state_stopping!
 
 		-- TODO: Indicate where the player died.
 		-- Along with system for highlighting overlapping blocks,
