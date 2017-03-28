@@ -29,6 +29,7 @@ love.load = ->
 
 	level = Level!
 	game = Game music_library[1], theme, level, 1
+	game.DEBUG = true
 
 	gamestate.registerEvents!
 	gamestate.switch game

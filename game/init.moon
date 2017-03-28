@@ -107,7 +107,7 @@ class Game
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
-		@alpha = 1
+		@alpha = 0
 		@speed = 1
 		@score = {0, 0, 0}
 
@@ -176,8 +176,7 @@ class Game
 		love.graphics.pop!
 
 		if @DEBUG
-			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f")\format @music\pos_seconds!,
-				@music\pos_beats!, @speed
+			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f\nAlpha: %.2f")\format @music\pos_seconds!, @music\pos_beats!, @speed, @alpha
 			love.graphics.print status_line, 10, 10
 
 
@@ -207,7 +206,7 @@ class Game
 							@reset!
 						when "resetting"
 							-- Start game immediately because player is mashing space.
-							@reset_level!
+							@load_level @level
 							@start!
 	--- ==== ---
 
@@ -218,6 +217,7 @@ class Game
 		@beat_timer\update 1
 
 		@for_all_blocks (block) ->
+			print block
 			block\step!
 
 		@check_player_obstacle_collisions!
@@ -231,7 +231,7 @@ class Game
 		@state = "entering"
 
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
-			{alpha: 1}, "linear", -> @start!
+			{alpha: 0.5}, "linear", -> @start!
 
 	exit: (after) =>
 		@state = "exiting"
@@ -281,7 +281,7 @@ class Game
 
 		@_speed_tween = @timer\tween @transition_duration,
 			@, {speed: @game_speed}, "linear", ->
-				@reset_level!
+				@load_level @level
 				@start!
 
 		@for_all_blocks (block) ->
@@ -444,8 +444,10 @@ class Game
 	draw_blocks: =>
 		current_beat = @music\pos_beats!
 		beat_fraction = current_beat - math.floor(current_beat)
+		ignore_beat = (@state ~= "running")
+
 		@for_all_blocks (block) ->
-			block\draw @alpha, beat_fraction
+			block\draw @alpha, ignore_beat, beat_fraction
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered

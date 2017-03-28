@@ -50,8 +50,8 @@ class Block
 	draw_symbol: (x, y) =>
 
 
-	draw_at: (x, y, in_alpha, beat_fraction) =>
-		alpha = (@compute_alpha beat_fraction) * in_alpha
+	draw_at: (x, y, in_alpha, ignore_beat, beat_fraction) =>
+		alpha = in_alpha * if not ignore_beat then @compute_alpha beat_fraction else 1
 
 		love.graphics.setColor @color[1], @color[2], @color[3],
 			255 * alpha
@@ -61,9 +61,9 @@ class Block
 		@draw_symbol x, y
 
 
-	draw: (alpha, beat_fraction) =>
+	draw: (alpha, ignore_beat, beat_fraction) =>
 		x, y = @game\pixel_coords @x, @y
-		@draw_at x, y, alpha, beat_fraction
+		@draw_at x, y, alpha, ignore_beat, beat_fraction,
 
 
 { :Block }
