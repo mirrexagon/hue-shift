@@ -189,7 +189,7 @@ class Game
 							@stop!
 						when "stopped"
 							@exit -> love.event.quit!
-						when "exiting"
+						--when "exiting"
 							-- Exit because player is mashing escape.
 				when "space"
 					switch @state
