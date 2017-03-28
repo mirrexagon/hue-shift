@@ -187,6 +187,10 @@ class Game
 						when "stopping"
 							-- Stop game immediately because player is mashing escape.
 							@stop!
+						when "stopped"
+							@exit -> love.event.quit!
+						when "exiting"
+							-- Exit because player is mashing escape.
 				when "space"
 					switch @state
 						when "stopping"
