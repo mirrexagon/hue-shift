@@ -6,10 +6,10 @@ OUTPUTS = $(SOURCES:.moon=.lua)
 all: $(OUTPUTS)
 
 run: $(OUTPUTS)
-	love .
+	@love .
 
 clean:
-	$(RM) $(OUTPUTS)
+	@$(RM) $(OUTPUTS)
 
 %.lua: %.moon
-	moonc $<
+	@moonc $<
