@@ -167,6 +167,7 @@ class Game
 
 
 	draw: =>
+		love.graphics.setColor 255, 255, 255
 		@theme.background\draw!
 
 		love.graphics.push!
@@ -176,6 +177,7 @@ class Game
 		love.graphics.pop!
 
 		if @DEBUG
+			love.graphics.setColor 255, 255, 255
 			do
 				fmt = "Time: %.2f\nBeat: %.2f\nSpeed: %.2f\nAlpha: %.2f"
 				status_line = fmt\format @music\pos_seconds!,
