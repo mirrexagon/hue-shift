@@ -176,8 +176,17 @@ class Game
 		love.graphics.pop!
 
 		if @DEBUG
-			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f\nAlpha: %.2f")\format @music\pos_seconds!, @music\pos_beats!, @speed, @alpha
-			love.graphics.print status_line, 10, 10
+			do
+				fmt = "Time: %.2f\nBeat: %.2f\nSpeed: %.2f\nAlpha: %.2f"
+				status_line = fmt\format @music\pos_seconds!,
+					@music\pos_beats!, @speed, @alpha
+				love.graphics.print status_line, 10, 10
+
+			do
+				fmt = "Scores:\n  1: %d\n  2: %d\n  3: %d"
+				status_line = fmt\format @score[1], @score[2], @score[3]
+				width = love.graphics.getFont!\getWidth status_line
+				love.graphics.print status_line, love.graphics.getWidth! - width - 10, 10
 
 
 	keypressed: (key, scancode, isrepeat) =>
