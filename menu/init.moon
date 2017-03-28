@@ -13,6 +13,8 @@ interpolate = (value, target, dt, speed) ->
 	value + (target - value) * speed * dt
 
 
+-- TODO: Pass Menu to MenuItem constructor instead of having game_params everywhere,
+-- and so the START one can just start the game from there.
 class MenuItem
 	new: (height = 0, label) =>
 		@height = height

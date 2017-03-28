@@ -94,6 +94,9 @@ class Level
 		}
 
 
+-- TODO: Implement modifiers as classes with functions that patch the Game object?
+-- Flexible but may make some modifiers incompatible.
+-- Implement it via a class with lots of callbacks for different events?
 class Game
 	new: (music, theme, level, n_block_pairs) =>
 		@DEBUG = false
