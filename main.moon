@@ -9,6 +9,8 @@ gamestate = require "lib.hump.gamestate"
 --- Import ---
 import MenuState from require "states.menu"
 import MusicLibrary from require "music"
+
+import Level, Game from require "game"
 --- ==== ---
 
 
@@ -24,6 +26,9 @@ love.load = ->
 	music_library = MusicLibrary "assets/music"
 
 	menu_state = MenuState theme, music_library
+
+	level = Level!
+	game = Game music_library[1], theme, level, 1
 
 	gamestate.registerEvents!
 	gamestate.switch menu_state
