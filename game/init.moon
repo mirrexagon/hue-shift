@@ -156,9 +156,10 @@ class Game
 		-- Step the game on any beat EXCEPT the first.
 		if (math.floor current_beat) ~= (math.floor @last_beat)
 			if current_beat >= 2 and not @done_first_beat
-				done_first_beat = true
+				@done_first_beat = true
 
 			if @done_first_beat and @state == "running"
+				print "step"
 				@step!
 
 		-- TODO: Block blinking when appropriate.

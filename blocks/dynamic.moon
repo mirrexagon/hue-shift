@@ -41,6 +41,7 @@ class DynamicBlock extends Block
 
 
 	step: =>
+		print @direction
 		dirmap = DIRECTION_MAPPING[@direction]
 	
 		@x = (@x + dirmap.x) % @grid.w
