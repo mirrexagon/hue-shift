@@ -19,13 +19,17 @@ export BLOCK_HEIGHT = 32
 
 
 --- Gamestates ---
+export menu_state
+export game_state
 --- ==== ---
 
 
 --- Main ---
 love.load = ->
+	theme = (require "themes.hue-shift")!
 	music_library = MusicLibrary "assets/music"
-	menu_state = MenuState music_library
+
+	menu_state = MenuState theme, music_library
 
 	gamestate.registerEvents!
 	gamestate.switch menu_state

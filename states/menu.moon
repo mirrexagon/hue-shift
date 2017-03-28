@@ -6,13 +6,7 @@ import MusicMenuItem from require "menu.music"
 
 
 class MenuState
-	new: (music_library) =>
-		music_library = music_library
-	
-		-- Load and instantiate default theme.
-		theme = (require "themes.hue-shift")!
-	
-		-- Instantiate menu and add MenuItems.
+	new: (theme, music_library) =>
 		@menu = with Menu theme
 			\add_item MenuItem 0, "FANCY LOGO HERE"
 			\add_item MusicMenuItem music_library
