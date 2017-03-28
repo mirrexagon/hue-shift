@@ -134,20 +134,8 @@ class Game
 	compute_transition_duration: =>
 		beats_to_seconds 2, @music.bpm
 
-	---
 
-	-- Called at the start of each beat.
-	step: =>
-		@beat_timer.update 1
-
-		@for_all_blocks (block) ->
-			block\step!
-
-		@check_player_obstacle_collisions!
-		@check_player_goal_collisions!
-		@check_player_player_collisions!
-
-
+	--- Callbacks ---
 	update: (dt) =>
 		@timer.update dt
 
@@ -182,6 +170,46 @@ class Game
 			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f")\format @music\pos_seconds!,
 				@music\pos_beats!, @speed
 			love.graphics.print status_line, 10, 10
+
+
+	keypressed: (key, scancode, isrepeat) =>
+		if @controls[key] and @state == "running"
+			-- Player block controls.
+			@controls[key]!
+		else
+			switch key
+				when "escape"
+					switch @state
+						when "running"
+							@stopping!
+						when "stopping"
+							-- Stop game immediately because player is mashing escape.
+							@stop!
+				when "space"
+					switch @state
+						when "stopping"
+							-- Stop game immediately because player is mashing space.
+							@stop!
+						when "stopped"
+							@reset!
+						when "resetting"
+							-- Start game immediately because player is mashing space.
+							@reset_level!
+							@start!
+	--- ==== ---
+
+
+	-- Called at the start of each beat.
+	step: =>
+		@beat_timer.update 1
+
+		@for_all_blocks (block) ->
+			block\step!
+
+		@check_player_obstacle_collisions!
+		@check_player_goal_collisions!
+		@check_player_player_collisions!
+
 
 
 	--- State transitions ---
@@ -266,6 +294,8 @@ class Game
 					(Constructor self, @theme.OBSTACLE_COLOR,
 						obs_data.x, obs_data.y,
 						obs_data.direction) 
+
+		@controls = generate_control_functions
 	--- ==== ---
 
 
