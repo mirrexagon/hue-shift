@@ -46,7 +46,7 @@ generate_control_functions = (players) ->
 		for dir, key in pairs(controls) do
 			funcs[key] = ->
 				if players[id]
-					players[id]:set_direction(dir)
+					players[id]\set_direction dir
 
 	funcs
 --- ==== ---
@@ -120,6 +120,8 @@ class Game
 
 		@transition_duration = @compute_transition_duration!
 		@music\load!
+
+		@enter!
 
 
 	run: =>
@@ -213,6 +215,19 @@ class Game
 
 
 	--- State transitions ---
+	enter: =>
+		@state = "entering"
+
+		@_alpha_tween = timer.tween TRANSITION_DURATION, self,
+			{alpha: 1}, "linear", -> @start!
+
+	exit: (after) =>
+		@state = "exiting"
+
+		@_alpha_tween = timer.tween TRANSITION_DURATION, self,
+			{alpha: 0}, "linear", -> after self
+
+
 	-- entering|resetting -> running
 	start: =>
 		@state = "running"
@@ -229,11 +244,11 @@ class Game
 		@state = "stopping"
 
 		@_speed_tween = @timer.tween @transition_duration,
-			self, {speed = 0}, "linear", -> @stop!
+			self, {speed: 0}, "linear", -> @stop!
 
 		@for_all_blocks (block) ->
 			block._alpha_tween = @timer.tween @transition_duration,
-				block, {alpha = 1}, "linear"
+				block, {alpha: 1}, "linear"
 
 
 	-- stopping -> stopped
@@ -253,14 +268,13 @@ class Game
 		@state = "resetting"
 
 		@_speed_tween = @timer.tween @transition_duration,
-			self, {speed = @game_speed}, "linear", ->
+			self, {speed: @game_speed}, "linear", ->
 				@reset_level!
 				@start!
 
 		@for_all_blocks (block) ->
 			block._alpha_tween = @timer.tween @transition_duration,
-				block, {alpha = 0}, "linear"
-
+				block, {alpha: 0}, "linear"
 	--- ==== ---
 
 
@@ -278,12 +292,12 @@ class Game
 			for i = 1, @n_block_pairs
 				player_data = @level.players[i]
 
-				table.insert @blocks.players, 
+				table.insert @blocks.players,
 					(DynamicBlock self, @theme.BLOCK_PAIR_COLORS[i],
 						player_data.x, player_data.y,
 						player_data.direction)
 
-				table.insert @blocks.goals, 
+				table.insert @blocks.goals,
 					(GoalBlock self, @theme.BLOCK_PAIR_COLORS[i],
 						0, 0)
 
@@ -291,12 +305,12 @@ class Game
 			for obs_data in *level.obstacles
 				Constructor = DynamicBlock if obs_data.dynamic else StaticBlock
 
-				table.insert @blocks.obstacles, 
+				table.insert @blocks.obstacles,
 					(Constructor self, @theme.OBSTACLE_COLOR,
 						obs_data.x, obs_data.y,
-						obs_data.direction) 
+						obs_data.direction)
 
-		@controls = generate_control_functions
+			@controls = generate_control_functions @blocks.players
 	--- ==== ---
 
 
@@ -366,7 +380,7 @@ class Game
 		-- TODO: Mark all collisions, not just the first one to be detected
 
 	---
-	
+
 	-- For things like fading blocks to show them on top of each other,
 	-- "other player block is obstacle" modifier.
 	check_player_player_collisions: =>
@@ -386,13 +400,13 @@ class Game
 				@on_player_goal_collision i
 
 
-	check_player_obstacle_collisions:
+	check_player_obstacle_collisions: =>
 		collisions = {}
 
 		for i, player in ipairs @blocks.players
 			for obstacle in *@blocks.obstacles
 				if @are_blocks_colliding player, obstacle
-					collisions[#collisions + 1] = {player_i = i, obstacle = obstacle}
+					collisions[#collisions + 1] = {player_i: i, obstacle: obstacle}
 	--- ==== ---
 
 
@@ -415,7 +429,7 @@ class Game
 
 
 	draw_blocks: =>
-		@for_all_blocks (block) -> 
+		@for_all_blocks (block) ->
 			block\draw @alpha
 
 
