@@ -41,11 +41,10 @@ class DynamicBlock extends Block
 
 
 	step: =>
-		print @direction
 		dirmap = DIRECTION_MAPPING[@direction]
 	
-		@x = (@x + dirmap.x) % @grid.w
-		@y = (@y + dirmap.y) % @grid.h
+		@x = (@x + dirmap.x) % @game.grid_w
+		@y = (@y + dirmap.y) % @game.grid_h
 
 
 	draw_symbol: (x, y) =>

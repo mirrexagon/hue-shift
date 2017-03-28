@@ -159,7 +159,6 @@ class Game
 				@done_first_beat = true
 
 			if @done_first_beat and @state == "running"
-				print "step"
 				@step!
 
 		-- TODO: Block blinking when appropriate.
@@ -218,7 +217,6 @@ class Game
 		@beat_timer\update 1
 
 		@for_all_blocks (block) ->
-			print block
 			block\step!
 
 		@check_player_obstacle_collisions!
@@ -332,17 +330,18 @@ class Game
 
 	--- Beat ---
 	do_after_beats: (beats, callback) =>
-		@beat_timer\add beats, callback
+		@beat_timer\after beats, callback
 	--- ==== ---
 
 
 	--- Block manipulation ---
 	for_all_blocks: (callback) =>
-		for player in *@blocks.players
-			callback player
-
+		-- Do goals first because goals should be drawn first.
 		for goal in *@blocks.goals
 			callback goal
+
+		for player in *@blocks.players
+			callback player
 
 		for obstacle in *@blocks.obstacles
 			callback obstacle
