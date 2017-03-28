@@ -89,6 +89,48 @@ class Level
 
 
 class Game
+	new: (music, theme, level, n_block_pairs) =>
+		@DEBUG = false
+
+		-- Can be: entering, running, stopping, stopped, resetting, exiting
+		@state = "entering"
+
+		@music = music
+		@theme = theme
+		@n_block_pairs = n_block_pairs
+
+		@game_speed = 1 -- TODO: Be able to modify.
+
+		@level = level
+		@load_level @level
+
+		@alpha = 1
+		@speed = 1
+		@score = {0, 0, 0}
+
+		@last_beat = 0
+		@done_first_beat = false
+
+		@timer = timer.new!
+		@beat_timer = timer.new!
+
+		-- These are just constants.
+		@grid_cell_w = BLOCK_WIDTH
+		@grid_cell_h = BLOCK_WIDTH
+		@grid_pad = 2
+
+		@transition_duration = @compute_transition_duration!
+		@music\load!
+
+		@enter!
+
+
+	run: =>
+		music\play!
+
+
+	deinit: =>
+		@music\unload!
 
 	---
 
@@ -250,6 +292,7 @@ class Game
 			players: {}
 			goals: {}
 			obstacles: {}
+		}
 
 		if level
 			for i = 1, @n_block_pairs
