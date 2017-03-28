@@ -284,7 +284,8 @@ class Game
 						player_data.direction)
 
 				table.insert @blocks.goals, 
-					(GoalBlock self, @theme.BLOCK_PAIR_COLORS[i])
+					(GoalBlock self, @theme.BLOCK_PAIR_COLORS[i],
+						0, 0)
 
 
 			for obs_data in *level.obstacles
