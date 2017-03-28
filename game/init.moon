@@ -275,11 +275,11 @@ class Game
 	stop: =>
 		@state = "stopped"
 
-		@timer\cancel @_speed_tween
+		if @_speed_tween then @timer\cancel @_speed_tween
 		@speed = 0
 
 		@for_all_blocks (block) ->
-			@timer\cancel block._alpha_tween
+			if block._alpha_tween then @timer\cancel block._alpha_tween
 			block.alpha = 1
 
 
@@ -397,7 +397,7 @@ class Game
 
 
 	on_player_obstacle_collisions: (collisions) =>
-		-- TODO: Go into stopping state.
+		@stopping!
 
 		-- TODO: Indicate where the player died.
 		-- Along with system for highlighting overlapping blocks,
@@ -433,6 +433,9 @@ class Game
 			for obstacle in *@blocks.obstacles
 				if @are_blocks_colliding player, obstacle
 					collisions[#collisions + 1] = {player_i: i, obstacle: obstacle}
+
+		if #collisions > 0
+			@on_player_obstacle_collisions collisions
 	--- ==== ---
 
 
