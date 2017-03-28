@@ -48,7 +48,7 @@ class DynamicBlock
 
 
 	draw_symbol: (x, y) =>
-		min_wh = math.min(@w, @h)
+		min_wh = math.min @w, @h
 
 		love.graphics.draw(
 			img_arrow,
@@ -56,3 +56,6 @@ class DynamicBlock
 			ROTATION_MAPPING[@direction],
 			1, 1,
 			min_wh/2, min_wh/2)
+
+
+{ :DynamicBlock }
