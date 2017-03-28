@@ -1,7 +1,13 @@
 --! Main game class and auxiliary classes.
 
 
+--- Require ---
+timer = require "lib.hump.timer"
+--- ==== ---
+
+
 --- Import ---
+import beats_to_seconds from require "util.beat"
 import StaticBlock, DynamicBlock, GoalBlock from require "blocks"
 --- ==== ---
 
@@ -92,13 +98,20 @@ class Game
 		@theme = theme
 		@n_block_pairs = n_block_pairs
 
+		@game_speed = 1 -- TODO: Be able to modify.
+
 		@level = level
 		@load_level @level
 
 		@alpha = 1
 		@speed = 1
 		@score = {0, 0, 0}
-		@beat_callbacks = {}
+
+		@last_beat = 0
+		@done_first_beat = false
+
+		@timer = timer.new!
+		@beat_timer = timer.new!
 
 		-- These are just constants.
 		@grid_cell_w = BLOCK_WIDTH
@@ -118,30 +131,42 @@ class Game
 
 	---
 
-	-- Two beats.
 	compute_transition_duration: =>
 		beats_to_seconds 2, @music.bpm
 
 	---
 
 	-- Called at the start of each beat.
-	beat: =>
-		for i = 1, #@beat_callbacks
-			event = @beat_callbacks[i]
-			event.beats -= 1
+	step: =>
+		@beat_timer.update 1
 
-			if event.beats <= 0
-				event.callback!
-				table.remove(@beat_callbacks, i)
+		@for_all_blocks (block) ->
+			block\step!
+
+		@check_player_obstacle_collisions!
+		@check_player_goal_collisions!
+		@check_player_player_collisions!
 
 
 	update: (dt) =>
-		scaled_dt = dt * @speed
+		@timer.update dt
 
-		@theme.background\update scaled_dt
+		@theme.background\update scaled_dt * @speed
 		@music\set_pitch @speed
 
-		-- TODO: Call beat when appropriate
+		current_beat = @music\pos_beats!
+
+		-- Step the game on any beat EXCEPT the first.
+		if math.floor current_beat ~= math.floor @last_beat
+			if current_beat >= 2 and not @done_first_beat
+				done_first_beat = true
+
+			if @done_first_beat and @state == "running"
+				@step!
+
+		-- TODO: Block blinking when appropriate.
+
+		@last_beat = current_beat
 
 
 	draw: =>
@@ -164,7 +189,8 @@ class Game
 	start: =>
 		@state = "running"
 
-		@speed = 1 -- TODO: Don't hardcode game speed.
+		if @_speed_tween then @timer\cancel @_speed_tween
+		@speed = @game_speed
 
 		music\rewind!
 		music\play!
@@ -173,6 +199,39 @@ class Game
 	-- running -> stopping
 	stopping: =>
 		@state = "stopping"
+
+		@_speed_tween = @timer.tween @transition_duration,
+			self, {speed = 0}, "linear", -> @stop!
+
+		@for_all_blocks (block) ->
+			block._alpha_tween = @timer.tween @transition_duration,
+				block, {alpha = 1}, "linear"
+
+
+	-- stopping -> stopped
+	stop: =>
+		@state = "stopped"
+
+		@timer.cancel @_speed_tween
+		@speed = 0
+
+		@for_all_blocks (block) ->
+			@timer.cancel block._alpha_tween
+			block.alpha = 1
+
+
+	-- stopped -> resetting
+	reset: =>
+		@state = "resetting"
+
+		@_speed_tween = @timer.tween @transition_duration,
+			self, {speed = @game_speed}, "linear", ->
+				@reset_level!
+				@start!
+
+		@for_all_blocks (block) ->
+			block._alpha_tween = @timer.tween @transition_duration,
+				block, {alpha = 0}, "linear"
 
 	--- ==== ---
 
@@ -212,7 +271,7 @@ class Game
 
 	--- Beat ---
 	do_after_beats: (beats, callback) =>
-		table.insert(@beat_callbacks, { beats: beats, callback: callback})
+		@beat_timer.add beats, callback
 	--- ==== ---
 
 
@@ -325,7 +384,7 @@ class Game
 
 
 	draw_blocks: =>
-		-- TODO
+		@for_all_blocks (block) -> block\draw @alpha
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered
