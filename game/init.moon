@@ -314,6 +314,8 @@ class Game
 					(GoalBlock @, @theme.BLOCK_PAIR_COLORS[i],
 						0, 0)
 
+				@re_place_block @blocks.goals[i]
+
 
 			for obs_data in *level.obstacles
 				Constructor = if obs_data.dynamic then DynamicBlock else StaticBlock
@@ -351,6 +353,8 @@ class Game
 		@for_all_blocks (block) ->
 			if block.x == x and block.y == y
 				blocks[#blocks + 1] = block
+
+		blocks
 
 
 	-- Move block to a random new position.
