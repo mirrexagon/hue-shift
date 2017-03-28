@@ -415,7 +415,8 @@ class Game
 
 
 	draw_blocks: =>
-		@for_all_blocks (block) -> block\draw @alpha
+		@for_all_blocks (block) -> 
+			block\draw @alpha
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered
