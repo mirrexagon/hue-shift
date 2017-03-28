@@ -49,7 +49,7 @@ class Level
 	@name = "<BASE>"
 
 	@grid_w = 7
-	@grid_w = 7
+	@grid_h = 7
 
 	@players = {
 		[1]: {
@@ -75,41 +75,81 @@ class Level
 		{
 			x: 3
 			y: 3
-			type: "static"
+			constructor: StaticBlock
 		}
 	}
 
 
-class Grid
-	new: (w,h, cell_w = BLOCK_WIDTH,cell_h = BLOCK_HEIGHT, pad = 2) =>
-		@w = w
-		@h = h
-		@cell_w = cell_w
-		@cell_h = cell_h
-		@pad = pad
+class Game
+	new: (music, theme, level) => -- TODO: Also specify other game_params
+		@DEBUG = false
+
+		-- Can be: entering, running, stopping, stopped, resetting, exiting
+		@state = "entering"
+		@music = music
+		@theme = theme
+		@speed = 1
 
 		@alpha = 1
 
-		@reset!
+		@grid_cell_w = BLOCK_WIDTH
+		@grid_cell_h = BLOCK_WIDTH
+		@grid_pad = 2
+
+		@level = level
+		@load_level @level
+
+		@music\load!
+
+	run: =>
+		music\play!
+
+	deinit: =>
+		@music\unload!
 
 	---
 
-	set_alpha: (alpha) => 
-		@alpha = alpha
-		
-	---
+	update: (dt) =>
+		scaled_dt = dt * @speed
 
-	reset: (level) =>
+		@theme.background\update scaled_dt
+		@music\set_pitch @speed
+
+	draw: =>
+		@theme.background\draw!
+
+		love.graphics.push!
+		love.graphics.translate @grid\screen_pad!
+		@draw_grid!
+		@draw_blocks!
+		love.graphics.pop!
+
+		if @DEBUG
+			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f")\format @music\pos_seconds!,
+				@music\pos_beats!, @speed
+			love.graphics.print status_line, 10, 10
+
+
+	--- Game logic ---
+	load_level: (level) =>
+		@grid_w = level.grid_w
+		@grid_h = level.grid_h
+
 		@blocks = {
 			players: {}
 			goals: {}
 			obstacles: {}
 
-	---
+		if level
+			for obs_data in *level.obstacles
+				table.insert(@blocks.obstacles, obs_data.constructor{
+					grid: self
+					color:
+				})
+	--- ==== ---
 
-	draw: =>
-		@draw_grid!
 
+	--- Drawing grid and blocks ---
 	draw_grid: =>
 		pixel_w, pixel_h = @pixel_dimensions!
 
@@ -120,11 +160,14 @@ class Grid
 		-- Grid lines.
 		love.graphics.setColor 255, 255, 255, 255 * @alpha
 
-		for x = 0, @w
-			love.graphics.rectangle "fill", (x * @cell_w) + (x * @pad), 0, @pad, pixel_h
+		for x = 0, @grid_w
+			love.graphics.rectangle "fill", (x * @grid_cell_w) + (x * @grid_pad), 0, @grid_pad, pixel_h
 
-		for y = 0, @h
-			love.graphics.rectangle "fill",  0, (y * @cell_h) + (y * @pad), pixel_w, @pad
+		for y = 0, @grid_h
+			love.graphics.rectangle "fill",  0, (y * @grid_cell_h) + (y * @grid_pad), pixel_w, @grid_pad
+
+	draw_blocks: =>
+		-- TODO
 
 	-- Compute where the top-left corner of the grid should be to have it centered
 	-- in the window.
@@ -141,63 +184,15 @@ class Grid
 	pixel_dimensions: =>
 		-- The pixel dimensions are equivalent to the pixel coordinates of the cell
 		-- just diagonally down-right outside the grid, so we just compute that.
-		@pixel_coords @w, @h
+		@pixel_coords @grid_w, @grid_h
 
 	-- Compute the pixel coordinates of a grid cell, relative to the top-left of the grid.
 	pixel_coords: (grid_x, grid_y) =>
-		pixel_x = grid_x * @cell_w + (grid_x + 1) * @pad
-		pixel_y = grid_y * @cell_h + (grid_y + 1) * @pad
+		pixel_x = grid_x * @grid_cell_w + (grid_x + 1) * @grid_pad
+		pixel_y = grid_y * @grid_cell_h + (grid_y + 1) * @grid_pad
 
 		pixel_x, pixel_y
-
-
-class Game
-	new: (music, theme) => -- TODO: Also specify level in constructor, and other game_params
-		@DEBUG = false
-
-		-- Can be: entering, running, stopping, stopped, resetting, exiting
-		@state = "entering"
-		@music = music
-		@theme = theme
-		@speed = 1
-
-		@alpha = 1
-
-		@grid = Grid 7, 7
-
-		music\load!
-		
-	run: =>
-		music\play!
-
-	deinit: =>
-		@music\unload!
-
-	---
-
-	set_alpha: (alpha) =>
-		@grid\set_alpha alpha
-
-	---
-
-	update: (dt) =>
-		scaled_dt = dt * @speed
-
-		@theme.background\update scaled_dt
-		@music\set_pitch @speed
-
-	draw: =>
-		@theme.background\draw!
-
-		love.graphics.push!
-		love.graphics.translate @grid\screen_pad!
-		@grid\draw!
-		love.graphics.pop!
-
-		if @DEBUG
-			status_line = ("Time: %.2f\nBeat: %.2f\nSpeed: %.2f")\format @music\pos_seconds!,
-				@music\pos_beats!, @speed
-			love.graphics.print status_line, 10, 10
+	--- ==== ---
 
 
 { :Game }
