@@ -18,12 +18,6 @@ export BLOCK_HEIGHT = 32
 --- ==== ---
 
 
---- Gamestates ---
-export menu_state
-export game_state
---- ==== ---
-
-
 --- Main ---
 love.load = ->
 	theme = (require "themes.hue-shift")!
