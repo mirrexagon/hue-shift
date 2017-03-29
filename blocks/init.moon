@@ -32,9 +32,8 @@ class Block
 
 		@alpha_curve = default_alpha_curve
 
-		-- Fade alpha, will be modified externally.
-		-- TODO: Use real alpha and external alpha, so that when the game is
-		-- stopping the blocks fade in from wherever they were on the alpha curve.
+		-- This is modified in draw IF beat_fraction is supplied.
+		-- Otherwise, it is free to be modified externally.
 		@alpha = 0
 
 
