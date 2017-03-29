@@ -482,7 +482,7 @@ class Game
 			beat_fraction = current_beat - math.floor(current_beat)
 
 		@for_all_blocks (block) ->
-			block\draw @alpha, beat_fraction
+			block\draw beat_fraction
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered
