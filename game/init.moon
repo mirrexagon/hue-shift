@@ -308,7 +308,9 @@ class Game
 
 
 	--- Game logic ---
-	reset_level: => @load_level @level
+	reset_level: => 
+		@load_level @level
+		@done_first_beat = false
 
 
 	load_level: (level) =>
