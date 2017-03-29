@@ -218,8 +218,9 @@ class Game
 				when "space"
 					switch @state
 						when "stopping"
-							-- Stop game immediately because player is mashing space.
+							-- Reset game immediately because player is mashing space.
 							@state_stop!
+							@state_reset!
 						when "stopped"
 							@state_reset!
 						when "resetting"
