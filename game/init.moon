@@ -129,7 +129,7 @@ class Game
 		@music\load!
 
 		@level = level
-		@load_level @level
+		@reset_level!
 
 
 	run: =>
@@ -225,7 +225,7 @@ class Game
 							@state_reset!
 						when "resetting"
 							-- Start game immediately because player is mashing space.
-							@load_level @level
+							@reset_level!
 							@state_start!
 	--- ==== ---
 
@@ -241,7 +241,6 @@ class Game
 		@check_player_obstacle_collisions!
 		@check_player_goal_collisions!
 		@check_player_player_collisions!
-
 
 
 	--- State transitions ---
@@ -299,7 +298,7 @@ class Game
 
 		@_speed_tween = @timer\tween @transition_duration,
 			@, {speed: @game_speed}, "linear", ->
-				@load_level @level
+				@reset_level!
 				@state_start!
 
 		@for_all_blocks (block) ->
@@ -309,6 +308,9 @@ class Game
 
 
 	--- Game logic ---
+	reset_level: => @load_level @level
+
+
 	load_level: (level) =>
 		@grid_w = level.grid_w
 		@grid_h = level.grid_h
