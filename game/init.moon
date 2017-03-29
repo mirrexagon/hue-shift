@@ -110,6 +110,7 @@ class Game
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
+		-- Grid alpha, doesn't affect blocks.
 		@alpha = 0
 		@speed = 1
 		@score = {0, 0, 0}
@@ -260,6 +261,10 @@ class Game
 
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
 			{alpha: 0}, "linear", -> @exit_func @
+
+		@for_all_blocks (block) ->
+			block._alpha_tween = @timer\tween TRANSITION_DURATION,
+				block, {alpha: 0}, "linear"
 
 
 	-- entering|resetting -> running
