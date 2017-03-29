@@ -322,6 +322,9 @@ class Game
 		@load_level @level
 		@done_first_beat = false
 
+		@for_all_blocks (block) ->
+			block.mark = nil
+
 
 	load_level: (level) =>
 		@grid_w = level.grid_w
@@ -423,7 +426,12 @@ class Game
 	on_player_obstacle_collisions: (collisions) =>
 		@state_stopping!
 
-		-- TODO: Indicate where the player died.
+		for col in *collisions
+			-- TODO: Indicate where the player died.
+			-- Use this mark to fade both blocks up and down.
+			col.player.mark = 1
+			col.obstacle.mark = 2
+
 		-- Along with system for highlighting overlapping blocks,
 		-- specially indicate this spot with a crosshair or such.
 
@@ -456,7 +464,7 @@ class Game
 		for i, player in ipairs @blocks.players
 			for obstacle in *@blocks.obstacles
 				if @are_blocks_colliding player, obstacle
-					collisions[#collisions + 1] = {player_i: i, obstacle: obstacle}
+					collisions[#collisions + 1] = {player_i: i, :player, :obstacle}
 
 		if #collisions > 0
 			@on_player_obstacle_collisions collisions
