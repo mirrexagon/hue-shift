@@ -467,12 +467,12 @@ class Game
 
 
 	draw_blocks: =>
-		current_beat = @music\pos_beats!
-		beat_fraction = current_beat - math.floor(current_beat)
-		ignore_beat = (@state ~= "running")
+		beat_fraction = if @state == "running"
+			current_beat = @music\pos_beats!
+			beat_fraction = current_beat - math.floor(current_beat)
 
 		@for_all_blocks (block) ->
-			block\draw @alpha, ignore_beat, beat_fraction
+			block\draw @alpha, beat_fraction
 
 
 	-- Compute where the top-left corner of the grid should be to have it centered

@@ -41,7 +41,7 @@ class Block
 	step: =>
 
 
-	compute_alpha: (beat_fraction) =>
+	compute_beat_alpha: (beat_fraction) =>
 		@alpha_curve beat_fraction
 
 
@@ -52,20 +52,22 @@ class Block
 	draw_symbol: (x, y) =>
 
 
-	draw_at: (x, y, in_alpha, ignore_beat, beat_fraction) =>
-		alpha = in_alpha * if not ignore_beat then @compute_alpha beat_fraction else 1
+	draw_at: (x, y, in_alpha, beat_fraction) =>
+		-- Only update block alpha with beat if beat_fraction is supplied.
+		if beat_fraction
+			@alpha = in_alpha * @compute_beat_alpha beat_fraction
 
 		love.graphics.setColor @color[1], @color[2], @color[3],
-			255 * alpha
+			255 * @alpha
 		@draw_block x, y
 
-		love.graphics.setColor 255, 255, 255, 255 * alpha
+		love.graphics.setColor 255, 255, 255, 255 * @alpha
 		@draw_symbol x, y
 
 
-	draw: (alpha, ignore_beat, beat_fraction) =>
+	draw: (alpha, beat_fraction) =>
 		x, y = @game\pixel_coords @x, @y
-		@draw_at x, y, alpha, ignore_beat, beat_fraction,
+		@draw_at x, y, alpha, beat_fraction,
 
 
 { :Block }
