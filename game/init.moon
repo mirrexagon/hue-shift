@@ -117,6 +117,9 @@ class Game
 		@last_beat = 0
 		@done_first_beat = false
 
+		-- Called after exit fadeout.
+		@exit_func = love.event.quit
+
 		@timer = timer.new!
 		@beat_timer = timer.new!
 
@@ -212,9 +215,11 @@ class Game
 							-- Stop game immediately because player is mashing escape.
 							@state_stop!
 						when "stopped"
-							@state_exit -> love.event.quit!
-						--when "exiting"
+							@state_exit!
+						when "exiting"
 							-- Exit because player is mashing escape.
+							if @_alpha_tween then @timer\cancel @_alpha_tween
+							@exit_func @
 				when "space"
 					switch @state
 						when "stopping"
@@ -250,11 +255,11 @@ class Game
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
 			{alpha: 1}, "linear", -> @state_start!
 
-	state_exit: (after) =>
+	state_exit: =>
 		@state = "exiting"
 
 		@_alpha_tween = @timer\tween TRANSITION_DURATION, @,
-			{alpha: 0}, "linear", -> after @
+			{alpha: 0}, "linear", -> @exit_func @
 
 
 	-- entering|resetting -> running
