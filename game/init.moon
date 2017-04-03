@@ -124,12 +124,17 @@ class Game
 		@timer = timer.new!
 		@beat_timer = timer.new!
 
+
 		-- These are just constants.
 		@grid_cell_w = BLOCK_WIDTH
 		@grid_cell_h = BLOCK_HEIGHT
 		@grid_pad = 2
 
 		@transition_duration = @compute_transition_duration!
+
+		@mark_timer = 0
+		@mark_dir = 2
+
 		@music\load!
 
 		@level = level
@@ -172,7 +177,22 @@ class Game
 			if @done_first_beat and @state == "running"
 				@step!
 
-		-- TODO: Block blinking when appropriate.
+		switch @state
+			when "stopping", "stopped"
+				@mark_timer += @mark_dir * dt
+
+				if @mark_timer > 1
+					@mark_timer = 1
+					@mark_dir = -@mark_dir
+				elseif @mark_timer < 0
+					@mark_timer = 0
+					@mark_dir = -@mark_dir
+
+				@for_all_blocks (block) ->
+					if block.mark == 1
+						block.alpha = @mark_timer
+					elseif block.mark == 2
+						block.alpha = 1 - @mark_timer
 
 		@last_beat = current_beat
 
@@ -286,8 +306,9 @@ class Game
 			@, {speed: 0}, "linear", -> @state_stop!
 
 		@for_all_blocks (block) ->
-			block._alpha_tween = @timer\tween @transition_duration,
-				block, {alpha: 1}, "linear"
+			if not block.mark
+				block._alpha_tween = @timer\tween @transition_duration,
+					block, {alpha: 1}, "linear"
 
 
 	-- stopping -> stopped
@@ -427,15 +448,11 @@ class Game
 		@state_stopping!
 
 		for col in *collisions
-			-- TODO: Indicate where the player died.
-			-- Use this mark to fade both blocks up and down.
 			col.player.mark = 1
 			col.obstacle.mark = 2
 
-		-- Along with system for highlighting overlapping blocks,
-		-- specially indicate this spot with a crosshair or such.
-
-		-- TODO: Mark all collisions, not just the first one to be detected
+		-- TODO: Along with system for highlighting overlapping blocks,
+		-- specially indicate these spots with crosshairs or such?
 
 	---
 
