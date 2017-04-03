@@ -87,8 +87,14 @@ class Level
 	
 		@obstacles = {
 			{
+				x: 0
+				y: 4
+				dynamic: false
+			}
+
+			{
 				x: 3
-				y: 3
+				y: 4
 				dynamic: false
 			}
 		}
@@ -106,7 +112,7 @@ class Game
 
 		@music = music
 		@theme = theme
-		@n_block_pairs = n_block_pairs
+		@n_block_pairs = 2
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
@@ -133,7 +139,7 @@ class Game
 		@transition_duration = @compute_transition_duration!
 
 		@mark_timer = 0
-		@mark_dir = 2
+		@mark_dir = 2.25
 
 		@music\load!
 
