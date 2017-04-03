@@ -13,25 +13,24 @@ interpolate = (value, target, dt, speed) ->
 	value + (target - value) * speed * dt
 
 
--- TODO: Pass Menu to MenuItem constructor instead of having game_params everywhere,
--- and so the START one can just start the game from there.
 class MenuItem
 	new: (height = 0, label) =>
 		@height = height
 		@label = label
 
 	-- Overridable methods.
-	init: (game_params) =>
+	init: (menu) =>
+		@menu = menu
 
-	update: (dt, game_params) =>
+	update: (dt) =>
 
-	draw: (width, height, alpha, game_params) =>
+	draw: (width, height, alpha) =>
 
-	keypressed: (key, scancode, isrepeat, game_params) =>
-	keyreleased: (key, scancode, game_params) =>
+	keypressed: (key, scancode, isrepeat) =>
+	keyreleased: (key, scancode) =>
 
-	selected: (game_params) =>
-	deselected: (game_params) =>
+	selected: =>
+	deselected: =>
 
 	-- Utility methods.
 	draw_lr_arrows: (x_center, x_center_offset, y_center, width, height, alpha, active_l, active_r) =>
@@ -86,7 +85,7 @@ class Menu
 
 	add_item: (item) =>
 		table.insert @items, item
-		item\init @game_params
+		item\init @
 
 	---
 
@@ -106,7 +105,7 @@ class Menu
 	---
 
 	select_prev: =>
-		@items[@selected]\deselected @game_params
+		@items[@selected]\deselected!
 		
 		---
 		
@@ -132,11 +131,11 @@ class Menu
 
 		---
 
-		@items[@selected]\selected @game_params
+		@items[@selected]\selected!
 
 
 	select_next: =>
-		@items[@selected]\deselected @game_params
+		@items[@selected]\deselected!
 
 		---
 
@@ -158,7 +157,7 @@ class Menu
 
 		---
 
-		@items[@selected]\selected @game_params
+		@items[@selected]\selected!
 
 	---
 
@@ -177,7 +176,7 @@ class Menu
 			@target_scroll_offset, dt, 5
 			
 		for item in *@items
-			item\update dt, @game_params
+			item\update dt
 
 	draw: =>
 		@theme.background\draw!
@@ -214,7 +213,7 @@ class Menu
 				love.graphics.translate 0, @ITEM_STANDARD_HEIGHT
 
 			item\draw @item_width, item.height, 
-				@alpha * item_alpha_mod, @game_params
+				@alpha * item_alpha_mod
 
 			if item.label
 				love.graphics.pop!
@@ -237,11 +236,11 @@ class Menu
 				--when "escape"
 					-- TODO: Fade out and quit
 				else
-					@items[@selected]\keypressed key, scancode, isrepeat, @game_params
+					@items[@selected]\keypressed key, scancode, isrepeat
 
 	keyreleased: (key, scancode) =>
 		if @interactable
-			@items[@selected]\keyreleased key, scancode, @game_params
+			@items[@selected]\keyreleased key, scancode
 
 	wheelmoved: (x, y) =>
 		if @interactable
