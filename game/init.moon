@@ -452,9 +452,6 @@ class Game
 			col.player.mark = 1
 			col.obstacle.mark = 2
 
-		-- TODO: Along with system for highlighting overlapping blocks,
-		-- specially indicate these spots with crosshairs or such?
-
 	---
 
 	-- For things like fading blocks to show them on top of each other,
