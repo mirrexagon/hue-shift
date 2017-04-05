@@ -87,14 +87,9 @@ class Level
 	
 		@obstacles = {
 			{
-				x: 0
-				y: 4
-				dynamic: false
-			}
-
-			{
 				x: 3
-				y: 4
+				y: 3
+				direction: "down"
 				dynamic: false
 			}
 		}
