@@ -1,4 +1,11 @@
--- TODO: be able to have submenus to the right of menus. (Is this necessary? Would be cool to have everything in the main menu)
+--- Require ---
+gamestate = require "lib.hump.gamestate"
+--- ==== ---
+
+
+--- Import ---
+import Game from require "game"
+--- ==== ---
 
 
 print_centered = (text, x, y) ->
@@ -166,6 +173,15 @@ class Menu
 
 	set_interactable: (interactable) =>
 		@interactable = interactable
+
+	---
+
+	-- Run game with current game_params.
+	to_game: =>
+		game = Game @game_params
+		game.DEBUG = true
+		-- TODO: Fade out
+		--gamestate.switch game
 
 	---
 

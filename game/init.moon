@@ -99,15 +99,15 @@ class Level
 -- Flexible but may make some modifiers incompatible.
 -- Implement it via a class with lots of callbacks for different events?
 class Game
-	new: (music, theme, level, n_block_pairs) =>
+	new: (params) =>
 		@DEBUG = false
 
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "init"
 
-		@music = music
-		@theme = theme
-		@n_block_pairs = 2
+		@music = assert(params.music)
+		@theme = assert(params.theme)
+		@n_block_pairs = assert(params.n_block_pairs)
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
@@ -138,7 +138,7 @@ class Game
 
 		@music\load!
 
-		@level = level
+		@level = assert(params.level)
 		@reset_level!
 
 
