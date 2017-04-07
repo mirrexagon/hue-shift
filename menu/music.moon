@@ -15,6 +15,9 @@ class MusicMenuItem extends MenuItem
 		@music_library = music_library
 		
 	draw: (width, height, alpha) =>
+
+	selected: =>
+		@menu\to_game!
 		
 
 { :MusicMenuItem }

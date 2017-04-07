@@ -105,9 +105,9 @@ class Game
 		-- Can be: entering, running, stopping, stopped, resetting, exiting
 		@state = "init"
 
-		@music = assert(params.music)
-		@theme = assert(params.theme)
-		@n_block_pairs = assert(params.n_block_pairs)
+		@music = assert(params.music, "music")
+		@theme = assert(params.theme, "theme")
+		@n_block_pairs = assert(params.n_block_pairs, "n_block_pairs")
 
 		@game_speed = 1 -- TODO: Be able to modify.
 
@@ -120,7 +120,7 @@ class Game
 		@done_first_beat = false
 
 		-- Called after exit fadeout.
-		@exit_func = assert(params.exit_func)
+		@exit_func = assert(params.exit_func, "exit_func")
 
 		@timer = timer.new!
 		@beat_timer = timer.new!
@@ -138,7 +138,7 @@ class Game
 
 		@music\load!
 
-		@level = assert(params.level)
+		@level = assert(params.level, "level")
 		@reset_level!
 
 

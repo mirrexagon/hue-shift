@@ -85,7 +85,10 @@ class Menu
 
 		@timer = timer.new!
 
-		@game_params = { theme: @theme }
+		@game_params = {
+			theme: @theme
+			music: musi
+		}
 
 	---
 
