@@ -19,7 +19,7 @@ export BLOCK_WIDTH = 32
 export BLOCK_HEIGHT = 32
 
 -- Duration of entering/exiting transitions (not resetting/stopping).
-export TRANSITION_DURATION = 0.5
+export TRANSITION_DURATION = 0.4
 --- ==== ---
 
 
