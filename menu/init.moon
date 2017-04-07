@@ -181,7 +181,7 @@ class Menu
 
 	-- TODO: Replace fade in and fade out with a method that takes
 	-- a completion callback.
-	exit: =>
+	to_exit: =>
 		@timer\tween TRANSITION_DURATION, @,
 			{alpha: 0}, "linear", -> love.event.quit!
 
@@ -260,8 +260,8 @@ class Menu
 					@select_prev!
 				when "down", "s"
 					@select_next!
-				--when "escape"
-					-- TODO: Fade out and quit
+				when "escape"
+					@to_exit!
 				else
 					@items[@selected]\keypressed key, scancode, isrepeat
 
