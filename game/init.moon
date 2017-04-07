@@ -120,7 +120,7 @@ class Game
 		@done_first_beat = false
 
 		-- Called after exit fadeout.
-		@exit_func = love.event.quit
+		@exit_func = assert(params.exit_func)
 
 		@timer = timer.new!
 		@beat_timer = timer.new!

@@ -26,7 +26,7 @@ class NBlockPairsMenuItem extends MenuItem
 
 
 	draw: (width, height, alpha) =>
-		love.graphics.setColor 255, 255, 255, alpha
+		love.graphics.setColor 255, 255, 255, alpha * 255
 
 		-- Draw the three blocks equally spaced along the bar, centered vertically.
 		block_y = math.floor height/2 - BLOCK_HEIGHT/2

@@ -38,5 +38,11 @@ class MenuState
 	wheelmoved: (x, y) =>
 		@menu\wheelmoved x, y
 
+	enter: (previous, ...) =>
+		@menu\enter previous, ...
+
+	leave: =>
+		@menu\leave!
+
 
 { :MenuState }

@@ -1,5 +1,6 @@
 --- Require ---
 gamestate = require "lib.hump.gamestate"
+timer = require "lib.hump.timer"
 --- ==== ---
 
 
@@ -72,8 +73,8 @@ class Menu
 		@selected = 1
 		@item_width = @WIDTH - 2*@ITEM_PAD
 
-		@set_alpha 1
-		@set_interactable true
+		@alpha = 0
+		@interactable = true
 
 		@theme = theme
 
@@ -81,6 +82,8 @@ class Menu
 
 		@scroll_offset = 0
 		@target_scroll_offset = 0
+
+		@timer = timer.new!
 
 		@game_params = { theme: @theme }
 
@@ -168,25 +171,33 @@ class Menu
 
 	---
 
-	set_alpha: (alpha) =>
-		@alpha = alpha
-
-	set_interactable: (interactable) =>
-		@interactable = interactable
-
-	---
-
 	-- Run game with current game_params.
 	to_game: =>
 		game = Game @game_params
 		game.DEBUG = true
-		-- TODO: Fade out
-		--gamestate.switch game
+
+		@timer\tween TRANSITION_DURATION, @,
+			{alpha: 0}, "linear", -> gamestate.switch game
+
+	-- TODO: Replace fade in and fade out with a method that takes
+	-- a completion callback.
+	exit: =>
+		@timer\tween TRANSITION_DURATION, @,
+			{alpha: 0}, "linear", -> love.event.quit!
 
 	---
 
+	enter: =>
+		@timer\tween TRANSITION_DURATION, @,
+			{alpha: 1}, "linear"
+
+	leave: =>
+		if @_alpha_tween
+			@timer\cancel @_alpha_tween
+
 	update: (dt) =>
 		@theme.background\update dt
+		@timer\update dt
 
 		@scroll_offset = interpolate @scroll_offset,
 			@target_scroll_offset, dt, 5
@@ -213,12 +224,12 @@ class Menu
 			item_full_height = item.height + if item.label then @ITEM_STANDARD_HEIGHT else 0
 			item_alpha_mod = if i == @selected then 1 else @ITEM_UNSELECTED_ALPHA_MOD
 
-			love.graphics.setColor 255, 255, 255, @ITEM_BAR_ALPHA * item_alpha_mod * 255
+			love.graphics.setColor 255, 255, 255, @ITEM_BAR_ALPHA * item_alpha_mod * @alpha * 255
 			love.graphics.rectangle "fill", 0, 0, @item_width, item_full_height
 
 			-- Label
 			if item.label
-				love.graphics.setColor 255, 255, 255, @ITEM_TEXT_ALPHA * item_alpha_mod * 255
+				love.graphics.setColor 255, 255, 255, @ITEM_TEXT_ALPHA * item_alpha_mod * @alpha * 255
 				love.graphics.setFont @label_font
 				print_centered item.label, (math.floor @item_width/2),
 					(math.floor @ITEM_STANDARD_HEIGHT/2)
