@@ -343,6 +343,7 @@ class Game
 	reset_level: => 
 		@load_level @level
 		@done_first_beat = false
+		@score = {0, 0, 0}
 
 		@for_all_blocks (block) ->
 			block.mark = nil
