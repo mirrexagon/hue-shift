@@ -14,20 +14,20 @@ local BLOCK_CONTROLS = {
 		up = "w",
 		right = "d",
 		down = "s",
-		left = "a"
+		left = "a",
 	},
 	[2] = {
 		up = "t",
 		right = "h",
 		down = "g",
-		left = "f"
+		left = "f",
 	},
 	[3] = {
 		up = "i",
 		right = "l",
 		down = "k",
-		left = "j"
-	}
+		left = "j",
+	},
 }
 
 local control_functions
@@ -60,7 +60,7 @@ function game:init()
 	function world:get_entities_at(x, y)
 		local ret = {}
 
-		for _, entity in ipairs(self:get_entities_with{"Position"}) do
+		for _, entity in ipairs(self:get_entities_with({ "Position" })) do
 			if entity.Position.x == x and entity.Position.y == y then
 				ret[#ret + 1] = entity
 			end
@@ -72,8 +72,9 @@ function game:init()
 	function world:get_entities_around(x, y, r)
 		local ret = {}
 
-		for _, entity in ipairs(self:get_entities_with{"Position"}) do
-			if util.math.range(x - r, entity.Position.x, x + r)
+		for _, entity in ipairs(self:get_entities_with({ "Position" })) do
+			if
+				util.math.range(x - r, entity.Position.x, x + r)
 				and util.math.range(y - r, entity.Position.y, y + r)
 			then
 				ret[#ret + 1] = entity
@@ -88,7 +89,7 @@ function game:init()
 	world.beat_timers = {}
 
 	function world:add_beat_timer(delay, func)
-		table.insert(self.beat_timers, {delay = delay, func = func})
+		table.insert(self.beat_timers, { delay = delay, func = func })
 	end
 
 	function world:step_beat_timers()
@@ -104,34 +105,34 @@ function game:init()
 
 	---
 
-	world:spawn_entity{
+	world:spawn_entity({
 		Obstacle = true,
 
-		Position = {x = 0, y = 0},
-		Color = {100, 100, 100},
-		Active = true
-	}
+		Position = { x = 0, y = 0 },
+		Color = { 100, 100, 100 },
+		Active = true,
+	})
 
 	-- Spawn player and goal blocks.
 	world.player_blocks = {}
 	for i = 1, 3 do
-		world.player_blocks[i] = world:spawn_entity{
-		Player = i,
+		world.player_blocks[i] = world:spawn_entity({
+			Player = i,
 
-		Color = BLOCK_COLORS[i],
-		Direction = "up",
-		Active = false
-	}
+			Color = BLOCK_COLORS[i],
+			Direction = "up",
+			Active = false,
+		})
 	end
 
 	world.goal_blocks = {}
 	for i = 1, 3 do
-		world.goal_blocks[i] = world:spawn_entity{
-		Goal = i,
+		world.goal_blocks[i] = world:spawn_entity({
+			Goal = i,
 
-		Color = BLOCK_COLORS[i],
-		Active = false
-	}
+			Color = BLOCK_COLORS[i],
+			Active = false,
+		})
 	end
 
 	---
@@ -158,13 +159,11 @@ local function draw_grid(grid_w, grid_h, tile_w, tile_h, tile_pad)
 	love.graphics.setColor(255, 255, 255, world.grid_alpha * GRID_LINES_ALPHA)
 
 	for v = 0, grid_w do
-		love.graphics.rectangle("fill",
-			grid_pad_w + v*tile_w + v*tile_pad, grid_pad_h, tile_pad, grid_pixel_h)
+		love.graphics.rectangle("fill", grid_pad_w + v * tile_w + v * tile_pad, grid_pad_h, tile_pad, grid_pixel_h)
 	end
 
 	for h = 0, grid_h do
-		love.graphics.rectangle("fill",
-			grid_pad_w, grid_pad_h + h*tile_h + h*tile_pad, grid_pixel_w, tile_pad)
+		love.graphics.rectangle("fill", grid_pad_w, grid_pad_h + h * tile_h + h * tile_pad, grid_pixel_w, tile_pad)
 	end
 
 	---
@@ -228,9 +227,9 @@ function world:set_pair_active(id, active)
 end
 
 function world:reset_player_blocks()
-	self.player_blocks[1].Position = {x = 0, y = self.grid_h - 1}
-	self.player_blocks[2].Position = {x = math.floor(self.grid_w/2), y = self.grid_h - 1}
-	self.player_blocks[3].Position = {x = self.grid_w - 1, y = self.grid_h - 1}
+	self.player_blocks[1].Position = { x = 0, y = self.grid_h - 1 }
+	self.player_blocks[2].Position = { x = math.floor(self.grid_w / 2), y = self.grid_h - 1 }
+	self.player_blocks[3].Position = { x = self.grid_w - 1, y = self.grid_h - 1 }
 
 	self.player_blocks[1].Direction = "up"
 	self.player_blocks[2].Direction = "up"
@@ -245,14 +244,14 @@ function world:place_goal(id, tries)
 		local y = love.math.random(0, world.grid_h - 1)
 
 		local ok = true
-		for i, entity in ipairs(self:get_entities_with{"Position"}) do
+		for i, entity in ipairs(self:get_entities_with({ "Position" })) do
 			if entity.Position.x == x and entity.Position.y == y then
 				ok = false
 				break
 			end
 		end
 		if ok then
-			goal.Position = {x = x, y = y}
+			goal.Position = { x = x, y = y }
 			return true
 		end
 	end
@@ -276,7 +275,7 @@ function world:to_game()
 	world.score = {
 		[1] = 0,
 		[2] = 0,
-		[3] = 0
+		[3] = 0,
 	}
 
 	---
@@ -366,7 +365,7 @@ function game:update(dt)
 
 	if world.state == "enter" then
 		---
-		world.grid_alpha = world.grid_alpha + (1/TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha + (1 / TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha >= 1 then
@@ -397,7 +396,7 @@ function game:update(dt)
 		---
 	elseif world.state == "lose" then
 		---
-		local new_pitch = norm_pitch - (1/world.beat_duration)*dt
+		local new_pitch = norm_pitch - (1 / world.beat_duration) * dt
 
 		if new_pitch > 0 then
 			norm_pitch = new_pitch
@@ -413,7 +412,7 @@ function game:update(dt)
 		---
 	elseif world.state == "reset" then
 		---
-		local new_pitch = norm_pitch + (1.5/world.beat_duration)*dt
+		local new_pitch = norm_pitch + (1.5 / world.beat_duration) * dt
 
 		if new_pitch < 1 then
 			norm_pitch = new_pitch
@@ -424,7 +423,7 @@ function game:update(dt)
 		---
 	elseif world.state == "leave" then
 		---
-		world.grid_alpha = world.grid_alpha - (1/TRANSITION_DURATION) * dt
+		world.grid_alpha = world.grid_alpha - (1 / TRANSITION_DURATION) * dt
 		world:update(dt)
 
 		if world.grid_alpha <= 0 then
@@ -442,8 +441,7 @@ function game:draw()
 	bg.draw()
 
 	-- Draw grid.
-	draw_grid(world.grid_w, world.grid_h,
-		world.tile_l, world.tile_l, world.tile_pad)
+	draw_grid(world.grid_w, world.grid_h, world.tile_l, world.tile_l, world.tile_pad)
 
 	-- Draw entities.
 	love.graphics.setColor(255, 255, 255, 255)
@@ -453,13 +451,13 @@ end
 ---
 
 function game:keypressed(key)
-	if key == " " then
+	if key == "space" then
 		---
 		if world.state == "lose" then
 			world:to_reset()
 		elseif world.state == "wait" then
 			world:to_reset()
-		elseif world.state == "reset"then
+		elseif world.state == "reset" then
 			world:to_game()
 		end
 		---

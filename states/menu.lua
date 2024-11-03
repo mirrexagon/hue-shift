@@ -48,7 +48,7 @@ local game_params = {
 
 	music = 1,
 
-	npairs = 1
+	npairs = 1,
 }
 
 local selected_row = 1
@@ -58,11 +58,7 @@ local selected_row = 1
 local function print_centered(text, x, y)
 	local font = love.graphics.getFont()
 
-	love.graphics.print(
-		text,
-		x - (font:getWidth(text)/2),
-		y - (font:getHeight()/2)
-	)
+	love.graphics.print(text, x - (font:getWidth(text) / 2), y - (font:getHeight() / 2))
 end
 
 ---
@@ -70,9 +66,7 @@ end
 local function calculate_item_size(default, nofloor)
 	local value = default * (love.graphics.getWidth() / 600)
 
-	return nofloor and
-		util.math.clamp(0, value, default)
-		or util.math.clamp(0, math.floor(value), default)
+	return nofloor and util.math.clamp(0, value, default) or util.math.clamp(0, math.floor(value), default)
 end
 
 local function calculate_dimensions(screenw, screenh)
@@ -84,7 +78,7 @@ local function calculate_dimensions(screenw, screenh)
 	local DEFAULT_ROW_PAD = 30
 	ROW_PIX_PAD = calculate_item_size(DEFAULT_ROW_PAD)
 
-	ROW_PIX_W = util.math.clamp(0, screenw - (ROW_PIX_PAD*2), 540)
+	ROW_PIX_W = util.math.clamp(0, screenw - (ROW_PIX_PAD * 2), 540)
 
 	ROW_PIX_H = 85
 	N_ROWS_ONSCREEN = (screenh - ROW_PIX_PAD) / (ROW_PIX_PAD + ROW_PIX_H)
@@ -98,9 +92,7 @@ end
 
 ---
 
-function menu:init()
-
-end
+function menu:init() end
 
 ---
 
@@ -114,7 +106,7 @@ local function draw_lr_arrows(y, alpha, active_l, active_r)
 
 	local triangle_l_x = ROW_PIX_W / TRIANGLE_X_DIV
 
-	local triangle_l_left_x = triangle_l_x - triangle_w/2
+	local triangle_l_left_x = triangle_l_x - triangle_w / 2
 	local triangle_l_right_x = triangle_l_left_x + triangle_w
 
 	local triangle_r_right_x = ROW_PIX_W - triangle_l_left_x
@@ -123,17 +115,23 @@ local function draw_lr_arrows(y, alpha, active_l, active_r)
 	love.graphics.setColor(255, 255, 255, (active_l and 255 or 64) * alpha)
 	love.graphics.polygon(
 		"fill",
-		triangle_l_left_x, y,
-		triangle_l_right_x, y - triangle_h/2,
-		triangle_l_right_x, y + triangle_h/2
+		triangle_l_left_x,
+		y,
+		triangle_l_right_x,
+		y - triangle_h / 2,
+		triangle_l_right_x,
+		y + triangle_h / 2
 	)
 
 	love.graphics.setColor(255, 255, 255, (active_r and 255 or 64) * alpha)
 	love.graphics.polygon(
 		"fill",
-		triangle_r_right_x, y,
-		triangle_r_left_x, y - triangle_h/2,
-		triangle_r_left_x, y + triangle_h/2
+		triangle_r_right_x,
+		y,
+		triangle_r_left_x,
+		y - triangle_h / 2,
+		triangle_r_left_x,
+		y + triangle_h / 2
 	)
 
 	---
@@ -148,7 +146,7 @@ local function get_row_pix_h(row_h)
 end
 
 local function get_row_pix_y(row_slot)
-	return (row_slot - 1) * ROW_PIX_H + (row_slot) * ROW_PIX_PAD
+	return (row_slot - 1) * ROW_PIX_H + row_slot * ROW_PIX_PAD
 end
 
 ---
@@ -156,7 +154,7 @@ end
 local rows = {
 	["HUE SHIFT"] = {
 		hide_label = false,
-		label = "FANCY LOGO HERE"
+		label = "FANCY LOGO HERE",
 	},
 
 	["GRID"] = {
@@ -168,7 +166,7 @@ local rows = {
 			local num_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 			local num_xsep_frac = 0.1
 
-			local arrow_y = math.floor(row_pix_h/2)
+			local arrow_y = math.floor(row_pix_h / 2)
 
 			local scale = calculate_item_size(1, true)
 
@@ -182,38 +180,48 @@ local rows = {
 			local num_xsep = num_xsep_frac * row_pix_w
 
 			local w_text = tostring(game_params.grid_w)
-			local w_text_x = math.floor(row_pix_w/2 - num_xsep)
+			local w_text_x = math.floor(row_pix_w / 2 - num_xsep)
 
 			local h_text = tostring(game_params.grid_h)
-			local h_text_x = math.floor(row_pix_w/2 + num_xsep)
+			local h_text_x = math.floor(row_pix_w / 2 + num_xsep)
 
 			---
 
 			local mid = "x"
-			love.graphics.print(mid, math.floor(row_pix_w/2 - font_row_label:getWidth(mid)/2), num_y - font_h/2 - 5)
+			love.graphics.print(
+				mid,
+				math.floor(row_pix_w / 2 - font_row_label:getWidth(mid) / 2),
+				num_y - font_h / 2 - 5
+			)
 
 			---
 
 			local w_gb = (1 - self.w_red) * 255
 			love.graphics.setColor(255, w_gb, w_gb, 255 * alpha)
-			love.graphics.print(w_text, w_text_x - math.floor(font_row_label:getWidth(w_text)/2), num_y - font_h/2)
+			love.graphics.print(w_text, w_text_x - math.floor(font_row_label:getWidth(w_text) / 2), num_y - font_h / 2)
 			love.graphics.draw(
 				img_arrows,
-				w_text_x, arrow_y,
+				w_text_x,
+				arrow_y,
 				0,
-				scale, scale,
-				img_arrows:getWidth()/2, img_arrows:getHeight()/2
+				scale,
+				scale,
+				img_arrows:getWidth() / 2,
+				img_arrows:getHeight() / 2
 			)
 
 			local h_gb = (1 - self.h_red) * 255
 			love.graphics.setColor(255, h_gb, h_gb, 255 * alpha)
-			love.graphics.print(h_text, h_text_x - math.floor(font_row_label:getWidth(h_text)/2), num_y - font_h/2)
+			love.graphics.print(h_text, h_text_x - math.floor(font_row_label:getWidth(h_text) / 2), num_y - font_h / 2)
 			love.graphics.draw(
 				img_arrows,
-				h_text_x, arrow_y,
-				math.pi/2,
-				scale, scale,
-				img_arrows:getWidth()/2, img_arrows:getHeight()/2
+				h_text_x,
+				arrow_y,
+				math.pi / 2,
+				scale,
+				scale,
+				img_arrows:getWidth() / 2,
+				img_arrows:getHeight() / 2
 			)
 		end,
 
@@ -222,25 +230,25 @@ local rows = {
 			self.h_red = interpolate(self.h_red, 0, dt)
 		end,
 
-        ---
+		---
 
-        check_grid_size = function(self)
-            local oldw, oldh = game_params.grid_w, game_params.grid_h
+		check_grid_size = function(self)
+			local oldw, oldh = game_params.grid_w, game_params.grid_h
 
 			game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
 			game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
 
-            if game_params.grid_w ~= oldw then
+			if game_params.grid_w ~= oldw then
 				self.w_red = 1
 			end
 			if game_params.grid_h ~= oldh then
 				self.h_red = 1
 			end
-        end,
+		end,
 
-        resize = function(self, screenw, screenh)
-            self:check_grid_size()
-        end,
+		resize = function(self, screenw, screenh)
+			self:check_grid_size()
+		end,
 
 		keypressed = function(self, k)
 			if k == "w" then
@@ -253,8 +261,8 @@ local rows = {
 				game_params.grid_h = game_params.grid_h - 1
 			end
 
-            self:check_grid_size()
-		end
+			self:check_grid_size()
+		end,
 	},
 
 	["MUSIC"] = { -- TODO: Play selected music quietly while MUSIC is selected? Pulse something to its beat? (Will have to modularise beat logic from game.lua) Have dedicated menu music that plays otherwise? Pulse something to its beat too?
@@ -272,7 +280,7 @@ local rows = {
 
 		draw = function(self, row_pix_w, row_pix_h, alpha)
 			local y_space = row_pix_h - ROW_PIX_H
-			local y = ROW_PIX_H + math.floor(y_space/2)
+			local y = ROW_PIX_H + math.floor(y_space / 2)
 
 			--[[
 			love.graphics.line(0,ROW_PIX_H, row_pix_w,ROW_PIX_H)
@@ -289,13 +297,15 @@ local rows = {
 			local text_h = self.font:getHeight()
 
 			local text_w_actual, text_wraps = self.font:getWrap(text, self.x_space)
+			text_wraps = #text_wraps
 			text_wraps = text_wraps - 1
 
 			self.height = 2 + 0.75 * text_wraps * (text_h / ROW_PIX_H)
 
 			love.graphics.printf(
 				text,
-				(row_pix_w/2) - (self.x_space/2), y - (text_h/2) - text_wraps*(text_h/2),
+				(row_pix_w / 2) - (self.x_space / 2),
+				y - (text_h / 2) - text_wraps * (text_h / 2),
 				self.x_space,
 				"center"
 			)
@@ -313,31 +323,25 @@ local rows = {
 					game_params.music = #MUSIC
 				end
 			end
-		end
+		end,
 	},
 
 	["BLOCKS"] = {
 		height = 2,
 		draw = function(self, row_pix_w, row_pix_h, alpha)
-			local half_tl = (DEFAULT_TILE_LENGTH/2)
+			local half_tl = (DEFAULT_TILE_LENGTH / 2)
 
-			local block_xdiff = math.floor(row_pix_w/4)
+			local block_xdiff = math.floor(row_pix_w / 4)
 			local block_y = math.floor(1.5 * ROW_PIX_H + ROW_PIX_PAD)
 
 			for i = 1, 3 do
 				local lalpha = (i <= game_params.npairs and 255 or 64) * alpha
 
-				love.graphics.setColor(
-					BLOCK_COLORS[i][1],
-					BLOCK_COLORS[i][2],
-					BLOCK_COLORS[i][3],
-					lalpha
-				)
+				love.graphics.setColor(BLOCK_COLORS[i][1], BLOCK_COLORS[i][2], BLOCK_COLORS[i][3], lalpha)
 
 				local x = (block_xdiff * i) - half_tl
 
-				love.graphics.rectangle("fill", x, block_y - half_tl,
-					DEFAULT_TILE_LENGTH, DEFAULT_TILE_LENGTH)
+				love.graphics.rectangle("fill", x, block_y - half_tl, DEFAULT_TILE_LENGTH, DEFAULT_TILE_LENGTH)
 
 				love.graphics.setColor(255, 255, 255, lalpha)
 				love.graphics.draw(img_arrow, x, block_y - half_tl)
@@ -345,10 +349,7 @@ local rows = {
 
 			love.graphics.setColor(255, 255, 255, 128 * alpha)
 
-			draw_lr_arrows(block_y, alpha,
-				(game_params.npairs ~= 1) ,
-				(game_params.npairs ~= 3)
-			)
+			draw_lr_arrows(block_y, alpha, (game_params.npairs ~= 1), (game_params.npairs ~= 3))
 		end,
 
 		keypressed = function(self, k)
@@ -359,21 +360,26 @@ local rows = {
 			end
 
 			game_params.npairs = util.math.clamp(1, game_params.npairs, 3)
-		end
+		end,
 	},
 
 	["START"] = {
 		keypressed = function(self, k)
-			if k == "return" or k == " " then
+			if k == "return" or k == "space" then
 				fade_state = "out"
 				fade_out_to_game = true
 			end
-		end
-	}
+		end,
+	},
 }
 
 local row_order = {
-	"HUE SHIFT", "GRID", "MUSIC", "BLOCKS", "OBSTACLES", "START"
+	"HUE SHIFT",
+	"GRID",
+	"MUSIC",
+	"BLOCKS",
+	"OBSTACLES",
+	"START",
 }
 
 local function get_row(row_n)
@@ -412,7 +418,7 @@ local function draw_row_label(row_name, row_pix_w, row_pix_h, alpha)
 	love.graphics.setColor(255, 255, 255, 255 * (alpha or 1))
 	love.graphics.setFont(font_row_label)
 
-	print_centered(row_name, math.floor(row_pix_w/2), math.floor(row_pix_h/2))
+	print_centered(row_name, math.floor(row_pix_w / 2), math.floor(row_pix_h / 2))
 end
 
 local function draw_row(row_n, row_slot, alpha)
@@ -423,7 +429,6 @@ local function draw_row(row_n, row_slot, alpha)
 	---
 
 	local row = get_row(row_n) or {}
-
 
 	love.graphics.push()
 	love.graphics.translate(ROW_PIX_PAD, get_row_pix_y(row_slot))
@@ -447,7 +452,9 @@ function menu:enter(previous, arg)
 	calculate_dimensions(love.graphics.getWidth(), love.graphics.getHeight())
 
 	for row_name, row in pairs(rows) do
-		if row.init then row:init() end
+		if row.init then
+			row:init()
+		end
 	end
 
 	---
@@ -460,10 +467,12 @@ function menu:resize(screenw, screenh)
 	calculate_dimensions(screenw, screenh)
 
 	for row_name, row in pairs(rows) do
-		if row.resize then row:resize(screenw, screenh) end
+		if row.resize then
+			row:resize(screenw, screenh)
+		end
 	end
 
-    game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
+	game_params.grid_w = util.math.clamp(GRID_W_MIN, game_params.grid_w, GRID_W_MAX)
 	game_params.grid_h = util.math.clamp(GRID_H_MIN, game_params.grid_h, GRID_H_MAX)
 end
 
@@ -489,7 +498,7 @@ function menu:update(dt)
 
 	if fade_state == "in" then
 		---
-		global_alpha = global_alpha + (1/TRANSITION_DURATION) * dt
+		global_alpha = global_alpha + (1 / TRANSITION_DURATION) * dt
 		if global_alpha >= 1 then
 			global_alpha = 1
 			fade_state = "full"
@@ -501,7 +510,7 @@ function menu:update(dt)
 		---
 	elseif fade_state == "out" then
 		---
-		global_alpha = global_alpha - (1/TRANSITION_DURATION) * dt
+		global_alpha = global_alpha - (1 / TRANSITION_DURATION) * dt
 		if global_alpha <= 0 then
 			global_alpha = 0
 			if fade_out_to_game then
@@ -513,7 +522,7 @@ function menu:update(dt)
 
 					music = MUSIC[game_params.music].path,
 					bpm = MUSIC[game_params.music].bpm,
-					onbeat = MUSIC[game_params.music].onbeat
+					onbeat = MUSIC[game_params.music].onbeat,
 				})
 			else
 				love.event.quit()
@@ -541,7 +550,7 @@ function menu:draw()
 	local total_rowpixh = get_row_pix_h(get_total_row_height())
 	local screenh = love.graphics.getHeight()
 	if total_rowpixh < screenh then
-		love.graphics.translate(0, math.floor((screenh - total_rowpixh)/2) - ROW_PIX_PAD)
+		love.graphics.translate(0, math.floor((screenh - total_rowpixh) / 2) - ROW_PIX_PAD)
 	end
 
 	local offset = 1
@@ -592,7 +601,6 @@ local function prev_row()
 		else
 			target_scroll_offset = total_rowh - N_ROWS_ONSCREEN
 		end
-
 	else
 		local t_row_h = get_total_row_height(selected_row - 1)
 		if t_row_h < target_scroll_offset then
@@ -615,7 +623,6 @@ local function next_row()
 	if selected_row > #row_order then
 		selected_row = 1
 		target_scroll_offset = 0
-
 	else
 		local t_row_h = get_total_row_height(selected_row)
 		if t_row_h - N_ROWS_ONSCREEN > target_scroll_offset then
@@ -628,7 +635,7 @@ local function next_row()
 	select_row()
 end
 
-function menu:keypressed(k, isrep)
+function menu:keypressed(k, scancode, isrep)
 	if not isrep then
 		if k == "up" then
 			prev_row()
@@ -651,7 +658,6 @@ function menu:mousepressed(x, y, b)
 		prev_row()
 	elseif b == "wd" then
 		next_row()
-
 	else
 		local row = get_row()
 		if row and row.mousepressed then
@@ -662,9 +668,7 @@ end
 
 ---
 
-function menu:leave()
-
-end
+function menu:leave() end
 
 ---
 
